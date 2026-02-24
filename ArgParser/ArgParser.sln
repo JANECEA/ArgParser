@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgParser", "ArgParser\ArgParser.csproj", "{DA78970A-9236-453F-AF33-CDD8010D4D4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleUsage", "ExampleUsage\ExampleUsage.csproj", "{FC6B5643-B73F-49D9-9909-DE423E0170BA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA78970A-9236-453F-AF33-CDD8010D4D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA78970A-9236-453F-AF33-CDD8010D4D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA78970A-9236-453F-AF33-CDD8010D4D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA78970A-9236-453F-AF33-CDD8010D4D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC6B5643-B73F-49D9-9909-DE423E0170BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC6B5643-B73F-49D9-9909-DE423E0170BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC6B5643-B73F-49D9-9909-DE423E0170BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC6B5643-B73F-49D9-9909-DE423E0170BA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
