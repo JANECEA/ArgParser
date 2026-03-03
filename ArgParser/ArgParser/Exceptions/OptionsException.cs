@@ -8,7 +8,14 @@ namespace ArgParser.Exceptions;
 
 public class OptionsException : TypeValidationException
 {
-    public OptionsException(string? message) : base(message)
+    internal OptionsException(string? message) : base(message)
+    {
+    }
+}
+
+public class IncorrectNameFormatException : OptionsException
+{
+    internal IncorrectNameFormatException(string? message) : base(message)
     {
     }
 }
@@ -16,14 +23,14 @@ public class OptionsException : TypeValidationException
 
 public class DuplicateShortOptionException : OptionsException
 {
-    public DuplicateShortOptionException(string? message) : base(message)
+    internal DuplicateShortOptionException(string? message) : base(message)
     {
     }
 }
 
 public class DuplicateLongOptionException : OptionsException
 {
-    public DuplicateLongOptionException(string? message) : base(message)
+    internal DuplicateLongOptionException(string? message) : base(message)
     {
     }
 }
@@ -31,7 +38,7 @@ public class DuplicateLongOptionException : OptionsException
 
 public class EmptyOptionNameException : OptionsException
 {
-    public EmptyOptionNameException(string? message) : base(message)
+    internal EmptyOptionNameException(string? message) : base(message)
     {
     }
 }

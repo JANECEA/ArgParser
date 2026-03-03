@@ -7,24 +7,26 @@ using System.Threading.Tasks;
 
 namespace ArgParser.Exceptions;
 
+/// <summary>
+/// Base class for exceptions thrown during ArgParser construction. It checks the type 
+/// </summary>
 public class TypeValidationException : InvalidConstraintException
 {
-    public TypeValidationException(string? message) : base(message) { }
+    internal TypeValidationException(string? message) : base(message) { }
 }
-
 
 
 public class PropertyNotParsableException : TypeValidationException
 {
-    public PropertyNotParsableException(string? message) : base(message)
+    internal PropertyNotParsableException(string? message) : base(message)
     {
     }
 }
 
 
-public class RequiresPropertyNotFoundException : TypeValidationException
+public class RequiresOptionNotFoundException : TypeValidationException
 {
-    public RequiresPropertyNotFoundException(string? message) : base(message)
+    internal RequiresOptionNotFoundException(string? message) : base(message)
     {
     }
 }
@@ -32,14 +34,14 @@ public class RequiresPropertyNotFoundException : TypeValidationException
 
 public class WrongAttributeTypeException : TypeValidationException
 {
-    public WrongAttributeTypeException(string? message) : base(message)
+    internal WrongAttributeTypeException(string? message) : base(message)
     {
     }
 }
 
 public class RequiredOnFlagException : TypeValidationException
 {
-    public RequiredOnFlagException(string? message) : base(message)
+    internal RequiredOnFlagException(string? message) : base(message)
     {
     }
 }
