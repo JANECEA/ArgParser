@@ -48,6 +48,8 @@ internal sealed class Args : BaseArgs
         Help("Print version information on standard output, then exit successfully."),
     ]
     public bool Version { get; set; }
+
+    public override string[] PlainArguments { get; set; }
 }
 
 internal class ExistsValidatorAttribute : ValidatorAttribute<string>

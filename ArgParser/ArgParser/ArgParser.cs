@@ -8,7 +8,7 @@ public abstract class BaseArgs
     [LongOptions("--help")]
     public virtual bool HelpCalled { get; set; }
 
-    public string[] PlainArguments { get; set; }
+    public abstract string[] PlainArguments { get; set; }
 }
 
 public static class ArgParserFactory
