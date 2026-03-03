@@ -48,29 +48,30 @@ public class RequiresAttribute : Attribute
 }
 
 [AttributeUsage(AttributeTargets.Property)]
-public class RangeAttribute<T> : Attribute
-    where T : IComparable<T>
+public abstract class ValidatorAttribute<TType> : Attribute
+    where TType : IParsable<TType>
+{
+    public abstract string ErrorMessage { get; }
+
+    public abstract bool IsValid(TType? arg);
+}
+
+public class RangeAttribute<T> : ValidatorAttribute<T>
+    where T : IParsable<T>, IComparable<T>
 {
     private readonly T _min;
     private readonly T _max;
+
+    public override string ErrorMessage { get; }
 
     public RangeAttribute(T min, T max)
     {
         _min = min;
         _max = max;
     }
-}
 
-public interface IArgValidator<in T>
-{
-    public string ErrorMessage { get; }
-
-    public bool IsValid(T? arg);
-}
-
-[AttributeUsage(AttributeTargets.Property)]
-public class ValidatorAttribute<TType, TValidator> : Attribute
-    where TValidator : IArgValidator<TType>, new()
-{
-    private TValidator _validator = new();
+    public override bool IsValid(T? arg)
+    {
+        throw new NotImplementedException();
+    }
 }

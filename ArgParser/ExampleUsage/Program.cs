@@ -23,7 +23,7 @@ internal sealed class Args : BaseArgs
         ShortOptions("-o"),
         LongOptions("--output"),
         Help("Do not send the results to stderr, but overwrite the specified file."),
-        Validator<string, ExistsValidator>,
+        ExistsValidator,
     ]
     public string? Output { get; set; }
 
@@ -50,11 +50,11 @@ internal sealed class Args : BaseArgs
     public bool Version { get; set; }
 }
 
-internal class ExistsValidator : IArgValidator<string>
+internal class ExistsValidatorAttribute : ValidatorAttribute<string>
 {
-    public string ErrorMessage => "The specified output file does not exist.";
+    public override string ErrorMessage { get; }
 
-    public bool IsValid(string? arg) => File.Exists(arg);
+    public override bool IsValid(string? arg) => File.Exists(arg);
 }
 
 internal static class Program
