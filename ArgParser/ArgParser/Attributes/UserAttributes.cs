@@ -4,7 +4,7 @@ namespace ArgParser.Attributes;
 /// Specifies if the command line option is required.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class RequiredAttribute : Attribute;
+public sealed class RequiredAttribute : Attribute;
 
 /// <summary>
 /// Specifies the short form of a command-line option.
@@ -21,7 +21,7 @@ public class RequiredAttribute : Attribute;
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public class ShortOptionsAttribute : Attribute
+public sealed class ShortOptionsAttribute : Attribute
 {
     private readonly string[] _options;
 
@@ -50,7 +50,7 @@ public class ShortOptionsAttribute : Attribute
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public class LongOptionsAttribute : Attribute
+public sealed class LongOptionsAttribute : Attribute
 {
     private readonly string[] _options;
 
@@ -69,7 +69,7 @@ public class LongOptionsAttribute : Attribute
 /// Used when '--help' is called.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class HelpAttribute : Attribute
+public sealed class HelpAttribute : Attribute
 {
     private readonly string _description;
 
@@ -100,7 +100,7 @@ public class HelpAttribute : Attribute
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public class RequiresAttribute : Attribute
+public sealed class RequiresAttribute : Attribute
 {
     private readonly string[] _propertyName;
 
@@ -126,14 +126,15 @@ public abstract class ValidatorAttribute<TType> : Attribute
     /// Performs value validation
     /// </summary>
     /// <param name="arg">The option's value</param>
-    public abstract void Validate(TType? arg);
+    /// <param name="errorMessage"></param>
+    public abstract bool Validate(TType arg, out string? errorMessage);
 }
 
 /// <summary>
 /// Validates if the value fits in the defined range.
 /// </summary>
 /// <typeparam name="T">Type of the option to compare, needs to implement IComparable{T}</typeparam>
-public class RangeAttribute<T> : ValidatorAttribute<T>
+public sealed class RangeAttribute<T> : ValidatorAttribute<T>
     where T : IParsable<T>, IComparable<T>
 {
     private readonly T _min;
@@ -150,14 +151,21 @@ public class RangeAttribute<T> : ValidatorAttribute<T>
         _max = max;
     }
 
-    public override void Validate(T? arg)
+    public override bool Validate(T arg, out string? errorMessage)
     {
-        ArgumentNullException.ThrowIfNull(arg);
-
         if (arg.CompareTo(_min) < 0)
-            throw new InvalidDataException($"The argument {arg} must be less than {_min}");
+        {
+            errorMessage = $"The argument {arg} must be less than {_min}";
+            return false;
+        }
 
         if (arg.CompareTo(_max) >= 0)
-            throw new InvalidDataException($"The argument {arg} must be more than {_max}");
+        {
+            errorMessage = $"The argument {arg} must be more than {_max}";
+            return false;
+        }
+
+        errorMessage = null;
+        return true;
     }
 }

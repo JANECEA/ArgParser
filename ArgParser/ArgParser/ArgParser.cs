@@ -16,16 +16,16 @@ public static class ArgParserFactory
     public static ArgParser<TArgs> FromType<TArgs>()
         where TArgs : BaseArgs
     {
-        throw new NotImplementedException();
+        return new ArgParser<TArgs>();
     }
 }
 
-public class ArgParser<T>
-    where T : BaseArgs
+public sealed class ArgParser<TArgs>
+    where TArgs : BaseArgs
 {
     internal ArgParser() { }
 
-    public T Parse(string[] args)
+    public TArgs Parse(string[] args)
     {
         throw new NotImplementedException();
     }

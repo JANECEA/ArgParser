@@ -54,16 +54,20 @@ internal sealed class Args : BaseArgs
 
 internal class ExistsValidatorAttribute : ValidatorAttribute<string>
 {
-    public override void Validate(string? arg)
+    public override bool Validate(string arg, out string? errorMessage)
     {
-        if (!File.Exists(arg))
-            throw new FileNotFoundException(arg);
+        errorMessage = null;
+        if (File.Exists(arg))
+            return true;
+
+        errorMessage = $"File \"{arg}\" does not exist.";
+        return false;
     }
 }
 
 internal static class Program
 {
-    public static void Main(string[] args)
+    internal static void Main(string[] args)
     {
         ArgParser<Args> argParser = ArgParserFactory.FromType<Args>();
         Args arguments = argParser.Parse(args);
