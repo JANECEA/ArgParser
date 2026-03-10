@@ -92,3 +92,16 @@ public sealed class RequiresAttribute : Attribute
         PropertyName = propertyName;
     }
 }
+
+/// <summary>
+/// Declares the boolean property as terminating - throws TException when specified
+/// </summary>
+/// <typeparam name="TException">Type of the exception, needs to have a public parameterless constructor</typeparam>
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class TerminatingFlagAttribute<TException> : Attribute
+    where TException : Exception, new()
+{
+    internal void ThrowException() => throw new TException();
+
+    internal TException GetException() => new();
+}

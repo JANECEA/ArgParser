@@ -13,6 +13,7 @@ public abstract class BaseArgs
     /// </summary>
     [ShortOptions('h')]
     [LongOptions("help")]
+    [TerminatingFlag<HelpCalledException>]
     public virtual bool HelpCalled { get; set; }
 
     /// <summary>

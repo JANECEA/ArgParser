@@ -46,11 +46,14 @@ internal sealed class TimeArgs : BaseArgs
         ShortOptions('V'),
         LongOptions("version"),
         Help("Print version information on standard output, then exit successfully."),
+        TerminatingFlag<VersionCalledException>,
     ]
     public bool Version { get; set; }
 
     public override string[] PlainArguments { get; set; }
 }
+
+internal class VersionCalledException : Exception;
 
 internal static class Program
 {

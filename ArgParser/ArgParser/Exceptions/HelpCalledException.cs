@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ArgParser.Exceptions;
+﻿namespace ArgParser.Exceptions;
 
 /// <summary>
 /// The exception that is thrown while parsing command line arguments if help option was given ("--help", "-h").
@@ -16,6 +10,6 @@ public sealed class HelpCalledException : Exception
     /// </summary>
     public string HelpMessage { get; internal set; } = string.Empty;
 
-    internal HelpCalledException(string? message)
-        : base(message) { }
+    public HelpCalledException()
+        : base("Program has been called with the 'help' flag.") { }
 }
