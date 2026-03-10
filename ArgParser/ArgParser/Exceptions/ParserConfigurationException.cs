@@ -5,7 +5,7 @@ namespace ArgParser.Exceptions;
 /// <summary>
 /// Base class for exceptions thrown during ArgParser construction. It checks the given type derived from <see cref="BaseArgs"/>.
 /// </summary>
-public class ParserConfigurationException : Exception
+public abstract class ParserConfigurationException : Exception
 {
     internal ParserConfigurationException(string? message)
         : base(message) { }
@@ -14,7 +14,7 @@ public class ParserConfigurationException : Exception
 /// <summary>
 /// The exception that is thrown when property type does not implement the IParsable interface.
 /// </summary>
-public class PropertyNotParsableException : ParserConfigurationException
+public sealed class PropertyNotParsableException : ParserConfigurationException
 {
     internal PropertyNotParsableException(string? message)
         : base(message) { }
@@ -33,7 +33,7 @@ public class PropertyNotParsableException : ParserConfigurationException
 /// }
 /// </code>
 /// </example>
-public class RequiresOptionNotFoundException : ParserConfigurationException
+public sealed class RequiresOptionNotFoundException : ParserConfigurationException
 {
     internal RequiresOptionNotFoundException(string? message)
         : base(message) { }
@@ -42,7 +42,7 @@ public class RequiresOptionNotFoundException : ParserConfigurationException
 /// <summary>
 /// The exception that is thrown when
 /// </summary>
-public class WrongAttributeTypeException : ParserConfigurationException
+public sealed class WrongAttributeTypeException : ParserConfigurationException
 {
     internal WrongAttributeTypeException(string? message)
         : base(message) { }
@@ -61,7 +61,7 @@ public class WrongAttributeTypeException : ParserConfigurationException
 /// }
 /// </code>
 /// </example>
-public class RequiredOnFlagException : ParserConfigurationException
+public sealed class RequiredOnFlagException : ParserConfigurationException
 {
     internal RequiredOnFlagException(string? message)
         : base(message) { }

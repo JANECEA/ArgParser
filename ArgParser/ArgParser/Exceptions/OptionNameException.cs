@@ -3,7 +3,7 @@
 /// <summary>
 /// Base class for exceptions thrown during ArgParser construction. It checks the given type derived from <see cref="BaseArgs"/>.
 /// </summary>
-public class OptionNameException : ParserConfigurationException
+public abstract class OptionNameException : ParserConfigurationException
 {
     internal OptionNameException(string? message)
         : base(message) { }
@@ -12,7 +12,7 @@ public class OptionNameException : ParserConfigurationException
 /// <summary>
 ///
 /// </summary>
-public class IncorrectNameFormatException : OptionNameException
+public sealed class IncorrectNameFormatException : OptionNameException
 {
     internal IncorrectNameFormatException(string? message)
         : base(message) { }
@@ -21,7 +21,7 @@ public class IncorrectNameFormatException : OptionNameException
 /// <summary>
 ///
 /// </summary>
-public class DuplicateShortOptionException : OptionNameException
+public sealed class DuplicateShortOptionException : OptionNameException
 {
     internal DuplicateShortOptionException(string? message)
         : base(message) { }
@@ -30,7 +30,7 @@ public class DuplicateShortOptionException : OptionNameException
 /// <summary>
 ///
 /// </summary>
-public class DuplicateLongOptionException : OptionNameException
+public sealed class DuplicateLongOptionException : OptionNameException
 {
     internal DuplicateLongOptionException(string? message)
         : base(message) { }
@@ -39,7 +39,7 @@ public class DuplicateLongOptionException : OptionNameException
 /// <summary>
 ///
 /// </summary>
-public class EmptyOptionNameException : OptionNameException
+public sealed class EmptyOptionNameException : OptionNameException
 {
     internal EmptyOptionNameException(string? message)
         : base(message) { }

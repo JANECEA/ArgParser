@@ -12,7 +12,7 @@ public abstract class CommandLineParsingException : Exception
 /// <summary>
 /// The exception that is thrown when required command line option is missing.
 /// </summary>
-public class MissingRequiredOptionException : CommandLineParsingException
+public sealed class MissingRequiredOptionException : CommandLineParsingException
 {
     internal MissingRequiredOptionException(string? message)
         : base(message) { }
@@ -21,7 +21,7 @@ public class MissingRequiredOptionException : CommandLineParsingException
 /// <summary>
 /// The exception that is thrown when the value specified for command line option did not pass defined validation.
 /// </summary>
-public class ValidatorFailedException : CommandLineParsingException
+public sealed class ValidatorFailedException : CommandLineParsingException
 {
     internal ValidatorFailedException(string? message)
         : base(message) { }
@@ -30,7 +30,7 @@ public class ValidatorFailedException : CommandLineParsingException
 /// <summary>
 /// The exception that is thrown when the value for command line option is missing.
 /// </summary>
-public class MissingOptionValueException : CommandLineParsingException
+public sealed class MissingOptionValueException : CommandLineParsingException
 {
     internal MissingOptionValueException(string? message)
         : base(message) { }
@@ -39,7 +39,7 @@ public class MissingOptionValueException : CommandLineParsingException
 /// <summary>
 /// The exception that is thrown when the value for command line option has incorrect format.
 /// </summary>
-public class ValueFormatException : CommandLineParsingException
+public sealed class ValueFormatException : CommandLineParsingException
 {
     internal ValueFormatException(string? message)
         : base(message) { }
@@ -48,7 +48,7 @@ public class ValueFormatException : CommandLineParsingException
 /// <summary>
 /// The exception that is thrown when unknown command line option was given.
 /// </summary>
-public class UnknownOptionException : CommandLineParsingException
+public sealed class UnknownOptionException : CommandLineParsingException
 {
     internal UnknownOptionException(string? message)
         : base(message) { }
