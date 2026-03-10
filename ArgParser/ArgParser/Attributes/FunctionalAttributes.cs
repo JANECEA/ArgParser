@@ -81,7 +81,7 @@ public sealed class LongOptionsAttribute : Attribute
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class RequiresAttribute : Attribute
 {
-    private readonly string[] _propertyName;
+    internal string[] PropertyName { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="RequiredAttribute"/>.
@@ -89,6 +89,6 @@ public sealed class RequiresAttribute : Attribute
     /// <param name="propertyName">Required property names</param>
     public RequiresAttribute(params string[] propertyName)
     {
-        _propertyName = propertyName;
+        PropertyName = propertyName;
     }
 }

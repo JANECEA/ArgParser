@@ -1,4 +1,5 @@
 ﻿using ArgParser.Attributes;
+
 namespace ArgParser.Exceptions;
 
 /// <summary>
@@ -37,7 +38,7 @@ public sealed class IncorrectNameFormatException : OptionNameException
 /// {
 ///     [ShortOptions('a')]
 ///     public bool Append { get; set; }
-///     
+///
 /// //
 ///     [ShortOptions('a')]
 ///     public bool Allow { get; set; }
@@ -53,12 +54,13 @@ public sealed class DuplicateShortOptionException : OptionNameException
 /// <summary>
 /// The exception that is thrown when multiple <see cref="LongOptionsAttribute"/>s have the same value.
 /// </summary>
+/// <example>
 /// <code>
 /// class Args : BaseArgs
 /// {
 ///     [LongOptions("App")]
 ///     public bool Append { get; set; }
-///     
+///
 /// //
 ///     [LongOptions("App")]
 ///     public bool Allow { get; set; }

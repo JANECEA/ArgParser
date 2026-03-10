@@ -1,18 +1,36 @@
 ﻿using ArgParser.Attributes;
+using ArgParser.Exceptions;
 
 namespace ArgParser;
 
+/// <summary>
+/// Base class your declared arguments class should inherit from.
+/// </summary>
 public abstract class BaseArgs
 {
+    /// <summary>
+    /// The default implementation of the help flag.
+    /// </summary>
     [ShortOptions('h')]
     [LongOptions("help")]
     public virtual bool HelpCalled { get; set; }
 
+    /// <summary>
+    /// Where default program arguments will be stored.
+    /// </summary>
     public abstract string[] PlainArguments { get; set; }
 }
 
+/// <summary>
+/// Implements methods for creating <see cref="ArgParser{TArgs}"/>.
+/// </summary>
 public static class ArgParserFactory
 {
+    /// <summary>
+    /// Creates a new <see cref="ArgParser{TArgs}"/>.
+    /// </summary>
+    /// <typeparam name="TArgs">Type of the created ArgParser</typeparam>
+    /// <exception cref="ParserConfigurationException">Describes errors encountered during the validation of TArgs</exception>
     public static ArgParser<TArgs> FromType<TArgs>()
         where TArgs : BaseArgs
     {
@@ -20,13 +38,24 @@ public static class ArgParserFactory
     }
 }
 
+/// <summary>
+/// Implements parsing of standard program command line arguments into the specified type
+/// </summary>
+/// <typeparam name="TArgs">Declared argument type</typeparam>
 public sealed class ArgParser<TArgs>
     where TArgs : BaseArgs
 {
     internal ArgParser() { }
 
+    /// <summary>
+    /// Tries parsing the command line arguments according to the structure of
+    /// TArgs and attributes defined in it.
+    /// </summary>
+    /// <param name="args">Command line arguments</param>
+    /// <exception cref="CommandLineParsingException">Argument parsing has failed</exception>
+    /// <exception cref="HelpCalledException">Program was called with the 'help' terminating flag</exception>
     public TArgs Parse(string[] args)
     {
-        throw new NotImplementedException();
+        throw null!;
     }
 }

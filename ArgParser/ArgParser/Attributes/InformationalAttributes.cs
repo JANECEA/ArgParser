@@ -54,7 +54,7 @@ public sealed class ExampleUsageAttribute : Attribute
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class HelpAttribute : Attribute
 {
-    private readonly string _description;
+    internal string Description { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="HelpAttribute"/>.
@@ -62,6 +62,6 @@ public sealed class HelpAttribute : Attribute
     /// <param name="description">Help description</param>
     public HelpAttribute(string description)
     {
-        _description = description;
+        Description = description;
     }
 }

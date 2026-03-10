@@ -11,11 +11,11 @@ namespace ArgParser.Exceptions;
 /// </summary>
 public sealed class HelpCalledException : Exception
 {
-    internal HelpCalledException(string? message)
-        : base(message) { }
-
     /// <summary>
     /// Property that contains the generated help message.
     /// </summary>
     public string HelpMessage { get; internal set; } = string.Empty;
+
+    internal HelpCalledException(string? message)
+        : base(message) { }
 }

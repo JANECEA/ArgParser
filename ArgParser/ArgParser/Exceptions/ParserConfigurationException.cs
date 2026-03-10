@@ -21,7 +21,7 @@ public sealed class PropertyNotParsableException : ParserConfigurationException
 }
 
 /// <summary>
-/// The exception that is thrown when the option property given to the <see cref="RequiresAttribute"/> 
+/// The exception that is thrown when the option property given to the <see cref="RequiresAttribute"/>
 /// was not found in the given class.
 /// </summary>
 /// <example>
@@ -41,16 +41,16 @@ public sealed class ReferencedOptionNotFoundException : ParserConfigurationExcep
 }
 
 /// <summary>
-/// The exception that is thrown when the <see cref="ClassValidatorAttribute{TArgs}"/> or the <see cref="OptionValidatorAttribute{TType}"/> 
+/// The exception that is thrown when the <see cref="ClassValidatorAttribute{TArgs}"/> or the <see cref="OptionValidatorAttribute{TType}"/>
 /// have different type than the property.
 /// </summary>
 /// <example>
 /// <code>
-/// 
+///
 /// class Args : BaseArgs
 /// {
 ///     [ShortOptions('a')]
-///     [Range<int>(0, 100)]
+///     [Range{int}(0, 100)]
 ///     public bool Append { get; set; }
 /// }
 /// </code>
@@ -77,31 +77,5 @@ public sealed class WrongValidatorTypeException : ParserConfigurationException
 public sealed class RequiredOnFlagException : ParserConfigurationException
 {
     internal RequiredOnFlagException(string? message)
-        : base(message) { }
-}
-
-/// <summary>
-/// The exception that is thrown when any of the <see cref="MutuallyExclusiveAttribute"/> properties 
-/// has also <see cref="RequiredAttribute"/> registered.
-/// </summary>
-/// <example>
-/// <code>
-/// 
-/// [MutuallyExclusive[nameof(Append), nameof(Output)]]
-/// class Args : BaseArgs
-/// {
-///     [ShortOptions('a')]
-///     [Required]
-///     public bool Append { get; set; }
-///     
-/// //
-///     [ShortOptions("-o")]
-///     public string Output { get; set; }
-/// }
-/// </code>
-/// </example>
-public sealed class ExclusiveOptionIsRequiredException : ParserConfigurationException
-{
-    internal ExclusiveOptionIsRequiredException(string? message)
         : base(message) { }
 }
