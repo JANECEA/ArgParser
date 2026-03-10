@@ -62,10 +62,13 @@ internal static class Program
         {
             TimeArgs arguments = argParser.Parse(args);
         }
-        catch (CommandLineParsingException ex) { }
-        //catch (HelpCalledException helpEx)
-        //{
-        //    Console.WriteLine(helpEx.HelpMessage);
-        //}
+        catch (CommandLineParsingException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (HelpCalledException helpEx)
+        {
+            Console.WriteLine(helpEx.HelpMessage);
+        }
     }
 }
