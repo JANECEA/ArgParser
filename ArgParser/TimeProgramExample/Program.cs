@@ -1,9 +1,10 @@
 ﻿using ArgParser;
 using ArgParser.Attributes;
+using ArgParser.Exceptions;
 
-namespace ExampleUsage;
+namespace TimeProgramExample;
 
-internal sealed class Args : BaseArgs
+internal sealed class TimeArgs : BaseArgs
 {
     [
         ShortOptions("-f"),
@@ -11,8 +12,6 @@ internal sealed class Args : BaseArgs
         Help(
             "Specify output format, possibly overriding the format specified in the environment variable TIME"
         ),
-        Required,
-        Range<string>("Aa", "bb"),
     ]
     public string? Format { get; set; }
 
@@ -23,7 +22,6 @@ internal sealed class Args : BaseArgs
         ShortOptions("-o"),
         LongOptions("--output"),
         Help("Do not send the results to stderr, but overwrite the specified file."),
-        ExistsValidator,
     ]
     public string? Output { get; set; }
 
@@ -52,24 +50,20 @@ internal sealed class Args : BaseArgs
     public override string[] PlainArguments { get; set; }
 }
 
-internal class ExistsValidatorAttribute : OptionValidatorAttribute<string>
-{
-    public override bool Validate(string arg, out string? errorMessage)
-    {
-        errorMessage = null;
-        if (File.Exists(arg))
-            return true;
-
-        errorMessage = $"File \"{arg}\" does not exist.";
-        return false;
-    }
-}
-
 internal static class Program
 {
     internal static void Main(string[] args)
     {
-        ArgParser<Args> argParser = ArgParserFactory.FromType<Args>();
-        Args arguments = argParser.Parse(args);
+        ArgParser<TimeArgs> argParser = ArgParserFactory.FromType<TimeArgs>();
+
+        try
+        {
+            TimeArgs arguments = argParser.Parse(args);
+        }
+        catch (CommandLineParsingException ex) { }
+        //catch (HelpCalledException helpEx)
+        //{
+        //    Console.WriteLine(helpEx.HelpMessage);
+        //}
     }
 }

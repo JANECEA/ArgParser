@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgParser", "ArgParser\ArgParser.csproj", "{DA78970A-9236-453F-AF33-CDD8010D4D4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleUsage", "ExampleUsage\ExampleUsage.csproj", "{FC6B5643-B73F-49D9-9909-DE423E0170BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeProgramExample", "TimeProgramExample\TimeProgramExample.csproj", "{FC6B5643-B73F-49D9-9909-DE423E0170BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
