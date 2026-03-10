@@ -21,7 +21,8 @@ public sealed class PropertyNotParsableException : ParserConfigurationException
 }
 
 /// <summary>
-/// The exception that is thrown when the option property given to the <see cref="RequiresAttribute"/> was not found in the given class.
+/// The exception that is thrown when the option property given to the <see cref="RequiresAttribute"/> 
+/// was not found in the given class.
 /// </summary>
 /// <example>
 /// <code>
@@ -64,5 +65,31 @@ public sealed class WrongAttributeTypeException : ParserConfigurationException
 public sealed class RequiredOnFlagException : ParserConfigurationException
 {
     internal RequiredOnFlagException(string? message)
+        : base(message) { }
+}
+
+/// <summary>
+/// The exception that is thrown when any of the <see cref="MutuallyExclusiveAttribute"/> properties 
+/// has also <see cref="RequiredAttribute"/> registered.
+/// </summary>
+/// <example>
+/// <code>
+/// 
+/// [MutuallyExclusive[nameof(Append), nameof(Output)]]
+/// class Args : BaseArgs
+/// {
+///     [ShortOptions("-a")]
+///     [Required]
+///     public bool Append { get; set; }
+///     
+/// //
+///     [ShortOptions("-o")]
+///     public string Output { get; set; }
+/// }
+/// </code>
+/// </example>
+public sealed class ExclusiveOptionIsRequiredException : ParserConfigurationException
+{
+    internal ExclusiveOptionIsRequiredException(string? message)
         : base(message) { }
 }
