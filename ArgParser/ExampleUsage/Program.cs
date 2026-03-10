@@ -3,7 +3,6 @@ using ArgParser.Attributes;
 
 namespace ExampleUsage;
 
-[MutuallyExclusive(nameof(Format), nameof(Output))]
 internal sealed class Args : BaseArgs
 {
     [
@@ -53,7 +52,7 @@ internal sealed class Args : BaseArgs
     public override string[] PlainArguments { get; set; }
 }
 
-internal class ExistsValidatorAttribute : ValidatorAttribute<string>
+internal class ExistsValidatorAttribute : OptionValidatorAttribute<string>
 {
     public override bool Validate(string arg, out string? errorMessage)
     {

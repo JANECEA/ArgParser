@@ -115,60 +115,42 @@ public sealed class RequiresAttribute : Attribute
 }
 
 /// <summary>
-/// This attribute allows the user to register options as mutually exclusive.
-/// </summary>
-/// <example>
-/// <code>
-/// [MutuallyExclusive(nameof(Truncate), nameof(Append))]
-/// class Args : BaseArgs
-/// {
-///     [ShortOptions("-t")]
-///     public bool Truncate { get; set; }
-/// //
-///     [ShortOptions("-a")]
-///     public bool Append { get; set; }
-/// }
-/// </code>
-/// </example>
-[AttributeUsage(AttributeTargets.Class)]
-public sealed class MutuallyExclusiveAttribute : Attribute
-{
-    internal IEnumerable<string> propertyNames { get; }
-
-    /// <summary>
-    /// Creates a new instance of the <see cref="MutuallyExclusiveAttribute"/>.
-    /// </summary>
-    public MutuallyExclusiveAttribute(
-        string propertyNameA,
-        string propertyNameB,
-        params string[] otherPropertyNames
-    )
-    {
-        propertyNames = otherPropertyNames.Prepend(propertyNameB).Prepend(propertyNameA);
-    }
-}
-
-/// <summary>
 /// Base class for defining custom option validator attributes.
 /// </summary>
 /// <typeparam name="TType">Type of the option</typeparam>
 [AttributeUsage(AttributeTargets.Property)]
-public abstract class ValidatorAttribute<TType> : Attribute
+public abstract class OptionValidatorAttribute<TType> : Attribute
     where TType : IParsable<TType>
 {
     /// <summary>
     /// Performs value validation
     /// </summary>
     /// <param name="arg">The option's value</param>
-    /// <param name="errorMessage"></param>
+    /// <param name="errorMessage">Error message describing the validation error</param>
     public abstract bool Validate(TType arg, out string? errorMessage);
+}
+
+/// <summary>
+/// Base class for defining custom arguments class validator attributes.
+/// </summary>
+/// <typeparam name="TArgs">Type of the arguments class</typeparam>
+[AttributeUsage(AttributeTargets.Class)]
+public abstract class ClassValidatorAttribute<TArgs> : Attribute
+    where TArgs : BaseArgs
+{
+    /// <summary>
+    /// Performs value validation
+    /// </summary>
+    /// <param name="args">The option's value</param>
+    /// <param name="errorMessage">Error message describing the validation error</param>
+    public abstract bool Validate(TArgs args, out string? errorMessage);
 }
 
 /// <summary>
 /// Validates if the value fits in the defined range.
 /// </summary>
 /// <typeparam name="T">Type of the option to compare, needs to implement IComparable{T}</typeparam>
-public sealed class RangeAttribute<T> : ValidatorAttribute<T>
+public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
     where T : IParsable<T>, IComparable<T>
 {
     private readonly T _min;
