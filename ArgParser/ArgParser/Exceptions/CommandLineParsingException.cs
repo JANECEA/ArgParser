@@ -1,7 +1,7 @@
 ﻿namespace ArgParser.Exceptions;
 
 /// <summary>
-/// Base class for exceptions thrown during parsing command line arguments.
+/// Base class for exceptions thrown while parsing command line arguments.
 /// </summary>
 public abstract class CommandLineParsingException : Exception
 {
@@ -37,11 +37,11 @@ public sealed class MissingOptionValueException : CommandLineParsingException
 }
 
 /// <summary>
-/// The exception that is thrown when the value for command line option has incorrect format.
+/// The exception that is thrown when the value for command line option could not be parsed.
 /// </summary>
-public sealed class ValueFormatException : CommandLineParsingException
+public sealed class ValueParsingException : CommandLineParsingException
 {
-    internal ValueFormatException(string? message)
+    internal ValueParsingException(string? message)
         : base(message) { }
 }
 
@@ -53,3 +53,5 @@ public sealed class UnknownOptionException : CommandLineParsingException
     internal UnknownOptionException(string? message)
         : base(message) { }
 }
+
+

@@ -28,24 +28,36 @@ public sealed class PropertyNotParsableException : ParserConfigurationException
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions("-a")]
+///     [ShortOptions('a')]
 ///     [Requires(nameof(Output))]
 ///     public bool Append { get; set; }
 /// }
 /// </code>
 /// </example>
-public sealed class RequiresOptionNotFoundException : ParserConfigurationException
+public sealed class ReferencedOptionNotFoundException : ParserConfigurationException
 {
-    internal RequiresOptionNotFoundException(string? message)
+    internal ReferencedOptionNotFoundException(string? message)
         : base(message) { }
 }
 
 /// <summary>
-/// The exception that is thrown when
+/// The exception that is thrown when the <see cref="ClassValidatorAttribute{TArgs}"/> or the <see cref="OptionValidatorAttribute{TType}"/> 
+/// have different type than the property.
 /// </summary>
-public sealed class WrongAttributeTypeException : ParserConfigurationException
+/// <example>
+/// <code>
+/// 
+/// class Args : BaseArgs
+/// {
+///     [ShortOptions('a')]
+///     [Range<int>(0, 100)]
+///     public bool Append { get; set; }
+/// }
+/// </code>
+/// </example>
+public sealed class WrongValidatorTypeException : ParserConfigurationException
 {
-    internal WrongAttributeTypeException(string? message)
+    internal WrongValidatorTypeException(string? message)
         : base(message) { }
 }
 
@@ -56,7 +68,7 @@ public sealed class WrongAttributeTypeException : ParserConfigurationException
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions("-a")]
+///     [ShortOptions('a')]
 ///     [Required]
 ///     public bool Append { get; set; }
 /// }
@@ -78,7 +90,7 @@ public sealed class RequiredOnFlagException : ParserConfigurationException
 /// [MutuallyExclusive[nameof(Append), nameof(Output)]]
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions("-a")]
+///     [ShortOptions('a')]
 ///     [Required]
 ///     public bool Append { get; set; }
 ///     
