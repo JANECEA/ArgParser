@@ -115,6 +115,40 @@ public sealed class RequiresAttribute : Attribute
 }
 
 /// <summary>
+/// This attribute allows the user to register options as mutually exclusive.
+/// </summary>
+/// <example>
+/// <code>
+/// [MutuallyExclusive(nameof(Truncate), nameof(Append))]
+/// class Args : BaseArgs
+/// {
+///     [ShortOptions("-t")]
+///     public bool Truncate { get; set; }
+/// //
+///     [ShortOptions("-a")]
+///     public bool Append { get; set; }
+/// }
+/// </code>
+/// </example>
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class MutuallyExclusiveAttribute : Attribute
+{
+    internal IEnumerable<string> propertyNames { get; }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="MutuallyExclusiveAttribute"/>.
+    /// </summary>
+    public MutuallyExclusiveAttribute(
+        string propertyNameA,
+        string propertyNameB,
+        params string[] otherPropertyNames
+    )
+    {
+        propertyNames = otherPropertyNames.Prepend(propertyNameB).Prepend(propertyNameA);
+    }
+}
+
+/// <summary>
 /// Base class for defining custom option validator attributes.
 /// </summary>
 /// <typeparam name="TType">Type of the option</typeparam>

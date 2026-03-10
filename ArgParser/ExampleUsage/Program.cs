@@ -3,6 +3,7 @@ using ArgParser.Attributes;
 
 namespace ExampleUsage;
 
+[MutuallyExclusive(nameof(Format), nameof(Output))]
 internal sealed class Args : BaseArgs
 {
     [
