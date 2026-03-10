@@ -27,7 +27,6 @@ public class MissingRequiredOptionException : ArgFormatException
 
 /// <summary>
 /// The exception that is thrown when the value specified for command line option did not pass defined validation.
-/// 
 /// </summary>
 public class ValidatorFailedException : ArgFormatException
 {
