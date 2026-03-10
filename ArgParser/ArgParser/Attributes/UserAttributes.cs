@@ -9,13 +9,13 @@ public sealed class RequiredAttribute : Attribute;
 /// <summary>
 /// Specifies the short form of a command-line option.
 /// <para/>
-/// The short name should have a single dash (<c>-</c>) prefix.
+/// The single dash (<c>-</c>) prefix will be prepended automatically.
 /// </summary>
 /// <example>
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions("-o")]
+///     [ShortOptions('o')]
 ///     public string Output { get; set; }
 /// }
 /// </code>
@@ -23,28 +23,27 @@ public sealed class RequiredAttribute : Attribute;
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class ShortOptionsAttribute : Attribute
 {
-    private readonly string[] _options;
+    internal IEnumerable<char> Options { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="ShortOptionsAttribute"/>.
     /// </summary>
-    /// <param name="options">Short option names</param>
-    public ShortOptionsAttribute(params string[] options)
+    public ShortOptionsAttribute(char mainOptionName, params char[] otherOptions)
     {
-        _options = options;
+        Options = otherOptions.Prepend(mainOptionName);
     }
 }
 
 /// <summary>
 /// Specifies the long form of a command-line option.
 /// <para/>
-/// The short name should have a double dash (<c>--</c>) prefix.
+/// The double dash (<c>--</c>) prefix will be prepended automatically.
 /// </summary>
 /// <example>
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [LongOptions("--output")]
+///     [LongOptions("output")]
 ///     public string Output { get; set; }
 /// }
 /// </code>
@@ -52,15 +51,14 @@ public sealed class ShortOptionsAttribute : Attribute
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class LongOptionsAttribute : Attribute
 {
-    private readonly string[] _options;
+    internal IEnumerable<string> Options { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="LongOptionsAttribute"/>.
     /// </summary>
-    /// <param name="options">Long option names</param>
-    public LongOptionsAttribute(params string[] options)
+    public LongOptionsAttribute(string mainOptionName, params string[] otherOptions)
     {
-        _options = options;
+        Options = otherOptions.Prepend(mainOptionName);
     }
 }
 
@@ -115,6 +113,23 @@ public sealed class RequiresAttribute : Attribute
 }
 
 /// <summary>
+/// Overrides the option value placeholder name used in the --help message
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class ValuePlaceholderAttribute : Attribute
+{
+    internal string PlaceHolder { get; }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="ValuePlaceholderAttribute"/>.
+    /// </summary>
+    public ValuePlaceholderAttribute(string placeHolder)
+    {
+        PlaceHolder = placeHolder;
+    }
+}
+
+/// <summary>
 /// Base class for defining custom option validator attributes.
 /// </summary>
 /// <typeparam name="TType">Type of the option</typeparam>
@@ -144,6 +159,38 @@ public abstract class ClassValidatorAttribute<TArgs> : Attribute
     /// <param name="args">The option's value</param>
     /// <param name="errorMessage">Error message describing the validation error</param>
     public abstract bool Validate(TArgs args, out string? errorMessage);
+}
+
+/// <summary>
+/// Specifies the example usage string used in the --help message
+/// </summary>
+/// <example>
+/// <code>
+/// [ExampleUsage("time [options] command [arguments...]")]
+/// internal sealed class TimeArgs : BaseArgs
+/// {
+///     [
+///         ShortOptions('a'),
+///         LongOptions("append"),
+///         Help("(Used together with -o.) Do not overwrite but append."),
+///         Requires(nameof(Output)),
+///     ]
+///     public bool Append { get; set; }
+/// }
+/// </code>
+/// </example>
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class ExampleUsageAttribute : Attribute
+{
+    internal string Usage { get; }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="ExampleUsageAttribute"/>.
+    /// </summary>
+    public ExampleUsageAttribute(string usage)
+    {
+        Usage = usage;
+    }
 }
 
 /// <summary>

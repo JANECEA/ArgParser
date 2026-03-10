@@ -4,8 +4,8 @@ namespace ArgParser;
 
 public abstract class BaseArgs
 {
-    [ShortOptions("-h")]
-    [LongOptions("--help")]
+    [ShortOptions('h')]
+    [LongOptions("help")]
     public virtual bool HelpCalled { get; set; }
 
     public abstract string[] PlainArguments { get; set; }
