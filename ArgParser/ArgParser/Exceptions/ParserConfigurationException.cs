@@ -79,3 +79,23 @@ public sealed class RequiredOnFlagException : ParserConfigurationException
     internal RequiredOnFlagException(string? message)
         : base(message) { }
 }
+
+/// <summary>
+/// The exception that is thrown when the <see cref="TerminatingFlagAttribute{TException}"/> 
+/// is not registered on flag property in the given class.
+/// </summary>
+/// <example>
+/// <code>
+/// class Args : BaseArgs
+/// {
+///     [ShortOptions('o')]
+///     [TerminatingFlag{Exception}]
+///     public string Output { get; set; }
+/// }
+/// </code>
+/// </example>
+public sealed class TerminatingNotOnFlagException : ParserConfigurationException
+{
+    internal TerminatingNotOnFlagException(string? message)
+        : base(message) { }
+}
