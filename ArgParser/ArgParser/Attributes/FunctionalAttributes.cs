@@ -69,10 +69,10 @@ public sealed class LongOptionsAttribute : Attribute
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions("-o")]
+///     [ShortOptions('o')]
 ///     public string Output { get; set; }
 /// //
-///     [ShortOptions("-a")]
+///     [ShortOptions('a')]
 ///     [Requires(nameof(Output))]
 ///     public bool Append { get; set; }
 /// }
