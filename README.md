@@ -1,10 +1,17 @@
 # ArgParser
+ArgParser is a declarative CLI argument parsing library for .NET.
 
 ## Key features
+- Define multiple short and long option names
+- Mark options as required
+- Support for plain arguments
+- Define options as terminating
+- Automatically generate the help message using additional informational attributes
+- Define custom validators for an individual option or the whole argument class
 
 ## Build instructions
 ```
-# Build package
+# Clone repository
 git clone https://gitlab.mff.cuni.cz/teaching/nprg043/2026-summer/task-1/t21-api-design.git
 
 # Install in your project
