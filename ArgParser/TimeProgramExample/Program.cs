@@ -17,7 +17,7 @@ internal sealed class TimeArgs : BaseArgs
     public string? Format { get; set; }
 
     [ShortOptions('p'), LongOptions("portability"), Help("Use the portable output format")]
-    public bool Portability { get; set; }
+    public bool Portable { get; set; }
 
     [
         ShortOptions('o'),
@@ -64,14 +64,58 @@ internal static class Program
         try
         {
             TimeArgs arguments = argParser.Parse(args);
+            Run(arguments);
         }
         catch (CommandLineParsingException ex)
         {
             Console.WriteLine(ex.Message);
         }
+        catch (VersionCalledException)
+        {
+            Console.WriteLine("v1.0.1");
+        }
         catch (HelpCalledException helpEx)
         {
             Console.WriteLine(helpEx.HelpMessage);
         }
+    }
+
+    private static void RunProgram(IList<string> program) { }
+
+    private static void Run(TimeArgs args)
+    {
+        // Pretend the args are valid this is not here
+        args = new TimeArgs
+        {
+            Format = "format",
+            Portable = false,
+            Output = "output",
+            Append = false,
+            Verbose = false,
+        };
+
+        if (args.Format is not null)
+            Console.WriteLine(args.Format);
+
+        RunProgram(args.PlainArguments);
+
+        if (args.Portable)
+            Console.WriteLine(
+                """
+
+                real 0.010s
+                user 0.003s
+                sys 0.008s
+                """
+            );
+        else
+            Console.WriteLine(
+                """
+
+                real    0m0.010s
+                user    0m0.003s
+                sys     0m0.008s
+                """
+            );
     }
 }

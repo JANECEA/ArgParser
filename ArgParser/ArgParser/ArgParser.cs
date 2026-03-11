@@ -57,6 +57,6 @@ public sealed class ArgParser<TArgs>
     /// <exception cref="HelpCalledException">Program was called with the 'help' terminating flag</exception>
     public TArgs Parse(string[] args)
     {
-        throw null!;
+        return null!;
     }
 }
