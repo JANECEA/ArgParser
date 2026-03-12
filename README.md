@@ -22,4 +22,268 @@ dotnet build
 
 ## Simple usage
 
+The following snippet of code shows declaration of simple class inheriting from BaseArgs. Two options that are expecting some value and one flag are defined. 
+
+```
+using ArgParser;
+
+[ExampleUsage("myProgram [options]")]
+internal sealed class SimpleArgs : BaseArgs
+{
+    [
+        ShortOptions('i'),
+        LongOptions("int"),
+        Help("Example of int option."),
+        ValuePlaceholder("INT_VALUE")
+    ]
+    public int? IntOption { get; set; }
+
+    [
+        ShortOptions('s'),
+        LongOptions("string"),
+        Help("Example of string option."),
+        ValuePlaceholder("STR_VALUE")
+    ]
+    public string? StringOption { get; set; }
+
+    [
+        ShortOptions('f'),
+        LongOptions("flag"),
+        Help("Example of flag.")
+        ]
+    public bool Flag { get; set; }
+    public override string[] PlainArguments { get; set; } = [];
+}
+```
+
+Now SimpleArgs class can be used in program. If creating of ArgParser and the parsing of arguments was successful, the values can be accessed directly from the created SimpleArgs object by their defined property names.
+
+```
+internal class SimpleExampleProgram
+{
+        ArgParser<SimpleArgs> simpleArgsParser = ArgParserFactory.FromType<SimpleArgs>();
+
+    try
+    {
+        SimpleArgs simpleArguments = simpleArgsParser.Parse(args);
+        Run(simpleArguments);
+    }
+    catch (CommandLineParsingException ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+    catch (HelpCalledException helpEx)
+    {
+        Console.WriteLine(helpEx.HelpMessage);
+    }
+
+    private static void Run(SimpleArgs args)
+    {
+        if (args.Flag)
+        {
+            // Do desired functionality
+        }
+
+        if (args.IntOption is int intVal)
+        {
+            // Do desired functionality with the given value
+        }
+
+        if (args.StringOption is string strVal)
+        {
+            // Do desired functionality with the given value
+        }
+
+        if (args.PlainArguments is string[] plainArgs)
+        {
+            // Do desired functionality with given plain arguments
+        }
+    }
+}
+
+```
+#### Example of calling the program:
+```
+myapp.exe -i 10 --string="Hello World" -f plainArgument
+```
+
+
 ## Advanced usage
+
+Any type that implements the IParsable interface is supported for the option values (for example Enum or custom type can be defined).
+
+```
+internal enum MyEnum
+{
+    First,
+    Second,
+    Third
+}
+
+internal class MyClass : IParsable<MyClass>
+{
+    public static MyClass Parse(string s, IFormatProvider? provider)
+    {
+        if (TryParse(s, provider, out var result)) { return result; }
+        else
+        {
+            throw new ArgumentException("arg is null");
+        }
+    }
+
+    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out MyClass result)
+    {
+        if (s != null)
+        {
+            result = new MyClass();
+            return true;
+        }
+        else
+        {
+            result = null;
+            return false;
+        }
+    }
+}
+```
+For TerminatingFlag any exception inheriting from the Exception can be given.
+```
+internal class FlagCalledException : Exception
+{
+    public string? FlagMessage { get; set; } = "Terminating flag called.";
+}
+```
+Custom validators for the whole class or for options can be defined.
+```
+internal sealed class MutuallyExclusiveEnumEmail : ClassValidatorAttribute<AdvancedArgs>
+{
+    public override bool Validate(AdvancedArgs args, out string? errorMessage)
+    {
+        if (args.Email != null && args.Enum != null)
+        {
+            errorMessage = "Mutually exclusive attributes Enum and Email were given.";
+            return false;
+        }
+        errorMessage = null;
+        return true;
+    }
+}
+
+public sealed class MustContainAttribute : OptionValidatorAttribute<string>
+{
+    private readonly string _required;
+
+    public MustContainAttribute(string required)
+    {
+        _required = required;
+    }
+    public override bool Validate(string arg, out string? errorMessage)
+    {
+        if (!arg.Contains(_required))
+        {
+            errorMessage = $"The argument {arg} must contain {_required}";
+            return false;
+        }
+
+        errorMessage = null;
+        return true;
+    }
+}
+
+```
+In this class advanced usage is shown using advanced attributes and the showcased examples.
+```
+using ArgParser;
+
+[ExampleUsage("myProgram -c <COUNT> [options]"),
+    MutuallyExclusiveEnumEmail]
+internal sealed class AdvancedArgs : BaseArgs
+{
+
+    [
+        ShortOptions('c', 'x'),
+        LongOptions("count", "ct"),
+        Range<int>(0, int.MaxValue),
+        Required,
+        ValuePlaceholder("COUNT"),
+        Help("Help for count option.")
+
+    ]
+    public int? Count { get; set; }
+
+    [
+        LongOptions("email"),
+        MustContain("@")
+    ]
+    public string? Email { get; set; }
+
+    [
+        ShortOptions('e'),
+    ]
+    public MyEnum? Enum { get; set; }
+
+    [
+        ShortOptions('f'),
+        LongOptions("flag"),
+        TerminatingFlag<FlagCalledException>,
+    ]
+    public bool Flag {  set; get; }
+
+    [
+        ShortOptions('l')
+        LongOptions("class"),
+        Requires(nameof(Email)),
+        ValuePlaceholder("CLASS"),
+    ]
+    public MyClass? Class { get; set; }
+
+    public override string[] PlainArguments { get; set; } = [];
+}
+```
+
+Lastly, the use of created AdvancedArgs.
+```
+internal class AdvancedExample
+{
+    internal static void Main(string[] args)
+    {        
+        ArgParser<AdvancedArgs> advancedArgsParser = ArgParserFactory.FromType<AdvancedArgs>();
+
+        try
+        {
+            AdvancedArgs AdvArguments = advancedArgsParser.Parse(args);
+        }
+        catch (CommandLineParsingException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (FlagCalledException flagEx)
+        {
+            Console.WriteLine(flagEx.FlagMessage);
+        }
+        catch (HelpCalledException helpEx)
+        {
+            Console.WriteLine(helpEx.HelpMessage);
+        }
+
+    }
+
+    private static void Run(AdvancedArgs args)
+    {
+        if (args.Enum is MyEnum value)
+        {
+            // Do desired functionality
+        }
+
+        // access all properties by their defined names
+
+    }
+
+}
+
+```
+
+#### Example of calling the program:
+```
+myapp.exe --count=10 plainArgument1 --email=example@abc.de -l myclass PlainArgument2
+```
