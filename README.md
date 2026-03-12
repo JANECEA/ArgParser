@@ -8,7 +8,7 @@ ArgParser is a declarative CLI argument parsing library for .NET.
 - Define custom validators for an individual option or the whole argument class
 - Mark options as required
 - Define option dependencies
-- Define options as terminating
+- Mark flags as terminating
 - Automatically generate the help message using additional informational attributes
 
 ## Build instructions
@@ -111,6 +111,21 @@ internal class SimpleExampleProgram
 #### Example of calling the program:
 ```sh
 myapp.exe -i 10 --string="Hello World" -f plainArgument
+```
+Based on the class `SimpleArgs`, the following help message would be generated:
+```sh
+> myapp.exe --help
+Usage: myProgram [options]
+
+Options:
+    -i INT_VALUE, --int=INT_VALUE
+            Example of int option.
+
+    -s STR_VALUE, --string=STR_VALUE
+            Example of string option.
+
+    -f, --flag
+            Example of flag.
 ```
 
 
@@ -255,8 +270,8 @@ internal class AdvancedExample
 {
     internal static void Main(string[] args)
     {        
-        ArgParser<AdvancedArgs> advancedArgsParser = ArgParserFactory.FromType<AdvancedArgs>();
-
+        ArgParser<AdvancedArgs> advancedArgsParser = 
+            ArgParserFactory.FromType<AdvancedArgs>();
         try
         {
             AdvancedArgs AdvArguments = advancedArgsParser.Parse(args);
