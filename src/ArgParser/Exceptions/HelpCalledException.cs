@@ -6,10 +6,8 @@
 public sealed class HelpCalledException : Exception
 {
     /// <summary>
-    /// Property that contains the generated help message.
+    /// Creates a new instance of <see cref="HelpCalledException"/>
     /// </summary>
-    public string HelpMessage { get; internal set; } = string.Empty;
-
     public HelpCalledException()
         : base("Program has been called with the 'help' flag.") { }
 }

@@ -50,7 +50,7 @@ internal sealed class TimeArgs : BaseArgs
     ]
     public bool Version { get; set; }
 
-    public override string[] PlainArguments { get; set; }
+    public override string[] PlainArguments { get; set; } = [];
 }
 
 internal class VersionCalledException : Exception;
@@ -74,13 +74,13 @@ internal static class Program
         {
             Console.WriteLine("v1.0.1");
         }
-        catch (HelpCalledException helpEx)
+        catch (HelpCalledException)
         {
-            Console.WriteLine(helpEx.HelpMessage);
+            Console.WriteLine(argParser.GenerateHelpMessage());
         }
     }
 
-    private static void RunProgram(IList<string> program) { }
+    private static void RunProgram(string[] programWithArgs) { }
 
     private static void Run(TimeArgs args)
     {

@@ -117,7 +117,7 @@ public enum EnumCase
     /// This command line option will be expected to preserve case.
     /// </summary>
     /// <example>
-    /// Only '--option First' will be interpreted as `First` in
+    /// Only '--option First' will be interpreted as `First` for enum:
     /// <code>
     /// [EnumCasePolicy(EnumCase.PreserveCase)]
     /// enum MyEnum
@@ -133,7 +133,7 @@ public enum EnumCase
     /// This command line option will be expected to be lowercase.
     /// </summary>
     /// <example>
-    /// Only '--option first' will be interpreted as `First` in
+    /// Only '--option first' will be interpreted as `First` for enum:
     /// <code>
     /// [EnumCasePolicy(EnumCase.AllLowerCase)]
     /// enum MyEnum
@@ -149,7 +149,7 @@ public enum EnumCase
     /// This command line option will be expected to be uppercase.
     /// </summary>
     /// <example>
-    /// Only '--option FIRST' will be interpreted as `First` in enum:
+    /// Only '--option FIRST' will be interpreted as `First` for enum:
     /// <code>
     /// [EnumCasePolicy(EnumCase.AllUpperCase)]
     /// enum MyEnum
