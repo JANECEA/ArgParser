@@ -2,12 +2,14 @@
 ArgParser is a declarative CLI argument parsing library for .NET.
 
 ## Key features
-- Define multiple short and long option names
-- Mark options as required
+- Parse custom types
 - Support for plain arguments
+- Define multiple short and long option names
+- Define custom validators for an individual option or the whole argument class
+- Mark options as required
+- Define option dependencies
 - Define options as terminating
 - Automatically generate the help message using additional informational attributes
-- Define custom validators for an individual option or the whole argument class
 
 ## Build instructions
 ```
@@ -24,7 +26,7 @@ dotnet build
 
 The following snippet of code shows declaration of simple class inheriting from BaseArgs. Two options that are expecting some value and one flag are defined. 
 
-```
+```cs
 using ArgParser;
 
 [ExampleUsage("myProgram [options]")]
@@ -34,7 +36,7 @@ internal sealed class SimpleArgs : BaseArgs
         ShortOptions('i'),
         LongOptions("int"),
         Help("Example of int option."),
-        ValuePlaceholder("INT_VALUE")
+        ValuePlaceholder("INT_VALUE"),
     ]
     public int? IntOption { get; set; }
 
@@ -42,39 +44,43 @@ internal sealed class SimpleArgs : BaseArgs
         ShortOptions('s'),
         LongOptions("string"),
         Help("Example of string option."),
-        ValuePlaceholder("STR_VALUE")
+        ValuePlaceholder("STR_VALUE"),
     ]
     public string? StringOption { get; set; }
 
     [
         ShortOptions('f'),
         LongOptions("flag"),
-        Help("Example of flag.")
-        ]
+        Help("Example of flag."),
+    ]
     public bool Flag { get; set; }
+
     public override string[] PlainArguments { get; set; } = [];
 }
 ```
 
 Now SimpleArgs class can be used in program. If creating of ArgParser and the parsing of arguments was successful, the values can be accessed directly from the created SimpleArgs object by their defined property names.
 
-```
+```cs
 internal class SimpleExampleProgram
 {
-        ArgParser<SimpleArgs> simpleArgsParser = ArgParserFactory.FromType<SimpleArgs>();
-
-    try
+    private static void Main(string[] args)
     {
-        SimpleArgs simpleArguments = simpleArgsParser.Parse(args);
-        Run(simpleArguments);
-    }
-    catch (CommandLineParsingException ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
-    catch (HelpCalledException helpEx)
-    {
-        Console.WriteLine(helpEx.HelpMessage);
+        ArgParser<SimpleArgs> simpleArgsParser = 
+            ArgParserFactory.FromType<SimpleArgs>();
+        try
+        {
+            SimpleArgs simpleArguments = simpleArgsParser.Parse(args);
+            Run(simpleArguments);
+        }
+        catch (CommandLineParsingException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (HelpCalledException helpEx)
+        {
+            Console.WriteLine(helpEx.HelpMessage);
+        }
     }
 
     private static void Run(SimpleArgs args)
@@ -94,7 +100,7 @@ internal class SimpleExampleProgram
             // Do desired functionality with the given value
         }
 
-        if (args.PlainArguments is string[] plainArgs)
+        if (args.PlainArguments.Length > 0)
         {
             // Do desired functionality with given plain arguments
         }
@@ -103,37 +109,40 @@ internal class SimpleExampleProgram
 
 ```
 #### Example of calling the program:
-```
+```sh
 myapp.exe -i 10 --string="Hello World" -f plainArgument
 ```
 
 
 ## Advanced usage
 
-Any type that implements the IParsable interface is supported for the option values (for example Enum or custom type can be defined).
+Any type that implements the IParsable\<T\> interface is supported for the option values (for example Enum or custom type can be defined).
 
-```
+```cs
 internal enum MyEnum
 {
     First,
     Second,
-    Third
+    Third,
 }
 
 internal class MyClass : IParsable<MyClass>
 {
     public static MyClass Parse(string s, IFormatProvider? provider)
     {
-        if (TryParse(s, provider, out var result)) { return result; }
+        if (TryParse(s, provider, out MyClass result)) 
+            return result; 
         else
-        {
             throw new ArgumentException("arg is null");
-        }
     }
 
-    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out MyClass result)
+    public static bool TryParse(
+        [NotNullWhen(true)] string? s, 
+        IFormatProvider? provider, 
+        [MaybeNullWhen(false)] out MyClass result
+    )
     {
-        if (s != null)
+        if (s is not null)
         {
             result = new MyClass();
             return true;
@@ -146,20 +155,19 @@ internal class MyClass : IParsable<MyClass>
     }
 }
 ```
+
 For TerminatingFlag any exception inheriting from the Exception can be given.
+```cs
+internal class FlagCalledException : Exception {}
 ```
-internal class FlagCalledException : Exception
-{
-    public string? FlagMessage { get; set; } = "Terminating flag called.";
-}
-```
+
 Custom validators for the whole class or for options can be defined.
-```
+```cs
 internal sealed class MutuallyExclusiveEnumEmail : ClassValidatorAttribute<AdvancedArgs>
 {
     public override bool Validate(AdvancedArgs args, out string? errorMessage)
     {
-        if (args.Email != null && args.Enum != null)
+        if (args.Email is not null && args.Enum is not null)
         {
             errorMessage = "Mutually exclusive attributes Enum and Email were given.";
             return false;
@@ -177,6 +185,7 @@ public sealed class MustContainAttribute : OptionValidatorAttribute<string>
     {
         _required = required;
     }
+
     public override bool Validate(string arg, out string? errorMessage)
     {
         if (!arg.Contains(_required))
@@ -184,22 +193,22 @@ public sealed class MustContainAttribute : OptionValidatorAttribute<string>
             errorMessage = $"The argument {arg} must contain {_required}";
             return false;
         }
-
         errorMessage = null;
         return true;
     }
 }
+```
 
-```
 In this class advanced usage is shown using advanced attributes and the showcased examples.
-```
+```cs
 using ArgParser;
 
-[ExampleUsage("myProgram -c <COUNT> [options]"),
-    MutuallyExclusiveEnumEmail]
+[
+    ExampleUsage("myProgram -c <COUNT> [options]"),
+    MutuallyExclusiveEnumEmail,
+]
 internal sealed class AdvancedArgs : BaseArgs
 {
-
     [
         ShortOptions('c', 'x'),
         LongOptions("count", "ct"),
@@ -207,7 +216,6 @@ internal sealed class AdvancedArgs : BaseArgs
         Required,
         ValuePlaceholder("COUNT"),
         Help("Help for count option.")
-
     ]
     public int? Count { get; set; }
 
@@ -218,7 +226,7 @@ internal sealed class AdvancedArgs : BaseArgs
     public string? Email { get; set; }
 
     [
-        ShortOptions('e'),
+        ShortOptions('e')
     ]
     public MyEnum? Enum { get; set; }
 
@@ -227,7 +235,7 @@ internal sealed class AdvancedArgs : BaseArgs
         LongOptions("flag"),
         TerminatingFlag<FlagCalledException>,
     ]
-    public bool Flag {  set; get; }
+    public bool Flag { set; get; }
 
     [
         ShortOptions('l')
@@ -242,7 +250,7 @@ internal sealed class AdvancedArgs : BaseArgs
 ```
 
 Lastly, the use of created AdvancedArgs.
-```
+```cs
 internal class AdvancedExample
 {
     internal static void Main(string[] args)
@@ -259,13 +267,12 @@ internal class AdvancedExample
         }
         catch (FlagCalledException flagEx)
         {
-            Console.WriteLine(flagEx.FlagMessage);
+            // Handle terminating flag
         }
         catch (HelpCalledException helpEx)
         {
             Console.WriteLine(helpEx.HelpMessage);
         }
-
     }
 
     private static void Run(AdvancedArgs args)
@@ -274,16 +281,12 @@ internal class AdvancedExample
         {
             // Do desired functionality
         }
-
         // access all properties by their defined names
-
     }
-
 }
-
 ```
 
 #### Example of calling the program:
-```
+```sh
 myapp.exe --count=10 plainArgument1 --email=example@abc.de -l myclass PlainArgument2
 ```
