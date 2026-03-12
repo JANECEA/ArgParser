@@ -105,3 +105,74 @@ public sealed class TerminatingFlagAttribute<TException> : Attribute
 
     internal TException GetException() => new();
 }
+
+/// <summary>
+/// Defines how the case of command line option values will be
+/// interpreted in relation to the enum constants definition
+/// </summary>
+public enum EnumCase
+{
+    /// <summary>
+    /// Default value.
+    /// This command line option will be expected to preserve case.
+    /// </summary>
+    /// <example>
+    /// Only '--option First' will be interpreted as `First` in
+    /// <code>
+    /// [EnumCasePolicy(EnumCase.PreserveCase)]
+    /// enum MyEnum
+    /// {
+    ///     First,
+    ///     Second,
+    /// }
+    /// </code>
+    /// </example>
+    PreserveCase,
+
+    /// <summary>
+    /// This command line option will be expected to be lowercase.
+    /// </summary>
+    /// <example>
+    /// Only '--option first' will be interpreted as `First` in
+    /// <code>
+    /// [EnumCasePolicy(EnumCase.AllLowerCase)]
+    /// enum MyEnum
+    /// {
+    ///     First,
+    ///     Second,
+    /// }
+    /// </code>
+    /// </example>
+    AllLowerCase,
+
+    /// <summary>
+    /// This command line option will be expected to be uppercase
+    /// </summary>
+    /// <example>
+    /// Only '--option FIRST' will be interpreted as `First` in enum:
+    /// <code>
+    /// [EnumCasePolicy(EnumCase.AllUpperCase)]
+    /// enum MyEnum
+    /// {
+    ///     First,
+    ///     Second,
+    /// }
+    /// </code>
+    /// </example>
+    AllUpperCase,
+}
+
+/// <summary>
+/// Specifies how the case of command line option values will be
+/// interpreted in relation to the enum constants definition
+/// </summary>
+[AttributeUsage(AttributeTargets.Enum)]
+public sealed class EnumCasePolicy : Attribute
+{
+    internal EnumCase EnumCase { get; }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="EnumCasePolicy"/>.
+    /// </summary>
+    public EnumCasePolicy(EnumCase enumCase) => EnumCase = enumCase;
+}
