@@ -108,7 +108,7 @@ public sealed class TerminatingFlagAttribute<TException> : Attribute
 
 /// <summary>
 /// Defines how the case of command line option values will be
-/// interpreted in relation to the enum constants definition
+/// interpreted in relation to the enum constants definition.
 /// </summary>
 public enum EnumCase
 {
@@ -146,7 +146,7 @@ public enum EnumCase
     AllLowerCase,
 
     /// <summary>
-    /// This command line option will be expected to be uppercase
+    /// This command line option will be expected to be uppercase.
     /// </summary>
     /// <example>
     /// Only '--option FIRST' will be interpreted as `First` in enum:
@@ -164,15 +164,15 @@ public enum EnumCase
 
 /// <summary>
 /// Specifies how the case of command line option values will be
-/// interpreted in relation to the enum constants definition
+/// interpreted in relation to the enum constants definition.
 /// </summary>
 [AttributeUsage(AttributeTargets.Enum)]
-public sealed class EnumCasePolicy : Attribute
+public sealed class EnumCasePolicyAttribute : Attribute
 {
-    internal EnumCase EnumCase { get; }
+    internal EnumCase Case { get; }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="EnumCasePolicy"/>.
+    /// Creates a new instance of the <see cref="EnumCasePolicyAttribute"/>.
     /// </summary>
-    public EnumCasePolicy(EnumCase enumCase) => EnumCase = enumCase;
+    public EnumCasePolicyAttribute(EnumCase enumCase) => Case = enumCase;
 }
