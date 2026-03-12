@@ -79,7 +79,7 @@ internal class SimpleExampleProgram
         }
         catch (HelpCalledException helpEx)
         {
-            Console.WriteLine(helpEx.HelpMessage);
+            Console.WriteLine(simpleArgsParser.GenerateHelpMessage());
         }
     }
 
@@ -134,6 +134,7 @@ Options:
 Any type that implements the IParsable\<T\> interface is supported for the option values (for example Enum or custom type can be defined).
 
 ```cs
+[EnumCasePolicy(EnumCase.PreserveCase)]
 internal enum MyEnum
 {
     First,
@@ -286,7 +287,7 @@ internal class AdvancedExample
         }
         catch (HelpCalledException helpEx)
         {
-            Console.WriteLine(helpEx.HelpMessage);
+            Console.WriteLine(advancedArgsParser.GenerateHelpMessage());
         }
     }
 
