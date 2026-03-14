@@ -216,7 +216,7 @@ public sealed class MustContainAttribute : OptionValidatorAttribute<string>
 ```
 
 In this class advanced usage is shown using advanced attributes and the showcased examples.
-Default values can for options can be defined.
+Default values for options can be defined.
 These default values will not be overridden during parsing in case the option is not present.
 ```cs
 using ArgParser;
