@@ -222,6 +222,7 @@ using ArgParser;
 [
     ExampleUsage("myProgram -c <COUNT> [options]"),
     MutuallyExclusiveEnumEmail,
+    AllowPlainArguments(true),
 ]
 internal sealed class AdvancedArgs : BaseArgs
 {

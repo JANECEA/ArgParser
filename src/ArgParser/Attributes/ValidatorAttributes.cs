@@ -17,22 +17,6 @@ public abstract class OptionValidatorAttribute<TType> : Attribute
 }
 
 /// <summary>
-/// Base class for defining custom arguments class validator attributes.
-/// </summary>
-/// <typeparam name="TArgs">Type of the arguments class</typeparam>
-[AttributeUsage(AttributeTargets.Class)]
-public abstract class ClassValidatorAttribute<TArgs> : Attribute
-    where TArgs : BaseArgs
-{
-    /// <summary>
-    /// Performs value validation
-    /// </summary>
-    /// <param name="args">The option's value</param>
-    /// <param name="errorMessage">Error message describing the validation error</param>
-    public abstract bool Validate(TArgs args, out string? errorMessage);
-}
-
-/// <summary>
 /// Validates if the value fits in the defined range.
 /// </summary>
 /// <typeparam name="T">Type of the option to compare, needs to implement IComparable{T}</typeparam>
@@ -67,6 +51,51 @@ public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
             return false;
         }
 
+        errorMessage = null;
+        return true;
+    }
+}
+
+/// <summary>
+/// Base class for defining custom arguments class validator attributes.
+/// </summary>
+/// <typeparam name="TArgs">Type of the arguments class</typeparam>
+[AttributeUsage(AttributeTargets.Class)]
+public abstract class ClassValidatorAttribute<TArgs> : Attribute
+    where TArgs : BaseArgs
+{
+    /// <summary>
+    /// Performs value validation
+    /// </summary>
+    /// <param name="args">The option's value</param>
+    /// <param name="errorMessage">Error message describing the validation error</param>
+    public abstract bool Validate(TArgs args, out string? errorMessage);
+}
+
+/// <summary>
+/// Specifies whether this program accepts plain arguments.
+/// <br/>
+/// Allowed by default.
+/// </summary>
+public sealed class AllowPlainArgumentsAttribute : ClassValidatorAttribute<BaseArgs>
+{
+    internal bool Allow { get; }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="AllowPlainArgumentsAttribute"/>.
+    /// </summary>
+    public AllowPlainArgumentsAttribute(bool allow)
+    {
+        Allow = allow;
+    }
+
+    public override bool Validate(BaseArgs args, out string? errorMessage)
+    {
+        if (!Allow && args.PlainArguments?.Length > 0)
+        {
+            errorMessage = "Plain arguments are not allowed.";
+            return false;
+        }
         errorMessage = null;
         return true;
     }
