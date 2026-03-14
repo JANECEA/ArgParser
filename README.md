@@ -59,7 +59,7 @@ internal sealed class SimpleArgs : BaseArgs
 }
 ```
 
-Now SimpleArgs class can be used in program. If creating of ArgParser and the parsing of arguments was successful, the values can be accessed directly from the created SimpleArgs object by their defined property names.
+Now SimpleArgs class can be used in the program. If creating of ArgParser and the parsing of arguments was successful, the values can be accessed directly from the created SimpleArgs object by their defined property names.
 
 ```cs
 internal class SimpleExampleProgram
@@ -216,6 +216,8 @@ public sealed class MustContainAttribute : OptionValidatorAttribute<string>
 ```
 
 In this class advanced usage is shown using advanced attributes and the showcased examples.
+Default values can for options can be defined.
+These default values will not be overridden during parsing in case the option is not present.
 ```cs
 using ArgParser;
 
@@ -245,7 +247,7 @@ internal sealed class AdvancedArgs : BaseArgs
     [
         ShortOptions('e')
     ]
-    public MyEnum? Enum { get; set; }
+    public MyEnum Enum { get; set; } = MyEnum.Second;
 
     [
         ShortOptions('f'),
@@ -260,7 +262,7 @@ internal sealed class AdvancedArgs : BaseArgs
         Requires(nameof(Email)),
         ValuePlaceholder("CLASS"),
     ]
-    public MyClass? Class { get; set; }
+    public MyClass Class { get; set; } = new();
 
     public override string[] PlainArguments { get; set; } = [];
 }
@@ -294,7 +296,7 @@ internal class AdvancedExample
 
     private static void Run(AdvancedArgs args)
     {
-        if (args.Enum is MyEnum value)
+        if (args.Enum is MyEnum.Second)
         {
             // Do desired functionality
         }
