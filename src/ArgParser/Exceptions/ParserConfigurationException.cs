@@ -81,7 +81,7 @@ public sealed class RequiredOnFlagException : ParserConfigurationException
 }
 
 /// <summary>
-/// The exception that is thrown when the <see cref="TerminatingFlagAttribute{TException}"/> 
+/// The exception that is thrown when the <see cref="TerminatingFlagAttribute{TException}"/>
 /// is not registered on flag property in the given class.
 /// </summary>
 /// <example>

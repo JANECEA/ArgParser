@@ -1,10 +1,12 @@
+using ArgParser.Analyzers.Abstractions;
+
 namespace ArgParser.Attributes;
 
 /// <summary>
 /// Specifies if the command line option is required.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class RequiredAttribute : Attribute;
+public sealed class RequiredAttribute : Attribute, INotOnFlag, IOnParsable;
 
 /// <summary>
 /// Specifies the short form of a command-line option.
@@ -21,7 +23,7 @@ public sealed class RequiredAttribute : Attribute;
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class ShortOptionsAttribute : Attribute
+public sealed class ShortOptionsAttribute : Attribute, IOnParsable
 {
     internal IEnumerable<char> Options { get; }
 
@@ -49,7 +51,7 @@ public sealed class ShortOptionsAttribute : Attribute
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class LongOptionsAttribute : Attribute
+public sealed class LongOptionsAttribute : Attribute, IOnParsable
 {
     internal IEnumerable<string> Options { get; }
 
@@ -79,7 +81,7 @@ public sealed class LongOptionsAttribute : Attribute
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class RequiresAttribute : Attribute
+public sealed class RequiresAttribute : Attribute, IOnParsable
 {
     internal string[] PropertyName { get; }
 
@@ -98,7 +100,7 @@ public sealed class RequiresAttribute : Attribute
 /// </summary>
 /// <typeparam name="TException">Type of the exception, needs to have a public parameterless constructor</typeparam>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class TerminatingFlagAttribute<TException> : Attribute
+public sealed class TerminatingFlagAttribute<TException> : Attribute, IOnFlag
     where TException : Exception, new()
 {
     internal void ThrowException() => throw new TException();

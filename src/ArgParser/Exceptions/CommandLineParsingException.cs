@@ -53,5 +53,3 @@ public sealed class UnknownOptionException : CommandLineParsingException
     internal UnknownOptionException(string? message)
         : base(message) { }
 }
-
-

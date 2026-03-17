@@ -8,5 +8,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ArgParser\ArgParser.csproj" />
+    <ProjectReference
+      Include="..\ArgParser.Analyzers\ArgParser.Analyzers.csproj"
+      OutputItemType="Analyzer"
+      ReferenceOutputAssembly="false"
+    />
   </ItemGroup>
 </Project>

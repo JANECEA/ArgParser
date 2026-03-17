@@ -1,10 +1,12 @@
+using ArgParser.Analyzers.Abstractions;
+
 namespace ArgParser.Attributes;
 
 /// <summary>
 /// Overrides the option value placeholder name used in the --help message
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class ValuePlaceholderAttribute : Attribute
+public sealed class ValuePlaceholderAttribute : Attribute, IOnParsable
 {
     internal string PlaceHolder { get; }
 
@@ -34,7 +36,7 @@ public sealed class ValuePlaceholderAttribute : Attribute
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class ExampleUsageAttribute : Attribute
+public sealed class ExampleUsageAttribute : Attribute, IOnClassType<BaseArgs>
 {
     internal string Usage { get; }
 
@@ -52,7 +54,7 @@ public sealed class ExampleUsageAttribute : Attribute
 /// Used when '--help' is called.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class HelpAttribute : Attribute
+public sealed class HelpAttribute : Attribute, IOnParsable
 {
     internal string Description { get; }
 

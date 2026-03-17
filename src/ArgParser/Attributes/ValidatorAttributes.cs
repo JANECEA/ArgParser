@@ -1,3 +1,5 @@
+using ArgParser.Analyzers.Abstractions;
+
 namespace ArgParser.Attributes;
 
 /// <summary>
@@ -5,7 +7,10 @@ namespace ArgParser.Attributes;
 /// </summary>
 /// <typeparam name="TType">Type of the option</typeparam>
 [AttributeUsage(AttributeTargets.Property)]
-public abstract class OptionValidatorAttribute<TType> : Attribute
+public abstract class OptionValidatorAttribute<TType>
+    : Attribute,
+        IOnParsable,
+        IOnPropertyType<TType>
     where TType : IParsable<TType>
 {
     /// <summary>
@@ -61,7 +66,7 @@ public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
 /// </summary>
 /// <typeparam name="TArgs">Type of the arguments class</typeparam>
 [AttributeUsage(AttributeTargets.Class)]
-public abstract class ClassValidatorAttribute<TArgs> : Attribute
+public abstract class ClassValidatorAttribute<TArgs> : Attribute, IOnClassType<BaseArgs>
     where TArgs : BaseArgs
 {
     /// <summary>

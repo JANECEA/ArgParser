@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgParser", "ArgParser\ArgP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeProgramExample", "TimeProgramExample\TimeProgramExample.csproj", "{FC6B5643-B73F-49D9-9909-DE423E0170BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgParser.Analyzers", "ArgParser.Analyzers\ArgParser.Analyzers.csproj", "{F61CB3FA-49F8-41D4-92EC-A2F0C8EA405B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgParser.Analyzers.Abstractions", "ArgParser.Analyzers.Abstractions\ArgParser.Analyzers.Abstractions.csproj", "{6CFA5AC5-E1C5-4102-A068-71EFFF805FF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{FC6B5643-B73F-49D9-9909-DE423E0170BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC6B5643-B73F-49D9-9909-DE423E0170BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC6B5643-B73F-49D9-9909-DE423E0170BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F61CB3FA-49F8-41D4-92EC-A2F0C8EA405B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F61CB3FA-49F8-41D4-92EC-A2F0C8EA405B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F61CB3FA-49F8-41D4-92EC-A2F0C8EA405B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F61CB3FA-49F8-41D4-92EC-A2F0C8EA405B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CFA5AC5-E1C5-4102-A068-71EFFF805FF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CFA5AC5-E1C5-4102-A068-71EFFF805FF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CFA5AC5-E1C5-4102-A068-71EFFF805FF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CFA5AC5-E1C5-4102-A068-71EFFF805FF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
