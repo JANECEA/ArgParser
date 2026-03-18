@@ -1,31 +1,21 @@
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using ArgParser.Analyzers.Abstractions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace ArgParser.Analyzers;
 
-[
-    SuppressMessage(
-        "MicrosoftCodeAnalysisReleaseTracking",
-        "RS2008:Enable analyzer release tracking"
-    ),
-    DiagnosticAnalyzer(LanguageNames.CSharp),
-]
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AttributeUsageAnalyzer : DiagnosticAnalyzer
 {
-    private static readonly DiagnosticDescriptor InvalidTargetRule = new(
-        id: "ARG001",
-        title: "Invalid attribute target",
-        messageFormat: "Attribute '{0}' cannot be applied to '{1}'",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true
-    );
-
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-        ImmutableArray.Create(InvalidTargetRule);
+        ImmutableArray.Create(
+            Rules.NotOnParsableRule,
+            Rules.NotOnFlagRule,
+            Rules.OnFlagRule,
+            Rules.WrongClassTypeRule,
+            Rules.WrongPropertyTypeRule
+        );
 
     public override void Initialize(AnalysisContext context)
     {
@@ -57,40 +47,42 @@ public sealed class AttributeUsageAnalyzer : DiagnosticAnalyzer
         {
             case nameof(IOnParsable):
                 if (!IsParsableTarget(symbol))
-                    Report(context, attribute, symbol);
+                    Report(context, attribute, symbol, Rules.NotOnParsableRule);
                 break;
 
             case nameof(IOnFlag):
                 if (!IsFlagProperty(symbol))
-                    Report(context, attribute, symbol);
+                    Report(context, attribute, symbol, Rules.NotOnFlagRule);
                 break;
 
             case nameof(INotOnFlag):
                 if (IsFlagProperty(symbol))
-                    Report(context, attribute, symbol);
+                    Report(context, attribute, symbol, Rules.OnFlagRule);
                 break;
 
             default:
+                ITypeSymbol type = iface.TypeArguments[0];
                 switch (iface.OriginalDefinition.Name)
                 {
                     case nameof(IOnClassType<>):
-                        if (!IsOnClassType(symbol, iface.TypeArguments[0]))
-                            Report(context, attribute, symbol);
+                        if (!IsOnClassType(symbol, type))
+                            ReportType(context, attribute, type, Rules.WrongClassTypeRule);
                         break;
 
                     case nameof(IOnPropertyType<>):
-                        if (!IsOnPropertyType(symbol, iface.TypeArguments[0]))
-                            Report(context, attribute, symbol);
+                        if (!IsOnPropertyType(symbol, type))
+                            ReportType(context, attribute, type, Rules.WrongPropertyTypeRule);
                         break;
                 }
                 break;
         }
     }
 
-    private static void Report(
+    private static void ReportType(
         SymbolAnalysisContext context,
         AttributeData attribute,
-        ISymbol symbol
+        ITypeSymbol type,
+        DiagnosticDescriptor rule
     )
     {
         Location? location = attribute
@@ -100,12 +92,33 @@ public sealed class AttributeUsageAnalyzer : DiagnosticAnalyzer
             return;
 
         Diagnostic diagnostic = Diagnostic.Create(
-            InvalidTargetRule,
+            rule,
+            location,
+            attribute.AttributeClass?.Name ?? nameof(Attribute),
+            type.ToDisplayString()
+        );
+        context.ReportDiagnostic(diagnostic);
+    }
+
+    private static void Report(
+        SymbolAnalysisContext context,
+        AttributeData attribute,
+        ISymbol symbol,
+        DiagnosticDescriptor rule
+    )
+    {
+        Location? location = attribute
+            .ApplicationSyntaxReference?.GetSyntax(context.CancellationToken)
+            .GetLocation();
+        if (location is null)
+            return;
+
+        Diagnostic diagnostic = Diagnostic.Create(
+            rule,
             location,
             attribute.AttributeClass?.Name ?? nameof(Attribute),
             symbol.ToDisplayString()
         );
-
         context.ReportDiagnostic(diagnostic);
     }
 
