@@ -10,9 +10,15 @@ ArgParser is a declarative CLI argument parsing library for .NET.
 - Define option dependencies
 - Mark flags as terminating
 - Automatically generate the help message using additional informational attributes
+- Compile time validation of attribute usage using Roslyn 
+
+## Not supported
+
+- Positional arguments
+- Typed plain arguments 
 
 ## Build instructions
-```
+```bash
 # Clone repository
 git clone https://gitlab.mff.cuni.cz/teaching/nprg043/2026-summer/task-1/t21-api-design.git
 
@@ -20,6 +26,19 @@ git clone https://gitlab.mff.cuni.cz/teaching/nprg043/2026-summer/task-1/t21-api
 cd YourProject/
 dotnet add reference <path to t21-api-design>/src/ArgParser/ArgParser.csproj
 dotnet build
+```
+
+## Roslyn analyzer
+
+To include Roslyn validation add this to .csproj
+```xml
+<ItemGroup>
+<ProjectReference
+  Include="<path to t21-api-design>/src/ArgParser.Analyzers/ArgParser.Analyzers.csproj"
+  OutputItemType="Analyzer"
+  ReferenceOutputAssembly="false"
+/>
+</ItemGroup>
 ```
 
 ## Simple usage

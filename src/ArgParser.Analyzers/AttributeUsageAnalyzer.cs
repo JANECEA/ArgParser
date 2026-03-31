@@ -64,12 +64,12 @@ public sealed class AttributeUsageAnalyzer : DiagnosticAnalyzer
                 ITypeSymbol type = iface.TypeArguments[0];
                 switch (iface.OriginalDefinition.Name)
                 {
-                    case nameof(IOnClassType<>):
+                    case "IOnClassType":
                         if (!IsOnClassType(symbol, type))
                             ReportType(context, attribute, type, Rules.WrongClassTypeRule);
                         break;
 
-                    case nameof(IOnPropertyType<>):
+                    case "IOnPropertyType":
                         if (!IsOnPropertyType(symbol, type))
                             ReportType(context, attribute, type, Rules.WrongPropertyTypeRule);
                         break;
