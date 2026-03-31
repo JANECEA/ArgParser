@@ -3,7 +3,7 @@
 namespace ArgParser.Exceptions;
 
 /// <summary>
-/// Base class for exceptions thrown during ArgParser construction. It checks the given type derived from <see cref="BaseArgs"/>.
+/// Base class for exceptions related to incorrect name format
 /// </summary>
 public abstract class OptionNameException : ParserConfigurationException
 {
@@ -12,13 +12,13 @@ public abstract class OptionNameException : ParserConfigurationException
 }
 
 /// <summary>
-/// The exception that is thrown when <see cref="ShortOptionsAttribute"/> or <see cref="LongOptionsAttribute"/> have incorrect format.
+/// The exception that is thrown when <see cref="ShortNamesAttribute"/> or <see cref="LongNamesAttribute"/> have incorrect format.
 /// </summary>
 /// <example>
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [LongOptions("append option")]
+///     [LongNames("append option")]
 ///     public bool Append { get; set; }
 /// }
 /// </code>
@@ -30,17 +30,17 @@ public sealed class IncorrectNameFormatException : OptionNameException
 }
 
 /// <summary>
-/// The exception that is thrown when multiple LongOptions or ShortOptions have the same value.
+/// The exception that is thrown when multiple LongNames or ShortNames have the same value.
 /// </summary>
 /// <example>
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions('a')]
+///     [ShortNames('a')]
 ///     public bool Append { get; set; }
 ///
 /// //
-///     [ShortOptions('a')]
+///     [ShortNames('a')]
 ///     public bool Allow { get; set; }
 /// }
 /// </code>

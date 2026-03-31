@@ -11,7 +11,7 @@ public abstract class BaseArgs
     /// <summary>
     /// The default implementation of the help flag.
     /// </summary>
-    [ShortOptions('h'), LongOptions("help"), TerminatingFlag<HelpCalledException>]
+    [ShortNames('h'), LongNames("help"), TerminatingFlag<HelpCalledException>]
     public virtual bool HelpCalled { get; set; }
 
     /// <summary>
@@ -62,7 +62,7 @@ public sealed class ArgParser<TArgs>
     /// Generates a help message based on the information provided in attributes:
     /// <see cref="HelpAttribute"/>,
     /// <br/>
-    /// <see cref="ValuePlaceholderAttribute"/>, and
+    /// <see cref="MetaVarNameAttribute"/>, and
     /// <br/>
     /// <see cref="ExampleUsageAttribute"/>.
     /// </summary>

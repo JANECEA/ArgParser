@@ -27,40 +27,40 @@ internal sealed class ParseResults : BaseArgs
         set => base.HelpCalled = value;
     }
 
-    [ShortOptions('H'), LongOptions("hardware"), Help("Print hardware configuration.")]
+    [ShortNames('H'), LongNames("hardware"), Help("Print hardware configuration.")]
     public bool HardwareSwitch { get; set; }
 
-    [ShortOptions('s'), LongOptions("show"), Help("Show current NUMA policy.")]
+    [ShortNames('s'), LongNames("show"), Help("Show current NUMA policy.")]
     public bool ShowSwitch { get; set; }
 
     [
-        ShortOptions('p'),
-        LongOptions("preferred"),
-        ValuePlaceholder("<node>"),
+        ShortNames('p'),
+        LongNames("preferred"),
+        MetaVarName("<node>"),
         Help("Prefer memory allocations from given node."),
     ]
     public int? PreferredNode { get; set; }
 
     [
-        ShortOptions('i'),
-        LongOptions("interleave"),
-        ValuePlaceholder("<nodes>"),
+        ShortNames('i'),
+        LongNames("interleave"),
+        MetaVarName("<nodes>"),
         Help("Interleave memory allocation across given nodes."),
     ]
     public InputNumberedEntity? Interleave { get; set; }
 
     [
-        ShortOptions('m'),
-        LongOptions("membind"),
-        ValuePlaceholder("<nodes>"),
+        ShortNames('m'),
+        LongNames("membind"),
+        MetaVarName("<nodes>"),
         Help("Allocate memory from given nodes only."),
     ]
     public InputNumberedEntity? Memory { get; set; }
 
     [
-        ShortOptions('C'),
-        LongOptions("physcpubind"),
-        ValuePlaceholder("<cpus>"),
+        ShortNames('C'),
+        LongNames("physcpubind"),
+        MetaVarName("<cpus>"),
         Help("Run on given CPUs only."),
     ]
     public InputNumberedEntity? PhysicalCPU { get; set; }

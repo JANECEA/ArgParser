@@ -17,20 +17,20 @@ public sealed class RequiredAttribute : Attribute, INotOnFlag, IOnParsable;
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions('o')]
+///     [ShortNames('o')]
 ///     public string Output { get; set; }
 /// }
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class ShortOptionsAttribute : Attribute, IOnParsable
+public sealed class ShortNamesAttribute : Attribute, IOnParsable
 {
     internal IEnumerable<char> Options { get; }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="ShortOptionsAttribute"/>.
+    /// Creates a new instance of the <see cref="ShortNamesAttribute"/>.
     /// </summary>
-    public ShortOptionsAttribute(char mainOptionName, params char[] otherOptions)
+    public ShortNamesAttribute(char mainOptionName, params char[] otherOptions)
     {
         Options = otherOptions.Prepend(mainOptionName);
     }
@@ -45,20 +45,20 @@ public sealed class ShortOptionsAttribute : Attribute, IOnParsable
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [LongOptions("output")]
+///     [LongNames("output")]
 ///     public string Output { get; set; }
 /// }
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class LongOptionsAttribute : Attribute, IOnParsable
+public sealed class LongNamesAttribute : Attribute, IOnParsable
 {
     internal IEnumerable<string> Options { get; }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="LongOptionsAttribute"/>.
+    /// Creates a new instance of the <see cref="LongNamesAttribute"/>.
     /// </summary>
-    public LongOptionsAttribute(string mainOptionName, params string[] otherOptions)
+    public LongNamesAttribute(string mainOptionName, params string[] otherOptions)
     {
         Options = otherOptions.Prepend(mainOptionName);
     }
@@ -71,10 +71,10 @@ public sealed class LongOptionsAttribute : Attribute, IOnParsable
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions('o')]
+///     [ShortNames('o')]
 ///     public string Output { get; set; }
 /// //
-///     [ShortOptions('a')]
+///     [ShortNames('a')]
 ///     [Requires(nameof(Output))]
 ///     public bool Append { get; set; }
 /// }

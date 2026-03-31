@@ -52,24 +52,24 @@ using ArgParser;
 internal sealed class SimpleArgs : BaseArgs
 {
     [
-        ShortOptions('i'),
-        LongOptions("int"),
+        ShortNames('i'),
+        LongNames("int"),
         Help("Example of int option."),
-        ValuePlaceholder("INT_VALUE"),
+        MetaVarName("INT_VALUE"),
     ]
     public int? IntOption { get; set; }
 
     [
-        ShortOptions('s'),
-        LongOptions("string"),
+        ShortNames('s'),
+        LongNames("string"),
         Help("Example of string option."),
-        ValuePlaceholder("STR_VALUE"),
+        MetaVarName("STR_VALUE"),
     ]
     public string? StringOption { get; set; }
 
     [
-        ShortOptions('f'),
-        LongOptions("flag"),
+        ShortNames('f'),
+        LongNames("flag"),
         Help("Example of flag."),
     ]
     public bool Flag { get; set; }
@@ -294,38 +294,38 @@ using ArgParser;
 internal sealed class AdvancedArgs : BaseArgs
 {
     [
-        ShortOptions('c', 'x'),
-        LongOptions("count", "ct"),
+        ShortNames('c', 'x'),
+        LongNames("count", "ct"),
         Range<int>(0, int.MaxValue),
         Required,
-        ValuePlaceholder("COUNT"),
+        MetaVarName("COUNT"),
         Help("Help for count option.")
     ]
     public int? Count { get; set; }
 
     [
-        LongOptions("email"),
+        LongNames("email"),
         MustContain("@")
     ]
     public string? Email { get; set; }
 
     [
-        ShortOptions('e')
+        ShortNames('e')
     ]
     public MyEnum Enum { get; set; } = MyEnum.Second;
 
     [
-        ShortOptions('f'),
-        LongOptions("flag"),
+        ShortNames('f'),
+        LongNames("flag"),
         TerminatingFlag<FlagCalledException>,
     ]
     public bool Flag { set; get; }
 
     [
-        ShortOptions('l')
-        LongOptions("class"),
+        ShortNames('l')
+        LongNames("class"),
         Requires(nameof(Email)),
-        ValuePlaceholder("CLASS"),
+        MetaVarName("CLASS"),
     ]
     public MyClass Class { get; set; } = new();
 

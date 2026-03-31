@@ -28,7 +28,7 @@ public sealed class PropertyNotParsableException : ParserConfigurationException
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions('a')]
+///     [ShortNames('a')]
 ///     [Requires(nameof(Output))]
 ///     public bool Append { get; set; }
 /// }
@@ -49,7 +49,7 @@ public sealed class ReferencedOptionNotFoundException : ParserConfigurationExcep
 ///
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions('a')]
+///     [ShortNames('a')]
 ///     [Range{int}(0, 100)]
 ///     public bool Append { get; set; }
 /// }
@@ -68,7 +68,7 @@ public sealed class WrongValidatorTypeException : ParserConfigurationException
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions('a')]
+///     [ShortNames('a')]
 ///     [Required]
 ///     public bool Append { get; set; }
 /// }
@@ -82,13 +82,13 @@ public sealed class RequiredOnFlagException : ParserConfigurationException
 
 /// <summary>
 /// The exception that is thrown when the <see cref="TerminatingFlagAttribute{TException}"/>
-/// is not registered on flag property in the given class.
+/// is registered on a property that is not of type <see cref="bool"/>.
 /// </summary>
 /// <example>
 /// <code>
 /// class Args : BaseArgs
 /// {
-///     [ShortOptions('o')]
+///     [ShortNames('o')]
 ///     [TerminatingFlag{Exception}]
 ///     public string Output { get; set; }
 /// }

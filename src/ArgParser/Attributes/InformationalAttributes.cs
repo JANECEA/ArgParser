@@ -3,19 +3,19 @@ using ArgParser.Analyzers.Abstractions;
 namespace ArgParser.Attributes;
 
 /// <summary>
-/// Overrides the option value placeholder name used in the --help message
+/// Overrides the option value meta var name used in the --help message
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class ValuePlaceholderAttribute : Attribute, IOnParsable
+public sealed class MetaVarNameAttribute : Attribute, IOnParsable
 {
-    internal string PlaceHolder { get; }
+    internal string MetaVar { get; }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="ValuePlaceholderAttribute"/>.
+    /// Creates a new instance of the <see cref="MetaVarNameAttribute"/>.
     /// </summary>
-    public ValuePlaceholderAttribute(string placeHolder)
+    public MetaVarNameAttribute(string metaVar)
     {
-        PlaceHolder = placeHolder;
+        MetaVar = metaVar;
     }
 }
 
@@ -28,7 +28,7 @@ public sealed class ValuePlaceholderAttribute : Attribute, IOnParsable
 /// internal sealed class TimeArgs : BaseArgs
 /// {
 ///     [
-///         ShortOptions('a'),
+///         ShortNames('a'),
 ///         Help("(Used together with -o.) Do not overwrite but append."),
 ///     ]
 ///     public bool Append { get; set; }

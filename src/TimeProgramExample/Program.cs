@@ -8,43 +8,43 @@ namespace TimeProgramExample;
 internal sealed class TimeArgs : BaseArgs
 {
     [
-        ShortOptions('f'),
-        LongOptions("format"),
+        ShortNames('f'),
+        LongNames("format"),
         Help(
             "Specify output format, possibly overriding the format specified in the environment variable TIME"
         ),
     ]
     public string? Format { get; set; }
 
-    [ShortOptions('p'), LongOptions("portability"), Help("Use the portable output format")]
+    [ShortNames('p'), LongNames("portability"), Help("Use the portable output format")]
     public bool Portable { get; set; }
 
     [
-        ShortOptions('o'),
-        LongOptions("output"),
+        ShortNames('o'),
+        LongNames("output"),
         Help("Do not send the results to stderr, but overwrite the specified file."),
-        ValuePlaceholder("FILE"),
+        MetaVarName("FILE"),
     ]
     public string? Output { get; set; }
 
     [
-        ShortOptions('a'),
-        LongOptions("append"),
+        ShortNames('a'),
+        LongNames("append"),
         Help("(Used together with -o.) Do not overwrite but append."),
         Requires(nameof(Output)),
     ]
     public bool Append { get; set; }
 
     [
-        ShortOptions('v'),
-        LongOptions("verbose"),
+        ShortNames('v'),
+        LongNames("verbose"),
         Help("Give very verbose output about all the program knows about."),
     ]
     public bool Verbose { get; set; }
 
     [
-        ShortOptions('V'),
-        LongOptions("version"),
+        ShortNames('V'),
+        LongNames("version"),
         Help("Print version information on standard output, then exit successfully."),
         TerminatingFlag<VersionCalledException>,
     ]
