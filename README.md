@@ -131,6 +131,12 @@ Options:
 
 ## Advanced usage
 
+Now we will look into advanced usage of the library. 
+
+First we will show how the user can define his own classes and attributes that will next be used in AdvancedArgs.
+
+### Custom class for option types
+
 Any type that implements the IParsable\<T\> interface is supported for the option values (for example Enum or custom type can be defined).
 
 ```cs
@@ -177,9 +183,11 @@ For TerminatingFlag any exception inheriting from the Exception can be given.
 internal class FlagCalledException : Exception {}
 ```
 
-Custom validators for the whole class or for options can be defined.
+### Custom class validators
+
+Custom validators for the whole class can be defined. Here we created example of implementing mutual exclusivity.
 ```cs
-internal sealed class MutuallyExclusiveEnumEmail : ClassValidatorAttribute<AdvancedArgs>
+internal sealed class MutuallyExclusiveEnumEmailAttribute : ClassValidatorAttribute<AdvancedArgs>
 {
     public override bool Validate(AdvancedArgs args, out string? errorMessage)
     {
@@ -192,6 +200,13 @@ internal sealed class MutuallyExclusiveEnumEmail : ClassValidatorAttribute<Advan
         return true;
     }
 }
+```
+
+### Custom option validators
+
+Define custom validator for options. Here we define an example validator that checks if string contains a given substring.
+
+```cs
 
 public sealed class MustContainAttribute : OptionValidatorAttribute<string>
 {
@@ -214,6 +229,7 @@ public sealed class MustContainAttribute : OptionValidatorAttribute<string>
     }
 }
 ```
+
 
 In this class advanced usage is shown using advanced attributes and the showcased examples.
 Default values for options can be defined.
