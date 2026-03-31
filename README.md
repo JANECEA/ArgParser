@@ -47,6 +47,8 @@ The following snippet of code shows declaration of simple class inheriting from 
 
 ```cs
 using ArgParser;
+using ArgParser.Attributes;
+using ArgParser.Exceptions;
 
 [ExampleUsage("myProgram [options]")]
 internal sealed class SimpleArgs : BaseArgs
@@ -285,6 +287,8 @@ Default values for options can be defined.
 These default values will not be overridden during parsing in case the option is not present.
 ```cs
 using ArgParser;
+using ArgParser.Attributes;
+using ArgParser.Exceptions;
 
 [
     ExampleUsage("myProgram -c <COUNT> [options]"),
