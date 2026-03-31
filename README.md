@@ -58,8 +58,10 @@ internal sealed class SimpleArgs : BaseArgs
     public override string[] PlainArguments { get; set; } = [];
 }
 ```
+During the creation of `ArgParser<SimpleArgs>`, `SimpleArgs` class is validated, including the usage of attributes.
 
-Now SimpleArgs class can be used in the program. If creating of ArgParser and the parsing of arguments was successful, the values can be accessed directly from the created SimpleArgs object by their defined property names.
+Now SimpleArgs class can be used in the program. 
+If creating of ArgParser and the parsing of arguments was successful, the values can be accessed directly from the created SimpleArgs object by their defined property names.
 
 ```cs
 internal class SimpleExampleProgram
@@ -135,7 +137,7 @@ Now we will look into advanced usage of the library.
 
 First we will show how the user can define his own classes and attributes that will next be used in AdvancedArgs.
 
-### Custom class for option types
+### Custom option types
 
 Any type that implements the IParsable\<T\> interface is supported for the option values (for example Enum or custom type can be defined).
 
@@ -176,11 +178,6 @@ internal class MyClass : IParsable<MyClass>
         }
     }
 }
-```
-
-For TerminatingFlag any exception inheriting from the Exception can be given.
-```cs
-internal class FlagCalledException : Exception {}
 ```
 
 ### Custom class validators
@@ -230,6 +227,39 @@ public sealed class MustContainAttribute : OptionValidatorAttribute<string>
 }
 ```
 
+### Terminating flags
+
+Flags can be marked as terminating using the TerminatingFlag attribute. 
+This attribute accepts a type parameter, which must derive from the base Exception class 
+and must provide a parameterless constructor.
+```cs
+internal class FlagCalledException : Exception {}
+
+...
+    [
+        ShortNames('f'),
+        TerminatingFlag<FlagCalledException>
+    ]
+    public bool Flag {get; set;}
+
+```
+If this flag is present in the command-line arguments the specified exception is thrown in order to skip parsing and validation.
+
+```cs
+...
+    try
+    {
+        Args Arguments = ArgsParser.Parse(args);
+    }
+    catch (FlagCalledException flagEx)
+    {
+        // Handle terminating flag
+    }
+
+```
+
+
+### AdvancedArgs declaration
 
 In this class advanced usage is shown using advanced attributes and the showcased examples.
 Default values for options can be defined.
