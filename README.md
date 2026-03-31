@@ -372,5 +372,5 @@ internal class AdvancedExample
 
 #### Example of calling the program:
 ```sh
-myapp.exe --count=10 plainArgument1 --email=example@abc.de -l myclass PlainArgument2
+myapp.exe --count=10 plainArgument1 --email=example@abc.de -l myclass -- PlainArgument2 -PlainArgument3
 ```
