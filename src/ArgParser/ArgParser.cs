@@ -31,7 +31,7 @@ public static class ArgParserFactory
     /// <typeparam name="TArgs">Type of the created ArgParser</typeparam>
     /// <exception cref="ParserConfigurationException">Describes errors encountered during the validation of TArgs</exception>
     public static ArgParser<TArgs> FromType<TArgs>()
-        where TArgs : BaseArgs
+        where TArgs : BaseArgs, new()
     {
         return new ArgParser<TArgs>();
     }
@@ -42,7 +42,7 @@ public static class ArgParserFactory
 /// </summary>
 /// <typeparam name="TArgs">Declared argument type</typeparam>
 public sealed class ArgParser<TArgs>
-    where TArgs : BaseArgs
+    where TArgs : BaseArgs, new()
 {
     internal ArgParser() { }
 
@@ -55,7 +55,7 @@ public sealed class ArgParser<TArgs>
     /// <exception cref="HelpCalledException">Program was called with the 'help' terminating flag</exception>
     public TArgs Parse(string[] args)
     {
-        return null!;
+        return new TArgs();
     }
 
     /// <summary>
