@@ -137,17 +137,20 @@ public sealed class RequiresAttribute : Attribute, IOnParsable
     }
 }
 
+internal interface ITerminatingFlag
+{
+    internal void ThrowException();
+}
+
 /// <summary>
 /// Declares the boolean property as terminating - throws TException when specified
 /// </summary>
 /// <typeparam name="TException">Type of the exception, needs to have a public parameterless constructor</typeparam>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class TerminatingFlagAttribute<TException> : Attribute, IOnFlag
+public sealed class TerminatingFlagAttribute<TException> : Attribute, ITerminatingFlag, IOnFlag
     where TException : Exception, new()
 {
-    internal void ThrowException() => throw new TException();
-
-    internal TException GetException() => new();
+    public void ThrowException() => throw new TException();
 }
 
 /// <summary>
