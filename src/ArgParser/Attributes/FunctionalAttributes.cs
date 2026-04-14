@@ -82,10 +82,10 @@ public sealed class LongNamesAttribute : Attribute, IOnParsable
         foreach (string opt in list)
         {
             if (!set.Add(opt))
-                throw new DuplicateNameException($"Duplicate short name: {opt}");
+                throw new DuplicateNameException($"Duplicate long name: {opt}");
 
             if (!ValidateOptionFormat(opt))
-                throw new IncorrectNameFormatException($"Incorrect short name: {opt}");
+                throw new IncorrectNameFormatException($"Incorrect long name: {opt}");
         }
 
         Options = list;
@@ -126,15 +126,14 @@ public sealed class LongNamesAttribute : Attribute, IOnParsable
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class RequiresAttribute : Attribute, IOnParsable
 {
-    internal string[] PropertyName { get; }
+    internal List<string> PropertyNames { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="RequiredAttribute"/>.
     /// </summary>
-    /// <param name="propertyName">Required property names</param>
-    public RequiresAttribute(params string[] propertyName)
+    public RequiresAttribute(string firstPropertyName, params string[] otherPropertyNames)
     {
-        PropertyName = propertyName;
+        PropertyNames = otherPropertyNames.Prepend(firstPropertyName).ToList();
     }
 }
 
