@@ -1,5 +1,6 @@
 using ArgParser.Analyzers.Abstractions;
 using ArgParser.Exceptions;
+using ArgParser.Internal;
 
 namespace ArgParser.Attributes;
 
@@ -126,11 +127,6 @@ public sealed class RequiresAttribute : Attribute, IOnParsable
     {
         PropertyNames = otherPropertyNames.Prepend(firstPropertyName).ToList();
     }
-}
-
-internal interface ITerminatingFlag
-{
-    internal void ThrowException();
 }
 
 /// <summary>

@@ -1,14 +1,8 @@
 using ArgParser.Analyzers.Abstractions;
 using ArgParser.Exceptions;
+using ArgParser.Internal;
 
 namespace ArgParser.Attributes;
-
-internal interface IOptionValidator
-{
-    internal Type ValidatorType { get; }
-
-    internal bool ValidateInternal(object arg, out string? errorMessage);
-}
 
 /// <summary>
 /// Base class for defining custom option validator attributes.
@@ -76,13 +70,6 @@ public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
         errorMessage = null;
         return true;
     }
-}
-
-internal interface IClassValidator
-{
-    internal Type ValidatorType { get; }
-
-    internal bool ValidateInternal(BaseArgs args, out string? errorMessage);
 }
 
 /// <summary>

@@ -1,7 +1,7 @@
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
-namespace ArgParser.Metadata;
+namespace ArgParser.Internal.Metadata;
 
 internal static class MetadataValidator
 {

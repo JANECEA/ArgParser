@@ -1,6 +1,6 @@
 ﻿using ArgParser.Attributes;
 using ArgParser.Exceptions;
-using ArgParser.Metadata;
+using ArgParser.Internal.Metadata;
 
 namespace ArgParser;
 
@@ -39,7 +39,8 @@ public static class ArgParserFactory
         ArgsClassMetadata classMetadata = ArgsClassMetadata.FromType(ArgType);
         MetadataValidator.Validate(classMetadata);
 
-        return new ArgParser<TArgs>(classMetadata);
+        ProcessedClassMetadata processed = ProcessedClassMetadata.FromMetadata(classMetadata);
+        return new ArgParser<TArgs>(processed);
     }
 }
 
@@ -50,9 +51,9 @@ public static class ArgParserFactory
 public sealed class ArgParser<TArgs>
     where TArgs : BaseArgs, new()
 {
-    private readonly ArgsClassMetadata _metadata;
+    private readonly ProcessedClassMetadata _metadata;
 
-    internal ArgParser(ArgsClassMetadata metadata)
+    internal ArgParser(ProcessedClassMetadata metadata)
     {
         _metadata = metadata;
     }
