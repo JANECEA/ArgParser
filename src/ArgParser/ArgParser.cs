@@ -1,5 +1,6 @@
 ﻿using ArgParser.Attributes;
 using ArgParser.Exceptions;
+using ArgParser.Metadata;
 
 namespace ArgParser;
 

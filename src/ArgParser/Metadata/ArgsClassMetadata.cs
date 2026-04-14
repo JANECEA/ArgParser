@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using ArgParser.Attributes;
 
-namespace ArgParser;
+namespace ArgParser.Metadata;
 
 internal class BehaviorMetadata
 {
