@@ -1,4 +1,6 @@
+using ArgParser.Attributes;
 using ArgParser.Exceptions;
+using System.Reflection;
 
 namespace ArgParser;
 
@@ -10,9 +12,11 @@ internal static class AttributeUsageValidator
 
     internal static void ValidateIndividually(PropertyAttributeInfo propertyInfo)
     {
+        Type type = propertyInfo.Info.PropertyType;
+
         bool isFlag =
-            propertyInfo.Info.PropertyType == typeof(bool)
-            || propertyInfo.Info.PropertyType == typeof(bool?);
+            type == typeof(bool)
+            || type == typeof(bool?);
 
         if (propertyInfo.Functional.IsRequired && isFlag)
             throw new RequiredOnFlagException(
@@ -21,9 +25,46 @@ internal static class AttributeUsageValidator
 
         if (propertyInfo.Functional.TerminatingFlag is not null && !isFlag)
             throw new TerminatingNotOnFlagException(
-                $"Property '{propertyInfo.Info.Name}' has [TerminatingFlag], but its type is '{propertyInfo.Info.PropertyType.Name}'. [TerminatingFlag] can only be used on bool properties."
+                $"Property '{propertyInfo.Info.Name}' has [TerminatingFlag], but its type is '{type.Name}'. [TerminatingFlag] can only be used on bool properties."
             );
+        CheckIsParsable(type);
+
+        CheckValidatorsMatch(propertyInfo);
+
     }
 
-    internal static void ValidateInfos(List<PropertyAttributeInfo> infos) { }
+    private static void CheckValidatorsMatch(PropertyAttributeInfo propertyInfo)
+    {
+        Type propertyType = propertyInfo.Info.PropertyType;
+
+        foreach (var validator in propertyInfo.Validators)
+        {
+            if(!validator.ValidatorType.IsAssignableFrom(propertyType))
+            {
+                throw new WrongValidatorTypeException("");
+            }
+        }
+    }
+
+    private static void CheckIsParsable(Type type)
+    {
+        foreach (Type it in type.GetInterfaces().Where(i => i.IsGenericType))
+        {
+            if (it.GetGenericTypeDefinition() == typeof(IParsable<>) && it.GenericTypeArguments[0] == type)
+            {
+                return;
+            }
+        }
+        throw new PropertyNotParsableException("");
+    }
+
+    internal static void ValidateInfos(List<PropertyAttributeInfo> infos) {
+    
+        HashSet<string>optionNames = new HashSet<string>();
+        foreach (PropertyAttributeInfo info in infos) {
+            foreach (var name in info.Functional.ShortNames) { 
+
+            }
+        }
+    }
 }

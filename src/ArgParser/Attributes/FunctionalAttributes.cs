@@ -27,7 +27,7 @@ public sealed class RequiredAttribute : Attribute, INotOnFlag, IOnParsable;
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class ShortNamesAttribute : Attribute, IOnParsable
 {
-    internal List<char> Options { get; }
+    internal List<char> Names { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="ShortNamesAttribute"/>.
@@ -46,7 +46,7 @@ public sealed class ShortNamesAttribute : Attribute, IOnParsable
                 throw new IncorrectNameFormatException($"Incorrect short name: {c}");
         }
 
-        Options = list;
+        Names = list;
     }
 }
 
@@ -69,7 +69,7 @@ public sealed class LongNamesAttribute : Attribute, IOnParsable
 {
     private static readonly char[] AllowedChars = ['-', '.', ':', '_'];
 
-    internal List<string> Options { get; }
+    internal List<string> Names { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="LongNamesAttribute"/>.
@@ -88,7 +88,7 @@ public sealed class LongNamesAttribute : Attribute, IOnParsable
                 throw new IncorrectNameFormatException($"Incorrect long name: {opt}");
         }
 
-        Options = list;
+        Names = list;
     }
 
     private static bool ValidateOptionFormat(string opt)

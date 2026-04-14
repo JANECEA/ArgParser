@@ -5,10 +5,10 @@ namespace ArgParser;
 
 internal class FunctionalAttributes
 {
-    internal ShortNamesAttribute? ShortNames { get; init; }
-    internal LongNamesAttribute? LongNames { get; init; }
+    internal required List<char> ShortNames { get; init; }
+    internal required List<string> LongNames { get; init; }
     internal bool IsRequired { get; init; }
-    internal RequiresAttribute? Requires { get; init; }
+    internal required List<string> Requires { get; init; }
     internal ITerminatingFlag? TerminatingFlag { get; init; }
 
     private static ITerminatingFlag? GetTerminatingFlag(PropertyInfo propertyInfo) =>
@@ -17,24 +17,24 @@ internal class FunctionalAttributes
     internal static FunctionalAttributes FromPropertyInfo(PropertyInfo propertyInfo) =>
         new()
         {
-            ShortNames = propertyInfo.GetCustomAttribute<ShortNamesAttribute>(false),
-            LongNames = propertyInfo.GetCustomAttribute<LongNamesAttribute>(false),
+            ShortNames = propertyInfo.GetCustomAttribute<ShortNamesAttribute>(false)?.Names ?? [],
+            LongNames = propertyInfo.GetCustomAttribute<LongNamesAttribute>(false)?.Names ?? [],
             IsRequired = propertyInfo.GetCustomAttribute<RequiredAttribute>(false) is not null,
-            Requires = propertyInfo.GetCustomAttribute<RequiresAttribute>(false),
+            Requires = propertyInfo.GetCustomAttribute<RequiresAttribute>(false)?.PropertyNames ?? [],
             TerminatingFlag = GetTerminatingFlag(propertyInfo),
         };
 }
 
 internal class InformationalAttributes
 {
-    internal MetaVarNameAttribute? MetaVarName { get; init; }
-    internal HelpAttribute? Help { get; init; }
+    internal required string MetaVarName { get; init; }
+    internal required string Help { get; init; }
 
     internal static InformationalAttributes FromPropertyInfo(PropertyInfo propertyInfo) =>
         new()
         {
-            MetaVarName = propertyInfo.GetCustomAttribute<MetaVarNameAttribute>(false),
-            Help = propertyInfo.GetCustomAttribute<HelpAttribute>(false),
+            MetaVarName = propertyInfo.GetCustomAttribute<MetaVarNameAttribute>(false)?.MetaVar ?? string.Empty,
+            Help = propertyInfo.GetCustomAttribute<HelpAttribute>(false)?.Description ?? string.Empty,
         };
 }
 
