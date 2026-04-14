@@ -35,16 +35,12 @@ public static class ArgParserFactory
         where TArgs : BaseArgs, new()
     {
         Type ArgType = typeof(TArgs);
-        PropertyInfo[] properties = ArgType.GetProperties();
 
-        List<PropertyMetadata> metadata = properties
-            .Select(PropertyMetadata.FromPropertyInfo)
-            .Where(MetadataValidator.HasLongOrShortNames)
-            .ToList();
+        ArgsClassMetadata classMetadata = ArgsClassMetadata.FromType(ArgType);
 
-        MetadataValidator.Validate(metadata);
+        MetadataValidator.Validate(classMetadata);
 
-        return new ArgParser<TArgs>(metadata);
+        return new ArgParser<TArgs>(classMetadata);
     }
 }
 
@@ -55,11 +51,11 @@ public static class ArgParserFactory
 public sealed class ArgParser<TArgs>
     where TArgs : BaseArgs, new()
 {
-    private readonly List<PropertyMetadata> _infos;
+    private readonly ArgsClassMetadata _metadata;
 
-    internal ArgParser(List<PropertyMetadata> infos)
+    internal ArgParser(ArgsClassMetadata metadata)
     {
-        _infos = infos;
+        _metadata = metadata;
     }
 
     /// <summary>

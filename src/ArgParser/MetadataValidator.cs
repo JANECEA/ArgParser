@@ -24,10 +24,10 @@ internal static class MetadataValidator
             );
 
         CheckIsParsable(type);
-        CheckValidatorsMatch(metadata);
+        CheckOptionValidatorsMatch(metadata);
     }
 
-    private static void CheckValidatorsMatch(PropertyMetadata metadata)
+    private static void CheckOptionValidatorsMatch(PropertyMetadata metadata)
     {
         Type propertyType = metadata.Info.PropertyType;
 
@@ -55,15 +55,65 @@ internal static class MetadataValidator
         );
     }
 
-    internal static void Validate(List<PropertyMetadata> metadata)
+    private static void CheckClassValidatorsMatch(ArgsClassMetadata classMetadata)
     {
-        foreach (PropertyMetadata m in metadata)
+        Type classType = classMetadata.ClassType;
+
+        foreach (IClassValidator validator in classMetadata.Validators)
+        {
+            if (!validator.ValidatorType.IsAssignableFrom(classType))
+                throw new WrongValidatorTypeException(
+                    ""
+                );
+        }
+    }
+
+    internal static void Validate(ArgsClassMetadata metadata)
+    {
+        foreach (PropertyMetadata m in metadata.Properties)
             ValidateIndividually(m);
 
-        HashSet<string> optionNames = new HashSet<string>();
-        foreach (PropertyMetadata info in metadata)
+        CheckForDuplicateNames(metadata.Properties);
+
+        ValidateRequiresUsage(metadata.Properties);
+
+        CheckClassValidatorsMatch(metadata);
+    }
+
+    private static void ValidateRequiresUsage(List<PropertyMetadata> metadata)
+    {
+        HashSet<string> propertyNames = metadata.Select(m => m.Info.Name).ToHashSet();
+
+        foreach (string requiredName in metadata.SelectMany(m => m.Behavior.Requires))
         {
-            foreach (var name in info.Behavior.ShortNames) { }
+            if (!propertyNames.Contains(requiredName))
+            {
+                throw new MissingRequiredOptionException("");
+            }
+        }
+    }
+
+    private static void CheckForDuplicateNames(List<PropertyMetadata> metadata)
+    {
+        HashSet<char> shortNames = new HashSet<char>();
+        HashSet<string> longNames = new HashSet<string>();
+
+        foreach (char name in metadata.SelectMany(m => m.Behavior.ShortNames))
+        {
+            if (!shortNames.Add(name))
+            {
+                throw new DuplicateOptionNameException("");
+            }
+
+        }
+
+        foreach (string name in metadata.SelectMany(m => m.Behavior.LongNames))
+        {
+            if (!longNames.Add(name))
+            {
+                throw new DuplicateOptionNameException("");
+            }
+
         }
     }
 }

@@ -10,6 +10,12 @@ internal interface IOptionValidator
     internal bool ValidateInternal(object arg, out string? errorMessage);
 }
 
+internal interface IClassValidator
+{
+    internal Type ValidatorType { get; }
+    internal bool ValidateInternal(BaseArgs args, out string? errorMessage);
+}
+
 /// <summary>
 /// Base class for defining custom option validator attributes.
 /// </summary>
@@ -22,7 +28,7 @@ public abstract class OptionValidatorAttribute<TType>
         IOnPropertyType<TType>
     where TType : IParsable<TType>
 {
-    public Type ValidatorType => typeof(TType);
+    Type IOptionValidator.ValidatorType => typeof(TType);
 
     bool IOptionValidator.ValidateInternal(object arg, out string? errorMessage) =>
         Validate((TType)arg, out errorMessage);
@@ -83,15 +89,22 @@ public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
 /// </summary>
 /// <typeparam name="TArgs">Type of the arguments class</typeparam>
 [AttributeUsage(AttributeTargets.Class)]
-public abstract class ClassValidatorAttribute<TArgs> : Attribute, IOnClassType<BaseArgs>
+public abstract class ClassValidatorAttribute<TArgs> : Attribute, IClassValidator , IOnClassType<BaseArgs>
     where TArgs : BaseArgs
 {
+    Type IClassValidator.ValidatorType => typeof(TArgs);
+
     /// <summary>
     /// Performs value validation
     /// </summary>
     /// <param name="args">The option's value</param>
     /// <param name="errorMessage">Error message describing the validation error</param>
     public abstract bool Validate(TArgs args, out string? errorMessage);
+
+    bool IClassValidator.ValidateInternal(BaseArgs args, out string? errorMessage)
+    {
+        return Validate((TArgs)args, out errorMessage);
+    }
 }
 
 /// <summary>
