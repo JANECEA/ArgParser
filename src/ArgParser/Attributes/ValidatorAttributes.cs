@@ -3,6 +3,11 @@ using ArgParser.Exceptions;
 
 namespace ArgParser.Attributes;
 
+internal interface IOptionValidator
+{
+    public bool ValidateInternal(object arg, out string? errorMessage);
+}
+
 /// <summary>
 /// Base class for defining custom option validator attributes.
 /// </summary>
@@ -10,10 +15,14 @@ namespace ArgParser.Attributes;
 [AttributeUsage(AttributeTargets.Property)]
 public abstract class OptionValidatorAttribute<TType>
     : Attribute,
+        IOptionValidator,
         IOnParsable,
         IOnPropertyType<TType>
     where TType : IParsable<TType>
 {
+    bool IOptionValidator.ValidateInternal(object arg, out string? errorMessage) =>
+        Validate((TType)arg, out errorMessage);
+
     /// <summary>
     /// Performs value validation
     /// </summary>
