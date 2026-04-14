@@ -1,6 +1,5 @@
-﻿using ArgParser.Attributes;
-using System.Reflection;
-using System.Security.AccessControl;
+﻿using System.Reflection;
+using ArgParser.Attributes;
 
 namespace ArgParser;
 
@@ -8,9 +7,9 @@ internal class BehaviorMetadata
 {
     internal required List<char> ShortNames { get; init; }
     internal required List<string> LongNames { get; init; }
-    internal bool IsRequired { get; init; }
+    internal required bool IsRequired { get; init; }
     internal required List<string> Requires { get; init; }
-    internal ITerminatingFlag? TerminatingFlag { get; init; }
+    internal required ITerminatingFlag? TerminatingFlag { get; init; }
 
     private static ITerminatingFlag? GetTerminatingFlag(PropertyInfo propertyInfo) =>
         propertyInfo.GetCustomAttributes(false).OfType<ITerminatingFlag>().FirstOrDefault();
@@ -63,13 +62,12 @@ internal class PropertyMetadata
         };
 }
 
-
 internal class ArgsClassMetadata
 {
     internal required Type ClassType { get; init; }
+    internal required List<PropertyMetadata> Properties { get; init; }
     internal required string ExampleUsage { get; init; }
     internal required List<IClassValidator> Validators { get; init; }
-    internal required List<PropertyMetadata> Properties { get; init; }
 
     private static List<IClassValidator> GetValidators(Type classType) =>
         classType.GetCustomAttributes(false).OfType<IClassValidator>().ToList();
@@ -83,13 +81,13 @@ internal class ArgsClassMetadata
             .Where(MetadataValidator.HasLongOrShortNames)
             .ToList();
 
-        return new()
+        return new ArgsClassMetadata
         {
             ClassType = type,
-            ExampleUsage = type.GetCustomAttribute<ExampleUsageAttribute>(false)?.Usage ?? string.Empty,
+            ExampleUsage =
+                type.GetCustomAttribute<ExampleUsageAttribute>(false)?.Usage ?? string.Empty,
             Validators = GetValidators(type),
-            Properties = metadata
+            Properties = metadata,
         };
     }
-
 }

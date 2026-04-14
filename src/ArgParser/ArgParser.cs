@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using ArgParser.Attributes;
+﻿using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
 namespace ArgParser;
@@ -37,7 +36,6 @@ public static class ArgParserFactory
         Type ArgType = typeof(TArgs);
 
         ArgsClassMetadata classMetadata = ArgsClassMetadata.FromType(ArgType);
-
         MetadataValidator.Validate(classMetadata);
 
         return new ArgParser<TArgs>(classMetadata);

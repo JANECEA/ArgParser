@@ -10,12 +10,6 @@ internal interface IOptionValidator
     internal bool ValidateInternal(object arg, out string? errorMessage);
 }
 
-internal interface IClassValidator
-{
-    internal Type ValidatorType { get; }
-    internal bool ValidateInternal(BaseArgs args, out string? errorMessage);
-}
-
 /// <summary>
 /// Base class for defining custom option validator attributes.
 /// </summary>
@@ -84,15 +78,28 @@ public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
     }
 }
 
+internal interface IClassValidator
+{
+    internal Type ValidatorType { get; }
+
+    internal bool ValidateInternal(BaseArgs args, out string? errorMessage);
+}
+
 /// <summary>
 /// Base class for defining custom arguments class validator attributes.
 /// </summary>
 /// <typeparam name="TArgs">Type of the arguments class</typeparam>
 [AttributeUsage(AttributeTargets.Class)]
-public abstract class ClassValidatorAttribute<TArgs> : Attribute, IClassValidator , IOnClassType<BaseArgs>
+public abstract class ClassValidatorAttribute<TArgs>
+    : Attribute,
+        IClassValidator,
+        IOnClassType<BaseArgs>
     where TArgs : BaseArgs
 {
     Type IClassValidator.ValidatorType => typeof(TArgs);
+
+    bool IClassValidator.ValidateInternal(BaseArgs args, out string? errorMessage) =>
+        Validate((TArgs)args, out errorMessage);
 
     /// <summary>
     /// Performs value validation
@@ -100,11 +107,6 @@ public abstract class ClassValidatorAttribute<TArgs> : Attribute, IClassValidato
     /// <param name="args">The option's value</param>
     /// <param name="errorMessage">Error message describing the validation error</param>
     public abstract bool Validate(TArgs args, out string? errorMessage);
-
-    bool IClassValidator.ValidateInternal(BaseArgs args, out string? errorMessage)
-    {
-        return Validate((TArgs)args, out errorMessage);
-    }
 }
 
 /// <summary>
@@ -114,19 +116,19 @@ public abstract class ClassValidatorAttribute<TArgs> : Attribute, IClassValidato
 /// </summary>
 public sealed class AllowPlainArgumentsAttribute : ClassValidatorAttribute<BaseArgs>
 {
-    internal bool Allow { get; }
+    private readonly bool _allow;
 
     /// <summary>
     /// Creates a new instance of the <see cref="AllowPlainArgumentsAttribute"/>.
     /// </summary>
     public AllowPlainArgumentsAttribute(bool allow)
     {
-        Allow = allow;
+        _allow = allow;
     }
 
     public override bool Validate(BaseArgs args, out string? errorMessage)
     {
-        if (!Allow && args.PlainArguments?.Length > 0)
+        if (!_allow && args.PlainArguments?.Length > 0)
         {
             errorMessage = "Plain arguments are not allowed.";
             return false;

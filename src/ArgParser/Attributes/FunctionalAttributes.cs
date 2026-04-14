@@ -1,4 +1,3 @@
-using System.Data;
 using ArgParser.Analyzers.Abstractions;
 using ArgParser.Exceptions;
 
@@ -35,13 +34,9 @@ public sealed class ShortNamesAttribute : Attribute, IOnParsable
     public ShortNamesAttribute(char mainOptionName, params char[] otherOptions)
     {
         List<char> list = otherOptions.Prepend(mainOptionName).ToList();
-        HashSet<char> set = new();
 
         foreach (char c in list)
         {
-            if (!set.Add(c))
-                throw new DuplicateNameException($"Duplicate short name: {c}");
-
             if (!char.IsAsciiLetter(c))
                 throw new IncorrectNameFormatException($"Incorrect short name: {c}");
         }
@@ -77,13 +72,9 @@ public sealed class LongNamesAttribute : Attribute, IOnParsable
     public LongNamesAttribute(string mainOptionName, params string[] otherOptions)
     {
         List<string> list = otherOptions.Prepend(mainOptionName).ToList();
-        HashSet<string> set = new();
 
         foreach (string opt in list)
         {
-            if (!set.Add(opt))
-                throw new DuplicateNameException($"Duplicate long name: {opt}");
-
             if (!ValidateOptionFormat(opt))
                 throw new IncorrectNameFormatException($"Incorrect long name: {opt}");
         }

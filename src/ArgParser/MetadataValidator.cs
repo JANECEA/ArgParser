@@ -62,9 +62,7 @@ internal static class MetadataValidator
         foreach (IClassValidator validator in classMetadata.Validators)
         {
             if (!validator.ValidatorType.IsAssignableFrom(classType))
-                throw new WrongValidatorTypeException(
-                    ""
-                );
+                throw new WrongValidatorTypeException("");
         }
     }
 
@@ -87,33 +85,25 @@ internal static class MetadataValidator
         foreach (string requiredName in metadata.SelectMany(m => m.Behavior.Requires))
         {
             if (!propertyNames.Contains(requiredName))
-            {
-                throw new MissingRequiredOptionException("");
-            }
+                throw new ReferencedOptionNotFoundException("");
         }
     }
 
     private static void CheckForDuplicateNames(List<PropertyMetadata> metadata)
     {
-        HashSet<char> shortNames = new HashSet<char>();
-        HashSet<string> longNames = new HashSet<string>();
+        HashSet<char> shortNames = new();
+        HashSet<string> longNames = new();
 
         foreach (char name in metadata.SelectMany(m => m.Behavior.ShortNames))
         {
             if (!shortNames.Add(name))
-            {
                 throw new DuplicateOptionNameException("");
-            }
-
         }
 
         foreach (string name in metadata.SelectMany(m => m.Behavior.LongNames))
         {
             if (!longNames.Add(name))
-            {
                 throw new DuplicateOptionNameException("");
-            }
-
         }
     }
 }
