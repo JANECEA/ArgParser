@@ -34,7 +34,20 @@ public static class ArgParserFactory
     public static ArgParser<TArgs> FromType<TArgs>()
         where TArgs : BaseArgs, new()
     {
-        return new ArgParser<TArgs>();
+        Type ArgType = typeof(TArgs);
+        PropertyInfo[] properties = ArgType.GetProperties();
+
+        List<PropertyAttributeInfo> infos = properties
+            .Select(PropertyAttributeInfo.FromPropertyInfo)
+            .Where(AttributeUsageValidator.HasLongOrShortNames)
+            .ToList();
+
+        foreach (PropertyAttributeInfo info in infos)
+            AttributeUsageValidator.ValidateIndividually(info);
+
+        AttributeUsageValidator.ValidateInfos(infos);
+
+        return new ArgParser<TArgs>(infos);
     }
 }
 
@@ -45,23 +58,11 @@ public static class ArgParserFactory
 public sealed class ArgParser<TArgs>
     where TArgs : BaseArgs, new()
 {
-    internal ArgParser()
+    private readonly List<PropertyAttributeInfo> _infos;
+
+    internal ArgParser(List<PropertyAttributeInfo> infos)
     {
-        Type ArgType = typeof(TArgs);
-        PropertyInfo[] properties = ArgType.GetProperties();
-
-        foreach (PropertyInfo info in properties)
-        {
-            Console.WriteLine("Property: " + info.Name);
-
-            object[] attributes = info.GetCustomAttributes(false);
-            foreach (object attribute in attributes)
-            {
-                Console.WriteLine("    Attribute: " + attribute.GetType().Name);
-            }
-
-            ShortNamesAttribute? shortNames = info.GetCustomAttribute<ShortNamesAttribute>(false);
-        }
+        _infos = infos;
     }
 
     /// <summary>
