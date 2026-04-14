@@ -1,4 +1,6 @@
+using System.Data;
 using ArgParser.Analyzers.Abstractions;
+using ArgParser.Exceptions;
 
 namespace ArgParser.Attributes;
 
@@ -25,14 +27,26 @@ public sealed class RequiredAttribute : Attribute, INotOnFlag, IOnParsable;
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class ShortNamesAttribute : Attribute, IOnParsable
 {
-    internal IEnumerable<char> Options { get; }
+    internal List<char> Options { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="ShortNamesAttribute"/>.
     /// </summary>
     public ShortNamesAttribute(char mainOptionName, params char[] otherOptions)
     {
-        Options = otherOptions.Prepend(mainOptionName);
+        List<char> list = otherOptions.Prepend(mainOptionName).ToList();
+        HashSet<char> set = new();
+
+        foreach (char c in list)
+        {
+            if (!set.Add(c))
+                throw new DuplicateNameException($"Duplicate short name: {c}");
+
+            if (!char.IsAsciiLetter(c))
+                throw new IncorrectNameFormatException($"Incorrect short name: {c}");
+        }
+
+        Options = list;
     }
 }
 
@@ -53,14 +67,43 @@ public sealed class ShortNamesAttribute : Attribute, IOnParsable
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class LongNamesAttribute : Attribute, IOnParsable
 {
-    internal IEnumerable<string> Options { get; }
+    private static readonly char[] AllowedChars = ['-', '.', ':', '_'];
+
+    internal List<string> Options { get; }
 
     /// <summary>
     /// Creates a new instance of the <see cref="LongNamesAttribute"/>.
     /// </summary>
     public LongNamesAttribute(string mainOptionName, params string[] otherOptions)
     {
-        Options = otherOptions.Prepend(mainOptionName);
+        List<string> list = otherOptions.Prepend(mainOptionName).ToList();
+        HashSet<string> set = new();
+
+        foreach (string opt in list)
+        {
+            if (!set.Add(opt))
+                throw new DuplicateNameException($"Duplicate short name: {opt}");
+
+            if (!ValidateOptionFormat(opt))
+                throw new IncorrectNameFormatException($"Incorrect short name: {opt}");
+        }
+
+        Options = list;
+    }
+
+    private static bool ValidateOptionFormat(string opt)
+    {
+        if (string.IsNullOrWhiteSpace(opt))
+            return false;
+
+        if (char.IsAsciiDigit(opt[0]) || AllowedChars.Contains(opt[0]))
+            return false;
+
+        foreach (char c in opt)
+            if (!char.IsAsciiLetterOrDigit(c) && !AllowedChars.Contains(c))
+                return false;
+
+        return true;
     }
 }
 
