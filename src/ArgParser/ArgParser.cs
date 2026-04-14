@@ -1,6 +1,6 @@
-﻿using ArgParser.Attributes;
+﻿using System.Reflection;
+using ArgParser.Attributes;
 using ArgParser.Exceptions;
-using System.Reflection;
 
 namespace ArgParser;
 
@@ -38,34 +38,6 @@ public static class ArgParserFactory
     }
 }
 
-internal class FunctionalAttributes
-{
-    internal ShortNamesAttribute? ShortNames { get; }
-    internal LongNamesAttribute? LongNames { get;}
-    internal bool isRequired { get; }
-    internal RequiresAttribute? Requires { get;}
-    internal ITerminatingFlag? terinatingFlag { get; }
-
-}
-
-internal class InformationalAttributes
-{
-    internal MetaVarNameAttribute? MetaVarName { get; }
-    internal HelpAttribute? Help { get; }
-}
-
-internal class PropertyAttributeInfo
-{
-    internal PropertyInfo Info { get; }    
-
-    internal FunctionalAttributes FunctionalAttributes { get;}
-
-    internal InformationalAttributes InformationalAttributes { get; }
-
-    internal List<IOptionValidator> ValidatorAttributes { get; }
-
-}
-
 /// <summary>
 /// Implements parsing of standard program command line arguments into the specified type
 /// </summary>
@@ -73,7 +45,8 @@ internal class PropertyAttributeInfo
 public sealed class ArgParser<TArgs>
     where TArgs : BaseArgs, new()
 {
-    internal ArgParser() {
+    internal ArgParser()
+    {
         Type ArgType = typeof(TArgs);
         PropertyInfo[] properties = ArgType.GetProperties();
 
@@ -87,14 +60,8 @@ public sealed class ArgParser<TArgs>
                 Console.WriteLine("    Attribute: " + attribute.GetType().Name);
             }
 
-            ShortNamesAttribute? shortNames  = info.GetCustomAttribute<ShortNamesAttribute>(false);
-            
+            ShortNamesAttribute? shortNames = info.GetCustomAttribute<ShortNamesAttribute>(false);
         }
-    }
-
-    private bool CheckCorrectUseOfAttribute()
-    {
-        return false;
     }
 
     /// <summary>

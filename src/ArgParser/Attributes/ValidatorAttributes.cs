@@ -5,7 +5,9 @@ namespace ArgParser.Attributes;
 
 internal interface IOptionValidator
 {
-    public bool ValidateInternal(object arg, out string? errorMessage);
+    internal Type OptionType { get; }
+
+    internal bool ValidateInternal(object arg, out string? errorMessage);
 }
 
 /// <summary>
@@ -20,6 +22,8 @@ public abstract class OptionValidatorAttribute<TType>
         IOnPropertyType<TType>
     where TType : IParsable<TType>
 {
+    public Type OptionType => typeof(TType);
+
     bool IOptionValidator.ValidateInternal(object arg, out string? errorMessage) =>
         Validate((TType)arg, out errorMessage);
 
