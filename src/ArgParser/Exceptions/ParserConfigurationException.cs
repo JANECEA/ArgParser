@@ -5,7 +5,7 @@ namespace ArgParser.Exceptions;
 /// <summary>
 /// Base class for exceptions thrown during ArgParser construction. It checks the given type derived from <see cref="BaseArgs"/>.
 /// </summary>
-public abstract class ParserConfigurationException : Exception
+public class ParserConfigurationException : Exception
 {
     internal ParserConfigurationException(string? message)
         : base(message) { }

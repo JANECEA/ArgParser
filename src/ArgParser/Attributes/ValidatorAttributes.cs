@@ -1,4 +1,5 @@
 using ArgParser.Analyzers.Abstractions;
+using ArgParser.Exceptions;
 
 namespace ArgParser.Attributes;
 
@@ -40,6 +41,9 @@ public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
     {
         _min = min;
         _max = max;
+
+        if (_min.CompareTo(max) >= 0)
+            throw new ParserConfigurationException($"The argument {min} must be less than {_max}");
     }
 
     public override bool Validate(T arg, out string? errorMessage)
