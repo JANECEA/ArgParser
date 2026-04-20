@@ -5,9 +5,6 @@ namespace ArgParser.Internal.Metadata;
 
 internal static class MetadataValidator
 {
-    internal static bool HasLongOrShortNames(PropertyMetadata property) =>
-        property.Behavior.ShortNames.Count > 0 || property.Behavior.LongNames.Count > 0;
-
     internal static void Validate(ArgsClassMetadata metadata)
     {
         foreach (PropertyMetadata m in metadata.Properties)

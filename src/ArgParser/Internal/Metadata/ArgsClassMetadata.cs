@@ -52,6 +52,9 @@ internal class PropertyMetadata
     private static List<IOptionValidator> GetValidators(PropertyInfo propertyInfo) =>
         propertyInfo.GetCustomAttributes(false).OfType<IOptionValidator>().ToList();
 
+    internal bool HasLongOrShortNames() =>
+       Behavior.ShortNames.Count > 0 || Behavior.LongNames.Count > 0;
+
     internal static PropertyMetadata FromPropertyInfo(PropertyInfo propertyInfo) =>
         new()
         {
@@ -78,7 +81,7 @@ internal class ArgsClassMetadata
 
         List<PropertyMetadata> metadata = properties
             .Select(PropertyMetadata.FromPropertyInfo)
-            .Where(MetadataValidator.HasLongOrShortNames)
+            .Where(m => m.HasLongOrShortNames())
             .ToList();
 
         return new ArgsClassMetadata
