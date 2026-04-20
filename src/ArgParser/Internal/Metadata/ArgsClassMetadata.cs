@@ -55,6 +55,8 @@ internal class PropertyMetadata
     internal bool HasLongOrShortNames() =>
        Behavior.ShortNames.Count > 0 || Behavior.LongNames.Count > 0;
 
+    internal bool IsFlag() => Info.PropertyType == typeof(bool) || Info.PropertyType == typeof(bool?);
+
     internal static PropertyMetadata FromPropertyInfo(PropertyInfo propertyInfo) =>
         new()
         {
