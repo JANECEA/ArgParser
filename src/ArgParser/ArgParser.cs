@@ -1,6 +1,7 @@
 ﻿using ArgParser.Attributes;
 using ArgParser.Exceptions;
 using ArgParser.Internal;
+using ArgParser.Internal.Arguments;
 using ArgParser.Internal.Metadata;
 
 namespace ArgParser;
@@ -68,7 +69,7 @@ public sealed class ArgParser<TArgs>
     /// <exception cref="HelpCalledException">Program was called with the 'help' terminating flag</exception>
     public TArgs Parse(string[] args)
     {
-        return new TArgs();
+        CoupledArgs coupled = CoupledArgs.FromArgs(args, _metadata);
     }
 
     /// <summary>
