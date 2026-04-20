@@ -59,20 +59,6 @@ public sealed class ArgParser<TArgs>
         _metadata = metadata;
     }
 
-    private void CheckTerminatingFlag(string[] args)
-    {
-        for (int i = args.Length - 1; i >= 0; i--)
-        {
-            if (
-                _metadata.TerminatingFlags.TryGetValue(
-                    args[i],
-                    out ITerminatingFlag? terminatingFlag
-                )
-            )
-                terminatingFlag.ThrowException();
-        }
-    }
-
     /// <summary>
     /// Tries parsing the command line arguments according to the structure of
     /// TArgs and attributes defined in it.
@@ -82,7 +68,6 @@ public sealed class ArgParser<TArgs>
     /// <exception cref="HelpCalledException">Program was called with the 'help' terminating flag</exception>
     public TArgs Parse(string[] args)
     {
-        CheckTerminatingFlag(args);
         return new TArgs();
     }
 
