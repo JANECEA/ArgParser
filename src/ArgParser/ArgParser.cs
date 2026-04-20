@@ -60,28 +60,26 @@ public sealed class ArgParser<TArgs>
         _metadata = metadata;
     }
 
-    internal void CheckTerminatingFlags(CoupledArgs coupled)
+    private void CheckTerminatingFlags(List<string> flags)
     {
-        for (int i = coupled.Flags.Count - 1; i >= 0; i--)
+        for (int i = flags.Count - 1; i >= 0; i--)
         {
-            string flag = coupled.Flags[i];
-            if (!_metadata.NamesToFlag.TryGetValue(flag, out PropertyMetadata? property))
-                continue;
-            if(property.Behavior.TerminatingFlag == null)
-                continue;
-
-            property.Behavior.TerminatingFlag.ThrowException();
+            if (
+                _metadata.NamesToFlag.TryGetValue(flags[i], out PropertyMetadata? property)
+                && property.Behavior.TerminatingFlag is ITerminatingFlag t
+            )
+                t.ThrowException();
         }
     }
 
-    internal void CheckUnknownArguments(CoupledArgs coupled)
+    private static void CheckUnknownArguments(List<string> rest)
     {
-        foreach (string plainArg in coupled.Rest)
+        foreach (string plainArg in rest)
         {
-            if(plainArg == "--")
+            if (plainArg == "--")
                 return;
 
-            if(plainArg.StartsWith('-'))
+            if (plainArg.StartsWith('-'))
                 throw new UnknownOptionException($"Unknown option '{plainArg}'");
         }
     }
@@ -97,9 +95,10 @@ public sealed class ArgParser<TArgs>
     {
         CoupledArgs coupled = CoupledArgs.FromArgs(args, _metadata);
 
-        CheckTerminatingFlags(coupled);
-        CheckUnknownArguments(coupled);
+        CheckTerminatingFlags(coupled.Flags);
+        CheckUnknownArguments(coupled.Rest);
 
+        throw new NotImplementedException();
     }
 
     /// <summary>
