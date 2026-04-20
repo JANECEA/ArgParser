@@ -60,6 +60,32 @@ public sealed class ArgParser<TArgs>
         _metadata = metadata;
     }
 
+    internal void CheckTerminatingFlags(CoupledArgs coupled)
+    {
+        for (int i = coupled.Flags.Count - 1; i >= 0; i--)
+        {
+            string flag = coupled.Flags[i];
+            if (!_metadata.NamesToFlag.TryGetValue(flag, out PropertyMetadata? property))
+                continue;
+            if(property.Behavior.TerminatingFlag == null)
+                continue;
+
+            property.Behavior.TerminatingFlag.ThrowException();
+        }
+    }
+
+    internal void CheckUnknownArguments(CoupledArgs coupled)
+    {
+        foreach (string plainArg in coupled.Rest)
+        {
+            if(plainArg == "--")
+                return;
+
+            if(plainArg.StartsWith('-'))
+                throw new UnknownOptionException($"Unknown option '{plainArg}'");
+        }
+    }
+
     /// <summary>
     /// Tries parsing the command line arguments according to the structure of
     /// TArgs and attributes defined in it.
@@ -70,6 +96,10 @@ public sealed class ArgParser<TArgs>
     public TArgs Parse(string[] args)
     {
         CoupledArgs coupled = CoupledArgs.FromArgs(args, _metadata);
+
+        CheckTerminatingFlags(coupled);
+        CheckUnknownArguments(coupled);
+
     }
 
     /// <summary>
