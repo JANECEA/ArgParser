@@ -10,10 +10,10 @@ public static class RequiredTests
     {
         [Required]
         public bool Flag { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Fact]
     public static void RequiredFlagThrowsDuringCreation()
     {
@@ -25,21 +25,23 @@ public static class RequiredTests
         [ShortNames('a')]
         [Required]
         public string? Value { get; set; }
-        
+
         [ShortNames('i')]
         public int? IntValue { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Theory]
     [InlineData("")]
     [InlineData("-i 123")]
     public static void ThrowsOnUnsetRequired(string args)
     {
         var parser = ArgParserFactory.FromType<SimpleRequired>();
-        
-        Assert.Throws<MissingRequiredOptionException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
+
+        Assert.Throws<MissingRequiredOptionException>(() =>
+            parser.Parse(ParsingHelper.GetSplitArgs(args))
+        );
     }
 
     [Theory]
@@ -48,33 +50,35 @@ public static class RequiredTests
     public static void ThrowsOnEmptyRequired(string args)
     {
         var parser = ArgParserFactory.FromType<SimpleRequired>();
-        
-        Assert.Throws<MissingOptionValueException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
+
+        Assert.Throws<MissingOptionValueException>(() =>
+            parser.Parse(ParsingHelper.GetSplitArgs(args))
+        );
     }
-    
+
     [Fact]
     public static void DoesNotThrowOnSetRequired()
     {
         var parser = ArgParserFactory.FromType<SimpleRequired>();
-        
+
         var result = parser.Parse(ParsingHelper.GetSplitArgs("-a=val"));
-        
+
         Assert.Equal("val", result.Value);
     }
 
-    private class MultipleRequiredArgs: BaseArgs
+    private class MultipleRequiredArgs : BaseArgs
     {
         [ShortNames('a')]
         [Required]
         public string? ValueA { get; set; }
-        
+
         [ShortNames('b')]
         [Required]
         public string? ValueB { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Theory]
     [InlineData("-a AValue")]
     [InlineData("-b BValue")]
@@ -82,7 +86,9 @@ public static class RequiredTests
     public static void ThrowsOnNotAllRequiredSet(string args)
     {
         var parser = ArgParserFactory.FromType<SimpleRequired>();
-        
-        Assert.Throws<MissingRequiredOptionException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
+
+        Assert.Throws<MissingRequiredOptionException>(() =>
+            parser.Parse(ParsingHelper.GetSplitArgs(args))
+        );
     }
 }

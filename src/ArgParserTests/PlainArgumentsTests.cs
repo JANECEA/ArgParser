@@ -6,8 +6,7 @@ namespace ArgParserTests
 {
     public class PlainArgumentsTests
     {
-        [AllowPlainArguments(true),
-        ExampleUsage("myProgram [options]")]
+        [AllowPlainArguments(true), ExampleUsage("myProgram [options]")]
         public class PlainArgumentsCatcher : BaseArgs
         {
             [ShortNames('i')]
@@ -17,7 +16,7 @@ namespace ArgParserTests
             public string? StringOption { get; set; }
 
             [ShortNames('b')]
-            public bool Flag {  get; set; }
+            public bool Flag { get; set; }
 
             public override string[] PlainArguments { get; set; } = [];
         }
@@ -28,9 +27,12 @@ namespace ArgParserTests
                 [new[] { "--", "plain1", "plain2" }, new[] { "plain1", "plain2" }],
                 [new[] { "-i", "8", "--", "plain1" }, new[] { "plain1" }],
                 [new[] { "-b", "--", "plain1", "plain2" }, new[] { "plain1", "plain2" }],
-                [new[] { "-i", "8", "-s", "abc", "--", "plain1", "plain2" }, new[] { "plain1", "plain2" }],
-                [new[] { "--", "-i", "8" }, new[] { "-i", "8" }], 
-                [new[] { "--", "--nonexistent" }, new[] { "--nonexistent" }],  
+                [
+                    new[] { "-i", "8", "-s", "abc", "--", "plain1", "plain2" },
+                    new[] { "plain1", "plain2" },
+                ],
+                [new[] { "--", "-i", "8" }, new[] { "-i", "8" }],
+                [new[] { "--", "--nonexistent" }, new[] { "--nonexistent" }],
             ];
 
         [Theory]
@@ -45,10 +47,10 @@ namespace ArgParserTests
 
         public static IEnumerable<object[]> PlainArgumentsInvalidInputs =>
             [
-                [new[] { "plain1" }],                        
-                [new[] { "-i", "8", "plain1" }],            
-                [new[] { "-b", "plain1" }],                  
-                [new[] { "--nonexistent", "--", "plain1" }]
+                [new[] { "plain1" }],
+                [new[] { "-i", "8", "plain1" }],
+                [new[] { "-b", "plain1" }],
+                [new[] { "--nonexistent", "--", "plain1" }],
             ];
 
         [Theory]
@@ -59,6 +61,5 @@ namespace ArgParserTests
 
             Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
         }
-
     }
 }

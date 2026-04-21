@@ -9,13 +9,13 @@ public static class ShortNamesTests
     [AllowPlainArguments(true)]
     private class SimpleShortsCase : BaseArgs
     {
-        [ShortNames('s')] 
+        [ShortNames('s')]
         public string? Value { get; set; }
-        
-        [ShortNames('i')] 
+
+        [ShortNames('i')]
         public int? IntValue { get; set; }
 
-        [ShortNames('b')] 
+        [ShortNames('b')]
         public bool BoolValue { get; set; }
 
         public override string[] PlainArguments { get; set; } = [];
@@ -45,9 +45,11 @@ public static class ShortNamesTests
     {
         var parser = ArgParserFactory.FromType<SimpleShortsCase>();
 
-        Assert.Throws<MissingOptionValueException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
+        Assert.Throws<MissingOptionValueException>(() =>
+            parser.Parse(ParsingHelper.GetSplitArgs(args))
+        );
     }
-    
+
     [Theory]
     [InlineData("-i 123", 123)]
     [InlineData("-i 123 123", 123)]
@@ -68,7 +70,7 @@ public static class ShortNamesTests
 
         Assert.Equal(expected, result.IntValue);
     }
-    
+
     [Theory]
     [InlineData("-i")]
     [InlineData("-i=")]
@@ -76,7 +78,9 @@ public static class ShortNamesTests
     {
         var parser = ArgParserFactory.FromType<SimpleShortsCase>();
 
-        Assert.Throws<MissingOptionValueException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
+        Assert.Throws<MissingOptionValueException>(() =>
+            parser.Parse(ParsingHelper.GetSplitArgs(args))
+        );
     }
 
     [Theory]
@@ -117,13 +121,14 @@ public static class ShortNamesTests
         var parser = ArgParserFactory.FromType<SimpleShortsCase>();
         Assert.Throws<UnknownOptionException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
     }
-    
+
     private class MultipleShortNames : BaseArgs
     {
-        [ShortNames('s', 'i', 'j')] public string? Value { get; set; }
+        [ShortNames('s', 'i', 'j')]
+        public string? Value { get; set; }
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Theory]
     [InlineData("-s val", "val")]
     [InlineData("-i val", "val")]
@@ -139,16 +144,16 @@ public static class ShortNamesTests
     {
         [ShortNames('a')]
         public bool Append { get; set; }
-    
+
         [ShortNames('a')]
         public bool Allow { get; set; }
 
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Fact]
     public static void ConflictingShortNamesThrows()
     {
         Assert.Throws<DuplicateOptionNameException>(ArgParserFactory.FromType<ConflictingArgs>);
-    }   
+    }
 }

@@ -6,8 +6,8 @@ namespace ArgParserTests
 {
     public class ExclusiveTests
     {
-
-        internal sealed class ExclusiveOptionAAndBAttribute : ClassValidatorAttribute<ExclusiveOptions>
+        internal sealed class ExclusiveOptionAAndBAttribute
+            : ClassValidatorAttribute<ExclusiveOptions>
         {
             public override bool Validate(ExclusiveOptions args, out string? errorMessage)
             {
@@ -18,11 +18,11 @@ namespace ArgParserTests
                 }
                 errorMessage = null;
                 return true;
-
             }
         }
 
-        internal sealed class ExclusiveOptionBAndCAttribute : ClassValidatorAttribute<ExclusiveOptions>
+        internal sealed class ExclusiveOptionBAndCAttribute
+            : ClassValidatorAttribute<ExclusiveOptions>
         {
             public override bool Validate(ExclusiveOptions args, out string? errorMessage)
             {
@@ -33,11 +33,11 @@ namespace ArgParserTests
                 }
                 errorMessage = null;
                 return true;
-
             }
         }
 
-        internal sealed class ExclusiveOptionBAndDAttribute : ClassValidatorAttribute<ExclusiveOptions>
+        internal sealed class ExclusiveOptionBAndDAttribute
+            : ClassValidatorAttribute<ExclusiveOptions>
         {
             public override bool Validate(ExclusiveOptions args, out string? errorMessage)
             {
@@ -48,11 +48,11 @@ namespace ArgParserTests
                 }
                 errorMessage = null;
                 return true;
-
             }
         }
 
-        internal sealed class ExclusiveOptionCAndDAttribute : ClassValidatorAttribute<ExclusiveOptions>
+        internal sealed class ExclusiveOptionCAndDAttribute
+            : ClassValidatorAttribute<ExclusiveOptions>
         {
             public override bool Validate(ExclusiveOptions args, out string? errorMessage)
             {
@@ -63,11 +63,16 @@ namespace ArgParserTests
                 }
                 errorMessage = null;
                 return true;
-
             }
         }
 
-        [ExclusiveOptionAAndB,ExclusiveOptionBAndC,ExclusiveOptionBAndD,ExclusiveOptionCAndD, ExampleUsage("program [options]")]
+        [
+            ExclusiveOptionAAndB,
+            ExclusiveOptionBAndC,
+            ExclusiveOptionBAndD,
+            ExclusiveOptionCAndD,
+            ExampleUsage("program [options]")
+        ]
         internal sealed class ExclusiveOptions : BaseArgs
         {
             public override string[] PlainArguments { get; set; } = [];
@@ -75,7 +80,6 @@ namespace ArgParserTests
             // A exclusive with B
             // B exclusive with C and D
             // C exclusive with D
-
 
             [ShortNames('a')]
             public int? OptionA { get; set; }
@@ -91,16 +95,15 @@ namespace ArgParserTests
 
             [ShortNames('e')]
             public int? OptionE { get; set; }
-
         }
 
         public static IEnumerable<object[]> ValidInputs =>
-           [
-              [new[]{"-a","8"}],
-              [new[]{"-a","8", "-d","4"}],
-              [new[]{"-a","8","-c","4"}],
-              [new[]{"-b","8","-e","4"}]
-           ];
+            [
+                [new[] { "-a", "8" }],
+                [new[] { "-a", "8", "-d", "4" }],
+                [new[] { "-a", "8", "-c", "4" }],
+                [new[] { "-b", "8", "-e", "4" }],
+            ];
 
         [Theory]
         [MemberData(nameof(ValidInputs))]
@@ -110,14 +113,13 @@ namespace ArgParserTests
             var result = parser.Parse(args);
         }
 
-
         public static IEnumerable<object[]> InvalidInputs =>
-           [
-              [new[]{"-a","8", "-b","4"}],
-              [new[]{"-d","8","-c","4"}],
-              [new[]{"-b","8", "-c", "4","-e","4"}],
-              [new[]{"-d","8","-b","4"}],
-           ];
+            [
+                [new[] { "-a", "8", "-b", "4" }],
+                [new[] { "-d", "8", "-c", "4" }],
+                [new[] { "-b", "8", "-c", "4", "-e", "4" }],
+                [new[] { "-d", "8", "-b", "4" }],
+            ];
 
         [Theory]
         [MemberData(nameof(InvalidInputs))]
@@ -126,7 +128,5 @@ namespace ArgParserTests
             var parser = ArgParserFactory.FromType<ExclusiveOptions>();
             Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
         }
-
-
     }
 }

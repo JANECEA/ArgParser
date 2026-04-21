@@ -53,9 +53,10 @@ internal class PropertyMetadata
         propertyInfo.GetCustomAttributes(false).OfType<IOptionValidator>().ToList();
 
     internal bool HasLongOrShortNames() =>
-       Behavior.ShortNames.Count > 0 || Behavior.LongNames.Count > 0;
+        Behavior.ShortNames.Count > 0 || Behavior.LongNames.Count > 0;
 
-    internal bool IsFlag() => Info.PropertyType == typeof(bool) || Info.PropertyType == typeof(bool?);
+    internal bool IsFlag() =>
+        Info.PropertyType == typeof(bool) || Info.PropertyType == typeof(bool?);
 
     internal static PropertyMetadata FromPropertyInfo(PropertyInfo propertyInfo) =>
         new()

@@ -37,36 +37,36 @@ public class HelpTests
         [LongNames("output")]
         [Help("Specify output file")]
         public string? OutputFile { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Fact]
     public void HelpDescriptionIsUsed()
     {
         var parser = ArgParserFactory.FromType<HelpDescriptionArgs>();
-        
+
         var help = parser.GenerateHelpMessage();
-        
+
         Assert.Contains("Specify output file", help);
     }
-    
+
     private class MetaVarDescrArgs : BaseArgs
     {
         [LongNames("output")]
         [MetaVarName("FILE")]
         public string? OutputFile { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Fact]
     public void MetaVarNameIsUsed()
     {
         var parser = ArgParserFactory.FromType<MetaVarDescrArgs>();
-        
+
         var help = parser.GenerateHelpMessage();
-        
+
         Assert.Contains("FILE", help);
     }
 }

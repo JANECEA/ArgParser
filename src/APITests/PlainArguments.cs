@@ -94,7 +94,9 @@ public static class PlainArguments
             var parser = ArgParserFactory.FromType<EmptyArgsWithoutCapture>();
 
             // I could not really find inside the docs what exception should be thrown here, so keep it abstract...
-            Assert.Throws<CommandLineParsingException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
+            Assert.Throws<CommandLineParsingException>(() =>
+                parser.Parse(ParsingHelper.GetSplitArgs(args))
+            );
         }
 
         [AllowPlainArguments(false)]
@@ -107,7 +109,9 @@ public static class PlainArguments
         [Fact]
         public static void RequiredPlainArgsThrowingDuringCreation()
         {
-            Assert.ThrowsAny<ParserConfigurationException>(ArgParserFactory.FromType<PlainArgsRequiredButForbiddenArgs>);
+            Assert.ThrowsAny<ParserConfigurationException>(
+                ArgParserFactory.FromType<PlainArgsRequiredButForbiddenArgs>
+            );
         }
     }
 }

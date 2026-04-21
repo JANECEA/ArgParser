@@ -7,12 +7,12 @@ namespace APITests;
 public static class TerminatingFlagTests
 {
     private class QuitException : Exception;
-    
+
     private sealed class TerminatingArgs : BaseArgs
     {
         [ShortNames('q'), LongNames("quit"), TerminatingFlag<QuitException>]
         public bool Quit { get; set; }
-        
+
         [ShortNames('i')]
         public int IntVal { get; set; }
 
@@ -52,47 +52,49 @@ public static class TerminatingFlagTests
 
         Assert.Throws<HelpCalledException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
     }
-    
-    private class ExitException: Exception;
-    
+
+    private class ExitException : Exception;
+
     private sealed class DoubleTerminatingArgs : BaseArgs
     {
         [ShortNames('q'), LongNames("quit"), TerminatingFlag<QuitException>]
         public bool Quit { get; set; }
-        
+
         [ShortNames('e'), LongNames("exit"), TerminatingFlag<ExitException>]
         public bool Exit { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Fact]
     public static void OrderOfTerminatingFlagsMatters1()
     {
         var parser = ArgParserFactory.FromType<DoubleTerminatingArgs>();
-        
+
         Assert.Throws<QuitException>(() => parser.Parse(ParsingHelper.GetSplitArgs("-q -e")));
     }
-    
+
     [Fact]
     public static void OrderOfTerminatingFlagsMatters2()
     {
         var parser = ArgParserFactory.FromType<DoubleTerminatingArgs>();
         Assert.Throws<ExitException>(() => parser.Parse(ParsingHelper.GetSplitArgs("-e -q")));
     }
-    
+
     class TerminatingNotOnFlagArgs : BaseArgs
     {
         [ShortNames('o')]
         [TerminatingFlag<Exception>]
         public string? Output { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Fact]
     public static void TerminatingNotOnFlagThrows()
     {
-        Assert.Throws<TerminatingNotOnFlagException>(ArgParserFactory.FromType<TerminatingNotOnFlagArgs>);
+        Assert.Throws<TerminatingNotOnFlagException>(
+            ArgParserFactory.FromType<TerminatingNotOnFlagArgs>
+        );
     }
 }

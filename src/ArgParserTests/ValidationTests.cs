@@ -2,7 +2,6 @@
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
-
 namespace ArgParserTests
 {
     public class ValidationTests
@@ -20,7 +19,9 @@ namespace ArgParserTests
                 return true;
             }
         }
-        internal sealed class MustContainAtAttribute : OptionValidatorAttribute<CustomType_StringWrapper>
+
+        internal sealed class MustContainAtAttribute
+            : OptionValidatorAttribute<CustomType_StringWrapper>
         {
             public override bool Validate(CustomType_StringWrapper arg, out string? errorMessage)
             {
@@ -28,7 +29,6 @@ namespace ArgParserTests
                 {
                     errorMessage = $"Value {arg.WrappedString} must contain @.";
                     return false;
-
                 }
                 errorMessage = null;
                 return true;
@@ -52,16 +52,16 @@ namespace ArgParserTests
 
         public static IEnumerable<object[]> ValidatorValidInputs =>
             [
-                [new[] { "-i", "0"}],
+                [new[] { "-i", "0" }],
                 [new[] { "-i", "50" }],
                 [new[] { "-i", "100" }],
-                [new[] { "-e", "0"}],
+                [new[] { "-e", "0" }],
                 [new[] { "-e", "2" }],
-                [new[] {"-e", "-4" }],
-                [new[] { "-e", "1000"}],
+                [new[] { "-e", "-4" }],
+                [new[] { "-e", "1000" }],
                 [new[] { "-s", "a@b" }],
                 [new[] { "-s", "test@test.com" }],
-                [new[] {"-i", "8", "-s", "@ooo", "-e","4268"}]
+                [new[] { "-i", "8", "-s", "@ooo", "-e", "4268" }],
             ];
 
         [Theory]
@@ -82,8 +82,8 @@ namespace ArgParserTests
                 [new[] { "-e", "-7" }],
                 [new[] { "-s", "noemail" }],
                 [new[] { "-s", "missingatsign" }],
-                [new[] {"-s", "g@g", "-i","102"}],
-                [new[] {"-s","stodva","-i","102", "-e","101"}]
+                [new[] { "-s", "g@g", "-i", "102" }],
+                [new[] { "-s", "stodva", "-i", "102", "-e", "101" }],
             ];
 
         [Theory]
@@ -93,6 +93,5 @@ namespace ArgParserTests
             var parser = ArgParserFactory.FromType<SimpleArgs_WithValidators>();
             Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
         }
-
     }
 }

@@ -2,7 +2,7 @@
 using ArgParser.Attributes;
 
 #pragma warning disable xUnit1026
-#pragma warning disable CS0219 
+#pragma warning disable CS0219
 namespace ArgParserTests
 {
     public class RequiredOptionsTests
@@ -12,11 +12,10 @@ namespace ArgParserTests
         {
             public override string[] PlainArguments { get; set; } = [];
 
-            [ShortNames('r','e'), LongNames("required","optionen"),Required]
+            [ShortNames('r', 'e'), LongNames("required", "optionen"), Required]
             public int? RequiredInt { get; set; }
-
-
         }
+
         [ExampleUsage("program [options]")]
         class RequiredOptionsB : BaseArgs
         {
@@ -27,12 +26,10 @@ namespace ArgParserTests
 
             [ShortNames('i', 'n'), LongNames("int"), Required]
             public int? RequiredIntB { get; set; }
-
-
         }
 
         [Theory]
-        [InlineData(new[] {"-r","0"}, 0)]
+        [InlineData(new[] { "-r", "0" }, 0)]
         [InlineData(new[] { "-e", "0" }, 0)]
         [InlineData(new[] { "--required=0" }, 0)]
         [InlineData(new[] { "--optionen=0" }, 0)]
@@ -42,7 +39,6 @@ namespace ArgParserTests
             var result = parser.Parse(args);
 
             Assert.Equal(expected, result.RequiredInt);
-
         }
 
         [Fact]
@@ -51,7 +47,7 @@ namespace ArgParserTests
             var expected_r = 8;
             var expected_i = 5;
 
-            string[] args = { "-r", expected_r.ToString(), "-i", expected_i.ToString()};
+            string[] args = { "-r", expected_r.ToString(), "-i", expected_i.ToString() };
 
             var parser = ArgParserFactory.FromType<RequiredOptionsB>();
             var result = parser.Parse(args);
@@ -61,9 +57,6 @@ namespace ArgParserTests
 
             Assert.Equal(expected_r, actual_r);
             Assert.Equal(expected_i, actual_i);
-             
-
         }
-
     }
 }

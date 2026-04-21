@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,12 +13,11 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
   </ItemGroup>
 
-<ItemGroup>
-		<ProjectReference Include="../ArgParser/ArgParser.csproj" />
-</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ArgParser/ArgParser.csproj" />
+  </ItemGroup>
 
-<ItemGroup>
+  <ItemGroup>
     <Using Include="Xunit" />
- </ItemGroup>
-
+  </ItemGroup>
 </Project>

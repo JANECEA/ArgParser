@@ -37,7 +37,7 @@ public static class LongNamesTests
 
         Assert.Equal(expected, result.Value);
     }
-    
+
     [Theory]
     [InlineData("--value")]
     [InlineData("--value=")]
@@ -45,7 +45,9 @@ public static class LongNamesTests
     {
         var parser = ArgParserFactory.FromType<SimpleLongsCase>();
 
-        Assert.Throws<MissingOptionValueException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
+        Assert.Throws<MissingOptionValueException>(() =>
+            parser.Parse(ParsingHelper.GetSplitArgs(args))
+        );
     }
 
     [Theory]
@@ -69,7 +71,7 @@ public static class LongNamesTests
 
         Assert.Equal(expected, result.IntValue);
     }
-    
+
     [Theory]
     [InlineData("--intvalue 2147483648")]
     [InlineData("--intvalue abc")]
@@ -107,15 +109,15 @@ public static class LongNamesTests
         var parser = ArgParserFactory.FromType<SimpleLongsCase>();
         Assert.Throws<UnknownOptionException>(() => parser.Parse(ParsingHelper.GetSplitArgs(args)));
     }
-    
+
     private class MultipleLongNames : BaseArgs
     {
-        [LongNames( "ss", "ii", "jj" )]
+        [LongNames("ss", "ii", "jj")]
         public string? Value { get; set; }
-        
+
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Theory]
     [InlineData("--ss val", "val")]
     [InlineData("--ii val", "val")]
@@ -126,24 +128,24 @@ public static class LongNamesTests
         var result = parser.Parse(ParsingHelper.GetSplitArgs(args));
         Assert.Equal(expected, result.Value);
     }
-    
+
     class ConflictingArgs : BaseArgs
     {
         [LongNames("app")]
         public bool Append { get; set; }
-    
+
         [LongNames("app")]
         public bool Allow { get; set; }
 
         public override string[] PlainArguments { get; set; } = [];
     }
-    
+
     [Fact]
     public static void ConflictingLongNamesThrows()
     {
         Assert.Throws<DuplicateOptionNameException>(ArgParserFactory.FromType<ConflictingArgs>);
-    }   
-    
+    }
+
     class InvalidLongNameArgs : BaseArgs
     {
         [LongNames("append option")]

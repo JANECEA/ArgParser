@@ -2,7 +2,6 @@
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
-
 namespace ArgParserTests
 {
     public class HelpTests
@@ -25,6 +24,7 @@ namespace ArgParserTests
             var parser = ArgParserFactory.FromType<HelpOptions>();
             Assert.Throws<HelpCalledException>(() => parser.Parse(["--help"]));
         }
+
         [Fact]
         public void HelpMessage_ContainsExampleUsage()
         {
@@ -32,7 +32,6 @@ namespace ArgParserTests
             var help = parser.GenerateHelpMessage();
             Assert.Contains("program [options]", help);
         }
-
 
         [Fact]
         public void HelpMessage_ContainsHelpTexts()
@@ -43,8 +42,6 @@ namespace ArgParserTests
             Assert.Contains("String option", help);
         }
 
-
-
         [Fact]
         public void HelpMessage_ContainsMetaVarNames()
         {
@@ -53,6 +50,5 @@ namespace ArgParserTests
             Assert.Contains("INT_VALUE", help);
             Assert.Contains("STR_VALUE", help);
         }
-
     }
 }
