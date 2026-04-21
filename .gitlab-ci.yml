@@ -1,15 +1,22 @@
+image: mcr.microsoft.com/dotnet/sdk:9.0
+
 stages:
   - build
   - test
 
 build:
   stage: build
-  image: mcr.microsoft.com/dotnet/sdk:9.0
   script:
-    - dotnet build tests/ArgParserTests/ArgParserTests.csproj --configuration Release
+    - dotnet restore src/ArgParser.sln
+    - dotnet publish src/ArgParser.sln -c Release -o out/
+  artifacts:
+    paths:
+      - out/
+    expire_in: 1 hour
 
-test:
+tests:
   stage: test
-  image: mcr.microsoft.com/dotnet/sdk:9.0
+  dependencies:
+    - build
   script:
-    - dotnet test tests/ArgParserTests/ArgParserTests.csproj --configuration Release
+    - dotnet test out/APITests.dll
