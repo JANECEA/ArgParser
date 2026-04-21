@@ -14,12 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\ArgParser\ArgParser.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ArgParser.Analyzers.Abstractions\ArgParser.Analyzers.Abstractions.csproj" />
-    <ProjectReference Include="..\..\ArgParser.Analyzers\ArgParser.Analyzers.csproj" />
-    <ProjectReference Include="..\..\ArgParser\ArgParser.csproj" />
+    <Using Include="Xunit" />
   </ItemGroup>
 </Project>

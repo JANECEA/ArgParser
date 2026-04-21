@@ -22,10 +22,12 @@ build:
     - dotnet build src/ArgParser.sln --configuration Release --no-restore
   artifacts:
     paths:
-      - cli-parser/bin/
-      - cli-parser/obj/
-      - tests/bin/
-      - tests/obj/
+      - src/ArgParser/bin/
+      - src/ArgParser/obj/
+      - src/tests/APITests/bin/
+      - src/tests/APITests/obj/
+      - src/tests/ArgParserTests/bin/
+      - src/tests/ArgParserTests/obj/
 
 test:
   stage: test
@@ -33,4 +35,4 @@ test:
     - job: build
       artifacts: true
   script:
-    - dotnet test CliParserSolution.sln --configuration Release --no-build --no-restore
+    - dotnet test src/ArgParser.sln --configuration Release --no-build --no-restore

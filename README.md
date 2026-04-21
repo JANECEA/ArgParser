@@ -34,7 +34,7 @@ To include Roslyn validation add this to .csproj
 ```xml
 <ItemGroup>
 <ProjectReference
-  Include="<path to t21-api-design>/src/ArgParser.Analyzers/ArgParser.Analyzers.csproj"
+  Include="<path to t21-api-design>/src/analyzers/ArgParser.Analyzers/ArgParser.Analyzers.csproj"
   OutputItemType="Analyzer"
   ReferenceOutputAssembly="false"
 />
