@@ -2,19 +2,19 @@ using ArgParser.Internal.Metadata;
 
 namespace ArgParser.Internal.Arguments;
 
-internal record ArgOccurence(string Name, PropertyMetadata Property);
+internal record ArgOccurrence(string Name, PropertyMetadata Property);
 
 internal class CoupledArgs
 {
-    internal required List<(ArgOccurence, string?)> Couples { get; init; }
-    internal required List<ArgOccurence> Flags { get; init; }
+    internal required List<(ArgOccurrence, string?)> Couples { get; init; }
+    internal required List<ArgOccurrence> Flags { get; init; }
     internal required List<string> PlainBeforeDelimiter { get; init; }
     internal required List<string> PlainAfterDelimiter { get; init; }
 
     private static bool TryGetLongOptionValue(
         string option,
         ProcessedClassMetadata metadata,
-        out (ArgOccurence?, string?) occurence
+        out (ArgOccurrence?, string?) occurence
     )
     {
         occurence = (null, null);
@@ -33,14 +33,14 @@ internal class CoupledArgs
         else
             strValue = index == option.Length - 1 ? string.Empty : option[(index + 1)..];
 
-        occurence = (new ArgOccurence(optionName, property), strValue);
+        occurence = (new ArgOccurrence(optionName, property), strValue);
         return true;
     }
 
     internal static CoupledArgs FromArgs(string[] args, ProcessedClassMetadata metadata)
     {
-        List<(ArgOccurence, string?)> couples = new();
-        List<ArgOccurence> flags = new();
+        List<(ArgOccurrence, string?)> couples = new();
+        List<ArgOccurrence> flags = new();
         List<string> rest = new();
 
         Queue<string> queuedArgs = new(args);
@@ -51,18 +51,18 @@ internal class CoupledArgs
 
             if (metadata.NamesToFlag.TryGetValue(arg, out PropertyMetadata? flag))
             {
-                flags.Add(new ArgOccurence(arg, flag));
+                flags.Add(new ArgOccurrence(arg, flag));
                 continue;
             }
 
             if (metadata.ShortNamesToOption.TryGetValue(arg, out PropertyMetadata? option))
             {
                 string? val = queuedArgs.Count > 0 ? null : queuedArgs.Dequeue();
-                couples.Add((new ArgOccurence(arg, option), val));
+                couples.Add((new ArgOccurrence(arg, option), val));
                 continue;
             }
 
-            if (TryGetLongOptionValue(arg, metadata, out (ArgOccurence?, string?) occurence))
+            if (TryGetLongOptionValue(arg, metadata, out (ArgOccurrence?, string?) occurence))
             {
                 couples.Add(occurence!);
                 continue;

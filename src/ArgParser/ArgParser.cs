@@ -60,7 +60,7 @@ public sealed class ArgParser<TArgs>
         _metadata = metadata;
     }
 
-    private static void CheckTerminatingFlags(List<ArgOccurence> flags)
+    private static void CheckTerminatingFlags(List<ArgOccurrence> flags)
     {
         for (int i = flags.Count - 1; i >= 0; i--)
         {
@@ -78,9 +78,9 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private static void CheckMissingOptionValues(List<(ArgOccurence, string?)> coupled)
+    private static void CheckMissingOptionValues(List<(ArgOccurrence, string?)> coupled)
     {
-        foreach ((ArgOccurence occurence, string? value) in coupled)
+        foreach ((ArgOccurrence occurence, string? value) in coupled)
         {
             if (value is null)
                 throw new MissingOptionValueException(
@@ -89,26 +89,29 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private static void CheckDuplicateOccurences(List<(ArgOccurence, string?)> couples, List<ArgOccurence> flags)
+    private static void CheckDuplicateOccurrences(
+        List<(ArgOccurrence, string?)> couples,
+        List<ArgOccurrence> flags
+    )
     {
-        Dictionary<PropertyMetadata, string> occurences = new();
+        Dictionary<PropertyMetadata, string> occurrences = new();
 
-        foreach (ArgOccurence flag in flags)
+        foreach (ArgOccurrence flag in flags)
         {
-            if (occurences.TryGetValue(flag.Property, out string? firstOccurence))
+            if (occurrences.TryGetValue(flag.Property, out string? firstOccurence))
                 throw new DuplicateOccurrenceException(
                     $"Flag '{flag.Name}' was specified before as '{firstOccurence}'."
                 );
-            occurences[flag.Property] = flag.Name;
+            occurrences[flag.Property] = flag.Name;
         }
 
-        foreach ((ArgOccurence occurence, _) in couples)
+        foreach ((ArgOccurrence occurence, _) in couples)
         {
-            if (occurences.TryGetValue(occurence.Property, out string? firstOccurence))
+            if (occurrences.TryGetValue(occurence.Property, out string? firstOccurence))
                 throw new DuplicateOccurrenceException(
                     $"Option '{occurence.Name}' was specified before as '{firstOccurence}'."
                 );
-            occurences[occurence.Property] = occurence.Name;
+            occurrences[occurence.Property] = occurence.Name;
         }
     }
 
@@ -126,7 +129,7 @@ public sealed class ArgParser<TArgs>
         CheckTerminatingFlags(coupled.Flags);
         CheckUnknownArguments(coupled.PlainBeforeDelimiter);
         CheckMissingOptionValues(coupled.Couples);
-        CheckDuplicateOccurences(coupled.Couples, coupled.Flags);
+        CheckDuplicateOccurrences(coupled.Couples, coupled.Flags);
 
         throw new NotImplementedException();
     }
