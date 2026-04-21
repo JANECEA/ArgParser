@@ -3,50 +3,10 @@ using System.Reflection;
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 using ArgParser.Internal;
-using ArgParser.Internal.Arguments;
 using ArgParser.Internal.Metadata;
+using ArgParser.Internal.Parsing;
 
 namespace ArgParser;
-
-/// <summary>
-/// Base class your declared arguments class should inherit from.
-/// </summary>
-public abstract class BaseArgs
-{
-    /// <summary>
-    /// The default implementation of the help flag.
-    /// </summary>
-    [ShortNames('h'), LongNames("help"), TerminatingFlag<HelpCalledException>]
-    public virtual bool HelpCalled { get; set; }
-
-    /// <summary>
-    /// Where default program arguments will be stored.
-    /// </summary>
-    public abstract string[] PlainArguments { get; set; }
-}
-
-/// <summary>
-/// Implements methods for creating <see cref="ArgParser{TArgs}"/>.
-/// </summary>
-public static class ArgParserFactory
-{
-    /// <summary>
-    /// Creates a new <see cref="ArgParser{TArgs}"/>.
-    /// </summary>
-    /// <typeparam name="TArgs">Type of the created ArgParser</typeparam>
-    /// <exception cref="ParserConfigurationException">Describes errors encountered during the validation of TArgs</exception>
-    public static ArgParser<TArgs> FromType<TArgs>()
-        where TArgs : BaseArgs, new()
-    {
-        Type ArgType = typeof(TArgs);
-
-        ArgsClassMetadata classMetadata = ArgsClassMetadata.FromType(ArgType);
-        MetadataValidator.Validate(classMetadata);
-
-        ProcessedClassMetadata processed = ProcessedClassMetadata.FromMetadata(classMetadata);
-        return new ArgParser<TArgs>(processed);
-    }
-}
 
 /// <summary>
 /// Implements parsing of standard program command line arguments into the specified type
@@ -56,10 +16,12 @@ public sealed class ArgParser<TArgs>
     where TArgs : BaseArgs, new()
 {
     private readonly ProcessedClassMetadata _metadata;
+    private readonly Lazy<string> _helpMessage;
 
-    internal ArgParser(ProcessedClassMetadata metadata)
+    internal ArgParser(ProcessedClassMetadata metadata, Lazy<string> helpMessage)
     {
         _metadata = metadata;
+        _helpMessage = helpMessage;
     }
 
     private static void CheckTerminatingFlags(List<ArgOccurrence> flags)
@@ -117,7 +79,7 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private void UnsetFlagValues(TArgs argsObject)
+    private void ResetFlagValues(TArgs argsObject)
     {
         foreach (PropertyMetadata flag in _metadata.AllFlags)
             flag.Info.SetValue(argsObject, false);
@@ -173,12 +135,17 @@ public sealed class ArgParser<TArgs>
             if (!property.Behavior.IsRequired)
                 continue;
 
-            if(!foundValues.ContainsKey(property))
-                throw new MissingRequiredOptionException($"Option '{property.Info.Name}' is marked as required, but was not given");
+            if (!foundValues.ContainsKey(property))
+                throw new MissingRequiredOptionException(
+                    $"Option '{property.Info.Name}' is marked as required, but was not given"
+                );
         }
     }
 
-    private static void SetAllValues(TArgs argsObject, Dictionary<PropertyMetadata, object> foundValues)
+    private static void SetAllValues(
+        TArgs argsObject,
+        Dictionary<PropertyMetadata, object> foundValues
+    )
     {
         foreach ((PropertyMetadata property, object value) in foundValues)
             property.Info.SetValue(argsObject, value);
@@ -190,20 +157,23 @@ public sealed class ArgParser<TArgs>
 
         foreach (PropertyMetadata property in foundValues.Keys)
         {
-            if (!property.Behavior.Requires.Any())
+            if (property.Behavior.Requires.Count == 0)
                 continue;
 
             foreach (string requiredName in property.Behavior.Requires)
             {
                 if (!foundNames.Contains(requiredName))
-                    throw new (
+                    throw new MissingRequiredOptionException(
                         $"Option '{property.Info.Name}' requires '{requiredName}' to be specified, but it was not."
                     );
             }
         }
     }
 
-    private static void AddFoundFlags(Dictionary<PropertyMetadata, object> foundValues, List<ArgOccurrence> foundFlags)
+    private static void AddFoundFlags(
+        Dictionary<PropertyMetadata, object> foundValues,
+        List<ArgOccurrence> foundFlags
+    )
     {
         foreach (ArgOccurrence flag in foundFlags)
             foundValues[flag.Property] = true;
@@ -225,6 +195,17 @@ public sealed class ArgParser<TArgs>
         CheckMissingOptionValues(coupled.Couples);
         CheckDuplicateOccurrences(coupled.Couples, coupled.Flags);
 
+        Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);
+        AddFoundFlags(foundValues, coupled.Flags);
+
+        CheckRequired(foundValues);
+        CheckRequires(foundValues);
+
+        foreach ((PropertyMetadata property, object value) in foundValues)
+        foreach (IOptionValidator v in property.Validators)
+            if (!v.ValidateInternal(value, out string? errorMessage))
+                throw new ValidatorFailedException(errorMessage);
+
         TArgs argObject = new()
         {
             HelpCalled = false,
@@ -232,15 +213,13 @@ public sealed class ArgParser<TArgs>
                 .PlainBeforeDelimiter.Concat(coupled.PlainAfterDelimiter)
                 .ToArray(),
         };
-
-        Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);
-        AddFoundFlags(foundValues, coupled.Flags);
-
-        CheckRequired(foundValues);
-        CheckRequires(foundValues);
-
-        UnsetFlagValues(argObject);
+        ResetFlagValues(argObject);
         SetAllValues(argObject, foundValues);
+
+        foreach (IClassValidator v in _metadata.ClassValidators)
+            if (!v.ValidateInternal(argObject, out string? errorMessage))
+                throw new ValidatorFailedException(errorMessage);
+
         return argObject;
     }
 
@@ -252,8 +231,5 @@ public sealed class ArgParser<TArgs>
     /// <br/>
     /// <see cref="ExampleUsageAttribute"/>.
     /// </summary>
-    public string GenerateHelpMessage()
-    {
-        return "";
-    }
+    public string GenerateHelpMessage() => _helpMessage.Value;
 }

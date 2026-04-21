@@ -7,6 +7,7 @@ internal class ProcessedClassMetadata
     internal required List<PropertyMetadata> AllOptions { get; init; }
     internal required Dictionary<string, PropertyMetadata> LongNamesToOption { get; init; }
     internal required Dictionary<string, PropertyMetadata> ShortNamesToOption { get; init; }
+    internal required List<IClassValidator> ClassValidators { get; init; }
 
     private static Dictionary<string, PropertyMetadata> GetNamesToFlag(ArgsClassMetadata metadata)
     {
@@ -66,5 +67,6 @@ internal class ProcessedClassMetadata
             AllOptions = metadata.Properties.Where(m => !m.IsFlag()).ToList(),
             LongNamesToOption = GetLongNamesToOption(metadata),
             ShortNamesToOption = GetShortNamesToOption(metadata),
+            ClassValidators = metadata.Validators,
         };
 }
