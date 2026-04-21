@@ -8,7 +8,8 @@ internal class CoupledArgs
 {
     internal required List<(ArgOccurence, string?)> Couples { get; init; }
     internal required List<ArgOccurence> Flags { get; init; }
-    internal required List<string> Rest { get; init; }
+    internal required List<string> PlainBeforeDelimiter { get; init; }
+    internal required List<string> PlainAfterDelimiter { get; init; }
 
     private static bool TryGetLongOptionValue(
         string option,
@@ -67,16 +68,17 @@ internal class CoupledArgs
                 continue;
             }
 
-            rest.Add(arg);
             if (arg == "--")
                 break;
+            rest.Add(arg);
         }
 
         return new CoupledArgs
         {
             Couples = couples,
             Flags = flags,
-            Rest = rest.Concat(queuedArgs).ToList(),
+            PlainBeforeDelimiter = rest,
+            PlainAfterDelimiter = queuedArgs.ToList(),
         };
     }
 }

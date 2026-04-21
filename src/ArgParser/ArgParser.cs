@@ -69,15 +69,23 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private static void CheckUnknownArguments(List<string> rest)
+    private static void CheckUnknownArguments(List<string> beforeDelimiter)
     {
-        foreach (string plainArg in rest)
+        foreach (string plainArg in beforeDelimiter)
         {
-            if (plainArg == "--")
-                return;
-
             if (plainArg.StartsWith('-'))
                 throw new UnknownOptionException($"Unknown option '{plainArg}'");
+        }
+    }
+
+    private static void CheckMissingOptionValues(List<(ArgOccurence, string?)> coupled)
+    {
+        foreach ((ArgOccurence occurence, string? value) in coupled)
+        {
+            if (value is null)
+                throw new MissingOptionValueException(
+                    $"Missing option value for '{occurence.Name}'"
+                );
         }
     }
 
@@ -93,7 +101,8 @@ public sealed class ArgParser<TArgs>
         CoupledArgs coupled = CoupledArgs.FromArgs(args, _metadata);
 
         CheckTerminatingFlags(coupled.Flags);
-        CheckUnknownArguments(coupled.Rest);
+        CheckUnknownArguments(coupled.PlainBeforeDelimiter);
+        CheckMissingOptionValues(coupled.Couples);
 
         throw new NotImplementedException();
     }
