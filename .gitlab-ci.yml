@@ -1,23 +1,36 @@
 image: mcr.microsoft.com/dotnet/sdk:9.0
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - when: never
+
 stages:
   - build
   - test
 
+variables:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "true"
+
+before_script:
+  - dotnet restore src/ArgParser.sln
+
 build:
   stage: build
   script:
-    - dotnet restore src/ArgParser.sln
-    - dotnet publish src/ArgParser.sln -c Release -o out/
+    - dotnet build src/ArgParser.sln --configuration Release --no-restore
   artifacts:
     paths:
-      - out/
-    expire_in: 1 hour
+      - cli-parser/bin/
+      - cli-parser/obj/
+      - tests/bin/
+      - tests/obj/
 
-tests:
+test:
   stage: test
-  dependencies:
-    - build
+  needs:
+    - job: build
+      artifacts: true
   script:
-    - dotnet test out/APITests.dll
-    - dotnet test out/ArgParserTests.dll
+    - dotnet test CliParserSolution.sln --configuration Release --no-build --no-restore

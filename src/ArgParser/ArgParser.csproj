@@ -7,13 +7,13 @@
 
   <ItemGroup>
     <ProjectReference
-      Include="..\ArgParser.Analyzers\ArgParser.Analyzers.csproj"
+      Include="..\analyzers\ArgParser.Analyzers\ArgParser.Analyzers.csproj"
       OutputItemType="Analyzer"
       ReferenceOutputAssembly="false"
     />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArgParser.Analyzers.Abstractions\ArgParser.Analyzers.Abstractions.csproj" />
+    <ProjectReference Include="..\analyzers\ArgParser.Analyzers.Abstractions\ArgParser.Analyzers.Abstractions.csproj" />
   </ItemGroup>
 </Project>
