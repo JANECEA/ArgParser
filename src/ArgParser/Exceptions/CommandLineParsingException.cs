@@ -53,3 +53,12 @@ public sealed class UnknownOptionException : CommandLineParsingException
     internal UnknownOptionException(string? message)
         : base(message) { }
 }
+
+/// <summary>
+/// The exception that is thrown when the same command line option or flag was given multiple times.
+/// </summary>
+public sealed class DuplicateOccurrenceException : CommandLineParsingException
+{
+    internal DuplicateOccurrenceException(string? message)
+        : base(message) { }
+}

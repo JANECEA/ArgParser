@@ -89,6 +89,29 @@ public sealed class ArgParser<TArgs>
         }
     }
 
+    private static void CheckDuplicateOccurences(List<(ArgOccurence, string?)> couples, List<ArgOccurence> flags)
+    {
+        Dictionary<PropertyMetadata, string> occurences = new();
+
+        foreach (ArgOccurence flag in flags)
+        {
+            if (occurences.TryGetValue(flag.Property, out string? firstOccurence))
+                throw new DuplicateOccurrenceException(
+                    $"Flag '{flag.Name}' was specified before as '{firstOccurence}'."
+                );
+            occurences[flag.Property] = flag.Name;
+        }
+
+        foreach ((ArgOccurence occurence, _) in couples)
+        {
+            if (occurences.TryGetValue(occurence.Property, out string? firstOccurence))
+                throw new DuplicateOccurrenceException(
+                    $"Option '{occurence.Name}' was specified before as '{firstOccurence}'."
+                );
+            occurences[occurence.Property] = occurence.Name;
+        }
+    }
+
     /// <summary>
     /// Tries parsing the command line arguments according to the structure of
     /// TArgs and attributes defined in it.
@@ -103,6 +126,7 @@ public sealed class ArgParser<TArgs>
         CheckTerminatingFlags(coupled.Flags);
         CheckUnknownArguments(coupled.PlainBeforeDelimiter);
         CheckMissingOptionValues(coupled.Couples);
+        CheckDuplicateOccurences(coupled.Couples, coupled.Flags);
 
         throw new NotImplementedException();
     }
