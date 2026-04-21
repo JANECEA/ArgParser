@@ -56,6 +56,7 @@ internal static class MetadataValidator
     private static void CheckIsParsable(PropertyMetadata property)
     {
         Type propertyType = property.Info.PropertyType;
+        propertyType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
         foreach (Type ifc in propertyType.GetInterfaces().Where(i => i.IsGenericType))
         {

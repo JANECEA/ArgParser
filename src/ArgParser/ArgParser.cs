@@ -117,20 +117,18 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private void SetFlags(TArgs argsObject, List<ArgOccurrence> foundFlags)
+    private void UnsetFlagValues(TArgs argsObject)
     {
         foreach (PropertyMetadata flag in _metadata.AllFlags)
             flag.Info.SetValue(argsObject, false);
-
-        foreach (ArgOccurrence found in foundFlags)
-            found.Property.Info.SetValue(argsObject, true);
     }
 
-    private static void SetOptionValues(
-        TArgs argsObject,
+    private static Dictionary<PropertyMetadata, object> ParseOptionValues(
         List<(ArgOccurrence, string?)> foundOptions
     )
     {
+        Dictionary<PropertyMetadata, object> foundValues = new();
+
         foreach ((ArgOccurrence occurence, string? strValue) in foundOptions)
         {
             if (strValue is null)
@@ -163,8 +161,52 @@ public sealed class ArgParser<TArgs>
                 );
             }
 
-            occurence.Property.Info.SetValue(argsObject, parsedValue);
+            foundValues[occurence.Property] = parsedValue;
         }
+        return foundValues;
+    }
+
+    private void CheckRequired(Dictionary<PropertyMetadata, object> foundValues)
+    {
+        foreach (PropertyMetadata property in _metadata.AllOptions)
+        {
+            if (!property.Behavior.IsRequired)
+                continue;
+
+            if(!foundValues.ContainsKey(property))
+                throw new MissingRequiredOptionException($"Option '{property.Info.Name}' is marked as required, but was not given");
+        }
+    }
+
+    private static void SetAllValues(TArgs argsObject, Dictionary<PropertyMetadata, object> foundValues)
+    {
+        foreach ((PropertyMetadata property, object value) in foundValues)
+            property.Info.SetValue(argsObject, value);
+    }
+
+    private static void CheckRequires(Dictionary<PropertyMetadata, object> foundValues)
+    {
+        HashSet<string> foundNames = foundValues.Keys.Select(p => p.Info.Name).ToHashSet();
+
+        foreach (PropertyMetadata property in foundValues.Keys)
+        {
+            if (!property.Behavior.Requires.Any())
+                continue;
+
+            foreach (string requiredName in property.Behavior.Requires)
+            {
+                if (!foundNames.Contains(requiredName))
+                    throw new (
+                        $"Option '{property.Info.Name}' requires '{requiredName}' to be specified, but it was not."
+                    );
+            }
+        }
+    }
+
+    private static void AddFoundFlags(Dictionary<PropertyMetadata, object> foundValues, List<ArgOccurrence> foundFlags)
+    {
+        foreach (ArgOccurrence flag in foundFlags)
+            foundValues[flag.Property] = true;
     }
 
     /// <summary>
@@ -190,9 +232,15 @@ public sealed class ArgParser<TArgs>
                 .PlainBeforeDelimiter.Concat(coupled.PlainAfterDelimiter)
                 .ToArray(),
         };
-        SetFlags(argObject, coupled.Flags);
-        SetOptionValues(argObject, coupled.Couples);
 
+        Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);
+        AddFoundFlags(foundValues, coupled.Flags);
+
+        CheckRequired(foundValues);
+        CheckRequires(foundValues);
+
+        UnsetFlagValues(argObject);
+        SetAllValues(argObject, foundValues);
         return argObject;
     }
 
