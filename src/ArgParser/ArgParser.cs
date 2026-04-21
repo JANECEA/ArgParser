@@ -3,6 +3,9 @@ using ArgParser.Exceptions;
 using ArgParser.Internal;
 using ArgParser.Internal.Arguments;
 using ArgParser.Internal.Metadata;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
 
 namespace ArgParser;
 
@@ -124,6 +127,37 @@ public sealed class ArgParser<TArgs>
             found.Property.Info.SetValue(argsObject, true);
     }
 
+    private void SetOptionValues(TArgs argsObject, List<(ArgOccurrence, string?)> foundOptions)
+    {
+        foreach ((ArgOccurrence occurence, string? strValue) in foundOptions)
+        {
+            if (strValue is null)
+                throw new UnreachableException("Missing option values should have been caught by CheckMissingOptionValues.");
+
+            PropertyInfo propertyInfo = occurence.Property.Info;
+            Type targetType = propertyInfo.PropertyType;
+
+            Type parseType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+            object parsedValue = null!;
+
+            MethodInfo? parseMethod = parseType.GetMethod("Parse",
+                BindingFlags.Public | BindingFlags.Static,
+                new[] { typeof(string), typeof(IFormatProvider) }) ?? throw new UnreachableException("Internal error: Type does not implement IParsable.");
+            
+            try
+            {
+                parsedValue = parseMethod.Invoke(null, new object?[] { strValue, null })!;
+            }
+            catch (Exception)
+            {
+                throw new ValueParsingException($"Nepodařilo se naparsovat hodnotu '{strValue}' do typu {parseType.Name}.");
+            }
+
+            propertyInfo.SetValue(argsObject, parsedValue);
+        }
+    }
+
     /// <summary>
     /// Tries parsing the command line arguments according to the structure of
     /// TArgs and attributes defined in it.
@@ -148,6 +182,7 @@ public sealed class ArgParser<TArgs>
                 .ToArray(),
         };
         SetFlags(argObject, coupled.Flags);
+        SetOptionValues(argObject, coupled.Couples);
 
         return argObject;
     }
