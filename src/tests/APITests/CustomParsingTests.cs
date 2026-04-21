@@ -1,10 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using ArgParser;
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
-namespace APITests;
+namespace Tests.APITests;
 
 public static class CustomParsingTests
 {

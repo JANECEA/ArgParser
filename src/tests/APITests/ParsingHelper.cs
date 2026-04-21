@@ -1,4 +1,4 @@
-namespace APITests;
+namespace Tests.APITests;
 
 public static class ParsingHelper
 {

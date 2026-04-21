@@ -2,7 +2,7 @@ using ArgParser;
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
-namespace APITests.Attributes;
+namespace Tests.APITests.Attributes;
 
 public static class RequiredTests
 {

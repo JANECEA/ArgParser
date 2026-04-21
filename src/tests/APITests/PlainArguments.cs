@@ -2,7 +2,7 @@
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
-namespace APITests;
+namespace Tests.APITests;
 
 public static class PlainArguments
 {
