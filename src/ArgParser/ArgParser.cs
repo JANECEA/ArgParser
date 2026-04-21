@@ -1,11 +1,10 @@
-﻿using ArgParser.Attributes;
+﻿using System.Diagnostics;
+using System.Reflection;
+using ArgParser.Attributes;
 using ArgParser.Exceptions;
 using ArgParser.Internal;
 using ArgParser.Internal.Arguments;
 using ArgParser.Internal.Metadata;
-using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
 
 namespace ArgParser;
 
@@ -127,34 +126,44 @@ public sealed class ArgParser<TArgs>
             found.Property.Info.SetValue(argsObject, true);
     }
 
-    private void SetOptionValues(TArgs argsObject, List<(ArgOccurrence, string?)> foundOptions)
+    private static void SetOptionValues(
+        TArgs argsObject,
+        List<(ArgOccurrence, string?)> foundOptions
+    )
     {
         foreach ((ArgOccurrence occurence, string? strValue) in foundOptions)
         {
             if (strValue is null)
-                throw new UnreachableException("Missing option values should have been caught by CheckMissingOptionValues.");
+                throw new UnreachableException(
+                    "Missing option values should have been caught by CheckMissingOptionValues."
+                );
 
-            PropertyInfo propertyInfo = occurence.Property.Info;
-            Type targetType = propertyInfo.PropertyType;
-
+            Type targetType = occurence.Property.Info.PropertyType;
             Type parseType = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
-            object parsedValue = null!;
-
-            MethodInfo? parseMethod = parseType.GetMethod("Parse",
+            MethodInfo? parseMethod = parseType.GetMethod(
+                "Parse",
                 BindingFlags.Public | BindingFlags.Static,
-                new[] { typeof(string), typeof(IFormatProvider) }) ?? throw new UnreachableException("Internal error: Type does not implement IParsable.");
-            
+                [typeof(string), typeof(IFormatProvider)]
+            );
+            if (parseMethod is null)
+                throw new UnreachableException(
+                    "Internal error: Type does not implement IParsable<T>."
+                );
+
+            object parsedValue;
             try
             {
-                parsedValue = parseMethod.Invoke(null, new object?[] { strValue, null })!;
+                parsedValue = parseMethod.Invoke(null, [strValue, null])!;
             }
-            catch (Exception)
+            catch
             {
-                throw new ValueParsingException($"Nepodařilo se naparsovat hodnotu '{strValue}' do typu {parseType.Name}.");
+                throw new ValueParsingException(
+                    $"Could not parse value '{strValue}' into type {parseType.Name}."
+                );
             }
 
-            propertyInfo.SetValue(argsObject, parsedValue);
+            occurence.Property.Info.SetValue(argsObject, parsedValue);
         }
     }
 
