@@ -2,35 +2,44 @@ using ArgParser.Internal.Metadata;
 
 namespace ArgParser.Internal.Arguments;
 
+internal record ArgOccurence(string Name, PropertyMetadata Property);
+
 internal class CoupledArgs
 {
-    internal required List<(string, string?)> Couples { get; init; } = new();
-    internal required List<string> Flags { get; init; } = new();
-    internal required List<string> Rest { get; init; } = new();
+    internal required List<(ArgOccurence, string?)> Couples { get; init; }
+    internal required List<ArgOccurence> Flags { get; init; }
+    internal required List<string> Rest { get; init; }
 
     private static bool TryGetLongOptionValue(
         string option,
         ProcessedClassMetadata metadata,
-        out string? value
+        out (ArgOccurence?, string?) occurence
     )
     {
-        value = null;
-        if (metadata.LongNamesToOption.ContainsKey(option))
-            return true;
+        occurence = (null, null);
+        string optionName = option;
 
         int index = option.IndexOf('=');
-        if (index == -1)
+        if (index != -1)
+            optionName = option[..index];
+
+        if (!metadata.LongNamesToOption.TryGetValue(optionName, out PropertyMetadata? property))
             return false;
 
-        string optionName = option[..index];
-        value = index == option.Length - 1 ? string.Empty : option[(index + 1)..];
-        return metadata.LongNamesToOption.ContainsKey(optionName);
+        string? strValue;
+        if (index == -1)
+            strValue = null;
+        else
+            strValue = index == option.Length - 1 ? string.Empty : option[(index + 1)..];
+
+        occurence = (new ArgOccurence(optionName, property), strValue);
+        return true;
     }
 
     internal static CoupledArgs FromArgs(string[] args, ProcessedClassMetadata metadata)
     {
-        List<(string, string?)> couples = new();
-        List<string> flags = new();
+        List<(ArgOccurence, string?)> couples = new();
+        List<ArgOccurence> flags = new();
         List<string> rest = new();
 
         Queue<string> queuedArgs = new(args);
@@ -39,22 +48,22 @@ internal class CoupledArgs
         {
             string arg = queuedArgs.Dequeue();
 
-            if (metadata.NamesToFlag.ContainsKey(arg))
+            if (metadata.NamesToFlag.TryGetValue(arg, out PropertyMetadata? flag))
             {
-                flags.Add(arg);
+                flags.Add(new ArgOccurence(arg, flag));
                 continue;
             }
 
-            if (metadata.ShortNamesToOption.ContainsKey(arg))
+            if (metadata.ShortNamesToOption.TryGetValue(arg, out PropertyMetadata? option))
             {
                 string? val = queuedArgs.Count > 0 ? null : queuedArgs.Dequeue();
-                couples.Add((arg, val));
+                couples.Add((new ArgOccurence(arg, option), val));
                 continue;
             }
 
-            if (TryGetLongOptionValue(arg, metadata, out string? value))
+            if (TryGetLongOptionValue(arg, metadata, out (ArgOccurence?, string?) occurence))
             {
-                couples.Add((arg, value));
+                couples.Add(occurence!);
                 continue;
             }
 

@@ -60,14 +60,11 @@ public sealed class ArgParser<TArgs>
         _metadata = metadata;
     }
 
-    private void CheckTerminatingFlags(List<string> flags)
+    private static void CheckTerminatingFlags(List<ArgOccurence> flags)
     {
         for (int i = flags.Count - 1; i >= 0; i--)
         {
-            if (
-                _metadata.NamesToFlag.TryGetValue(flags[i], out PropertyMetadata? property)
-                && property.Behavior.TerminatingFlag is ITerminatingFlag t
-            )
+            if (flags[i].Property.Behavior.TerminatingFlag is ITerminatingFlag t)
                 t.ThrowException();
         }
     }
