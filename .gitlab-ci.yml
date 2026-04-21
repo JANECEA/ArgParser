@@ -24,10 +24,8 @@ build:
     paths:
       - src/ArgParser/bin/
       - src/ArgParser/obj/
-      - src/tests/APITests/bin/
-      - src/tests/APITests/obj/
-      - src/tests/ArgParserTests/bin/
-      - src/tests/ArgParserTests/obj/
+      - src/tests/bin/
+      - src/tests/obj/
 
 test:
   stage: test
