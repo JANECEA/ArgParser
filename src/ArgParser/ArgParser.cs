@@ -115,6 +115,15 @@ public sealed class ArgParser<TArgs>
         }
     }
 
+    private void SetFlags(TArgs argsObject, List<ArgOccurrence> foundFlags)
+    {
+        foreach (PropertyMetadata flag in _metadata.AllFlags)
+            flag.Info.SetValue(argsObject, false);
+
+        foreach (ArgOccurrence found in foundFlags)
+            found.Property.Info.SetValue(argsObject, true);
+    }
+
     /// <summary>
     /// Tries parsing the command line arguments according to the structure of
     /// TArgs and attributes defined in it.
@@ -131,7 +140,16 @@ public sealed class ArgParser<TArgs>
         CheckMissingOptionValues(coupled.Couples);
         CheckDuplicateOccurrences(coupled.Couples, coupled.Flags);
 
-        throw new NotImplementedException();
+        TArgs argObject = new()
+        {
+            HelpCalled = false,
+            PlainArguments = coupled
+                .PlainBeforeDelimiter.Concat(coupled.PlainAfterDelimiter)
+                .ToArray(),
+        };
+        SetFlags(argObject, coupled.Flags);
+
+        return argObject;
     }
 
     /// <summary>

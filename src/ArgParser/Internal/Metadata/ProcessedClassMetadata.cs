@@ -2,18 +2,13 @@ namespace ArgParser.Internal.Metadata;
 
 internal class ProcessedClassMetadata
 {
+    internal required List<PropertyMetadata> AllFlags { get; init; }
     internal required Dictionary<string, PropertyMetadata> NamesToFlag { get; init; }
+    internal required List<PropertyMetadata> AllOptions { get; init; }
     internal required Dictionary<string, PropertyMetadata> LongNamesToOption { get; init; }
     internal required Dictionary<string, PropertyMetadata> ShortNamesToOption { get; init; }
 
-    internal ArgsClassMetadata ClassMetadata { get; }
-
-    private ProcessedClassMetadata(ArgsClassMetadata classMetadata) =>
-        ClassMetadata = classMetadata;
-
-    private static Dictionary<string, PropertyMetadata> GetNamesToFlag(
-        ArgsClassMetadata metadata
-    )
+    private static Dictionary<string, PropertyMetadata> GetNamesToFlag(ArgsClassMetadata metadata)
     {
         Dictionary<string, PropertyMetadata> namesToFlag = new();
         foreach (PropertyMetadata p in metadata.Properties)
@@ -38,7 +33,7 @@ internal class ProcessedClassMetadata
         Dictionary<string, PropertyMetadata> longNamesToProperty = new();
         foreach (PropertyMetadata p in metadata.Properties)
         {
-            if(p.IsFlag()) 
+            if (p.IsFlag())
                 continue;
 
             foreach (string longName in p.Behavior.LongNames)
@@ -64,9 +59,11 @@ internal class ProcessedClassMetadata
     }
 
     internal static ProcessedClassMetadata FromMetadata(ArgsClassMetadata metadata) =>
-        new(metadata)
+        new()
         {
+            AllFlags = metadata.Properties.Where(m => m.IsFlag()).ToList(),
             NamesToFlag = GetNamesToFlag(metadata),
+            AllOptions = metadata.Properties.Where(m => !m.IsFlag()).ToList(),
             LongNamesToOption = GetLongNamesToOption(metadata),
             ShortNamesToOption = GetShortNamesToOption(metadata),
         };
