@@ -11,20 +11,20 @@ internal class CoupledArgs
     internal required List<string> PlainBeforeDelimiter { get; init; }
     internal required List<string> PlainAfterDelimiter { get; init; }
 
-    private static bool TryGetLongOptionValue(
+    private static bool TryGetOptionValue(
         string option,
         ProcessedClassMetadata metadata,
-        out (ArgOccurrence?, string?) occurence
+        out (ArgOccurrence, string?)? occurence
     )
     {
-        occurence = (null, null);
-        string optionName = option;
+        occurence = null;
 
+        string optionName = option;
         int index = option.IndexOf('=');
         if (index != -1)
             optionName = option[..index];
 
-        if (!metadata.LongNamesToOption.TryGetValue(optionName, out PropertyMetadata? property))
+        if (!metadata.NamesToOption.TryGetValue(optionName, out PropertyMetadata? property))
             return false;
 
         string? strValue;
@@ -41,7 +41,7 @@ internal class CoupledArgs
     {
         List<(ArgOccurrence, string?)> couples = new();
         List<ArgOccurrence> flags = new();
-        List<string> rest = new();
+        List<string> beforeDelimiter = new();
 
         Queue<string> queuedArgs = new(args);
 
@@ -55,29 +55,26 @@ internal class CoupledArgs
                 continue;
             }
 
-            if (metadata.ShortNamesToOption.TryGetValue(arg, out PropertyMetadata? option))
+            if (TryGetOptionValue(arg, metadata, out (ArgOccurrence, string?)? occurence))
             {
-                string? val = queuedArgs.Count > 0 ? null : queuedArgs.Dequeue();
-                couples.Add((new ArgOccurrence(arg, option), val));
-                continue;
-            }
+                (ArgOccurrence name, string? value) couple = occurence!.Value;
+                if (couple.value is null && queuedArgs.Count > 0)
+                    couple.value = queuedArgs.Dequeue();
 
-            if (TryGetLongOptionValue(arg, metadata, out (ArgOccurrence?, string?) occurence))
-            {
-                couples.Add(occurence!);
+                couples.Add(couple);
                 continue;
             }
 
             if (arg == "--")
                 break;
-            rest.Add(arg);
+            beforeDelimiter.Add(arg);
         }
 
         return new CoupledArgs
         {
             Couples = couples,
             Flags = flags,
-            PlainBeforeDelimiter = rest,
+            PlainBeforeDelimiter = beforeDelimiter,
             PlainAfterDelimiter = queuedArgs.ToList(),
         };
     }
