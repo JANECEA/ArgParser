@@ -5,10 +5,10 @@ namespace ArgParser.Internal.Metadata;
 
 internal class BehaviorMetadata
 {
-    internal required List<char> ShortNames { get; init; }
-    internal required List<string> LongNames { get; init; }
+    internal required IReadOnlyList<char> ShortNames { get; init; }
+    internal required IReadOnlyList<string> LongNames { get; init; }
     internal required bool IsRequired { get; init; }
-    internal required List<string> Requires { get; init; }
+    internal required IReadOnlyList<string> Requires { get; init; }
     internal required ITerminatingFlag? TerminatingFlag { get; init; }
 
     private static ITerminatingFlag? GetTerminatingFlag(PropertyInfo propertyInfo) =>
@@ -47,7 +47,7 @@ internal class PropertyMetadata
     internal required PropertyInfo Info { get; init; }
     internal required BehaviorMetadata Behavior { get; init; }
     internal required HelpMetadata HelpData { get; init; }
-    internal required List<IOptionValidator> Validators { get; init; }
+    internal required IReadOnlyList<IOptionValidator> Validators { get; init; }
 
     private static List<IOptionValidator> GetValidators(PropertyInfo propertyInfo) =>
         propertyInfo.GetCustomAttributes(false).OfType<IOptionValidator>().ToList();

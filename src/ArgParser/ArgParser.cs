@@ -24,7 +24,7 @@ public sealed class ArgParser<TArgs>
         _helpMessage = helpMessage;
     }
 
-    private static void CheckTerminatingFlags(List<ArgOccurrence> flags)
+    private static void CheckTerminatingFlags(IReadOnlyList<ArgOccurrence> flags)
     {
         for (int i = flags.Count - 1; i >= 0; i--)
         {
@@ -33,7 +33,7 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private static void CheckUnknownArguments(List<string> beforeDelimiter)
+    private static void CheckUnknownArguments(IReadOnlyList<string> beforeDelimiter)
     {
         foreach (string plainArg in beforeDelimiter)
         {
@@ -42,7 +42,7 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private static void CheckMissingOptionValues(List<(ArgOccurrence, string?)> coupled)
+    private static void CheckMissingOptionValues(IReadOnlyList<(ArgOccurrence, string?)> coupled)
     {
         foreach ((ArgOccurrence occurence, string? value) in coupled)
         {
@@ -54,8 +54,8 @@ public sealed class ArgParser<TArgs>
     }
 
     private static void CheckDuplicateOccurrences(
-        List<(ArgOccurrence, string?)> couples,
-        List<ArgOccurrence> flags
+        IReadOnlyList<(ArgOccurrence, string?)> couples,
+        IReadOnlyList<ArgOccurrence> flags
     )
     {
         Dictionary<PropertyMetadata, string> occurrences = new();
@@ -86,7 +86,7 @@ public sealed class ArgParser<TArgs>
     }
 
     private static Dictionary<PropertyMetadata, object> ParseOptionValues(
-        List<(ArgOccurrence, string?)> foundOptions
+        IReadOnlyList<(ArgOccurrence, string?)> foundOptions
     )
     {
         Dictionary<PropertyMetadata, object> foundValues = new();
@@ -172,7 +172,7 @@ public sealed class ArgParser<TArgs>
 
     private static void AddFoundFlags(
         Dictionary<PropertyMetadata, object> foundValues,
-        List<ArgOccurrence> foundFlags
+        IReadOnlyList<ArgOccurrence> foundFlags
     )
     {
         foreach (ArgOccurrence flag in foundFlags)

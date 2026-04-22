@@ -6,10 +6,10 @@ internal record ArgOccurrence(string Name, PropertyMetadata Property);
 
 internal class CoupledArgs
 {
-    internal required List<(ArgOccurrence, string?)> Couples { get; init; }
-    internal required List<ArgOccurrence> Flags { get; init; }
-    internal required List<string> PlainBeforeDelimiter { get; init; }
-    internal required List<string> PlainAfterDelimiter { get; init; }
+    internal required IReadOnlyList<(ArgOccurrence, string?)> Couples { get; init; }
+    internal required IReadOnlyList<ArgOccurrence> Flags { get; init; }
+    internal required IReadOnlyList<string> PlainBeforeDelimiter { get; init; }
+    internal required IReadOnlyList<string> PlainAfterDelimiter { get; init; }
 
     private static bool TryGetOptionValue(
         string option,

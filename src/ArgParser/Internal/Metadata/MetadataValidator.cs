@@ -88,7 +88,7 @@ internal static class MetadataValidator
         }
     }
 
-    private static void ValidateRequiresUsage(List<PropertyMetadata> metadata)
+    private static void ValidateRequiresUsage(IReadOnlyList<PropertyMetadata> metadata)
     {
         HashSet<string> propertyNames = metadata.Select(m => m.Info.Name).ToHashSet();
 
@@ -103,7 +103,7 @@ internal static class MetadataValidator
         }
     }
 
-    private static void CheckForDuplicateLongNames(List<PropertyMetadata> metadata)
+    private static void CheckForDuplicateLongNames(IReadOnlyList<PropertyMetadata> metadata)
     {
         Dictionary<string, string> longNames = new();
 
@@ -120,7 +120,7 @@ internal static class MetadataValidator
         }
     }
 
-    private static void CheckForDuplicateShortNames(List<PropertyMetadata> metadata)
+    private static void CheckForDuplicateShortNames(IReadOnlyList<PropertyMetadata> metadata)
     {
         Dictionary<char, string> shortNames = new();
 

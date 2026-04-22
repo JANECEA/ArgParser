@@ -6,9 +6,9 @@ namespace ArgParser.Internal.Metadata;
 internal class ArgsClassMetadata
 {
     internal required Type ClassType { get; init; }
-    internal required List<PropertyMetadata> Properties { get; init; }
+    internal required IReadOnlyList<PropertyMetadata> Properties { get; init; }
     internal required string ExampleUsage { get; init; }
-    internal required List<IClassValidator> Validators { get; init; }
+    internal required IReadOnlyList<IClassValidator> Validators { get; init; }
 
     private static List<IClassValidator> GetValidators(Type classType) =>
         classType.GetCustomAttributes(false).OfType<IClassValidator>().ToList();
