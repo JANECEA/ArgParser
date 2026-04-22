@@ -170,13 +170,45 @@ public sealed class ArgParser<TArgs>
         }
     }
 
-    private static void AddFoundFlags(
-        Dictionary<PropertyMetadata, object> foundValues,
-        IReadOnlyList<ArgOccurrence> foundFlags
+    private static Dictionary<PropertyMetadata, object> GetFoundValues(CoupledArgs coupled)
+    {
+        Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);
+        foreach (ArgOccurrence flag in coupled.Flags)
+            foundValues[flag.Property] = true;
+
+        return foundValues;
+    }
+
+    private static void ApplyOptionValidators(Dictionary<PropertyMetadata, object> foundValues)
+    {
+        foreach ((PropertyMetadata property, object value) in foundValues)
+        foreach (IOptionValidator v in property.Validators)
+            if (!v.ValidateInternal(value, out string? errorMessage))
+                throw new ValidatorFailedException(errorMessage);
+    }
+
+    private TArgs GetArgObject(
+        CoupledArgs coupled,
+        Dictionary<PropertyMetadata, object> foundValues
     )
     {
-        foreach (ArgOccurrence flag in foundFlags)
-            foundValues[flag.Property] = true;
+        TArgs argObject = new()
+        {
+            HelpCalled = false,
+            PlainArguments = coupled
+                .PlainBeforeDelimiter.Concat(coupled.PlainAfterDelimiter)
+                .ToArray(),
+        };
+        ResetFlagValues(argObject);
+        SetAllValues(argObject, foundValues);
+        return argObject;
+    }
+
+    private void ApplyClassValidators(TArgs argObject)
+    {
+        foreach (IClassValidator v in _metadata.ClassValidators)
+            if (!v.ValidateInternal(argObject, out string? errorMessage))
+                throw new ValidatorFailedException(errorMessage);
     }
 
     /// <summary>
@@ -189,37 +221,22 @@ public sealed class ArgParser<TArgs>
     public TArgs Parse(string[] args)
     {
         CoupledArgs coupled = CoupledArgs.FromArgs(args, _metadata);
-
         CheckTerminatingFlags(coupled.Flags);
+
         CheckUnknownArguments(coupled.PlainBeforeDelimiter);
         CheckMissingOptionValues(coupled.Couples);
         CheckDuplicateOccurrences(coupled.Couples, coupled.Flags);
 
-        Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);
-        AddFoundFlags(foundValues, coupled.Flags);
+        Dictionary<PropertyMetadata, object> foundValues = GetFoundValues(coupled);
 
         CheckRequired(foundValues);
         CheckRequires(foundValues);
 
-        foreach ((PropertyMetadata property, object value) in foundValues)
-        foreach (IOptionValidator v in property.Validators)
-            if (!v.ValidateInternal(value, out string? errorMessage))
-                throw new ValidatorFailedException(errorMessage);
+        ApplyOptionValidators(foundValues);
 
-        TArgs argObject = new()
-        {
-            HelpCalled = false,
-            PlainArguments = coupled
-                .PlainBeforeDelimiter.Concat(coupled.PlainAfterDelimiter)
-                .ToArray(),
-        };
-        ResetFlagValues(argObject);
-        SetAllValues(argObject, foundValues);
+        TArgs argObject = GetArgObject(coupled, foundValues);
 
-        foreach (IClassValidator v in _metadata.ClassValidators)
-            if (!v.ValidateInternal(argObject, out string? errorMessage))
-                throw new ValidatorFailedException(errorMessage);
-
+        ApplyClassValidators(argObject);
         return argObject;
     }
 
