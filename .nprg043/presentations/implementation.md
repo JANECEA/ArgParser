@@ -106,6 +106,9 @@ private static void Main(string[] args)
 - `LongOptionsAttribute` => `LongNamesAttribute`
 - `ValuePlaceholderAttribute` => `MetaVarNameAttribute`
 
+### Možnosti předání hodnot
+- `-o value` == `-o=value` == `--option value` == `--option=value`
+
 ---
 
 # Navržená změna - pozicionální argumenty
@@ -174,6 +177,6 @@ myprogram --help -o
 
 # Integrace testů
 
-**Status**: 13 / 353 :(
+**Status**: 251 / 355 :)
 
 bye bye

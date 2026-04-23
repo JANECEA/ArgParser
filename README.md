@@ -131,6 +131,10 @@ internal class SimpleExampleProgram
 }
 
 ```
+#### Equivalent ways to pass a value:
+```cs
+-o value -o=value --option value --option=value
+```
 #### Example of calling the program:
 ```sh
 myapp.exe -i 10 --string="Hello World" -f plainArgument
@@ -376,5 +380,5 @@ internal class AdvancedExample
 
 #### Example of calling the program:
 ```sh
-myapp.exe --count=10 plainArgument1 --email=example@abc.de -l myclass -- PlainArgument2 -PlainArgument3
+myapp.exe -c=10 plainArgument1 --email=example@abc.de -l myclass -- PlainArgument2 -PlainArgument3
 ```

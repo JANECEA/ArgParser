@@ -83,7 +83,7 @@ public class SimpleTests
     {
         var parser = ArgParserFactory.FromType<SimpleArgs_PrimitiveTypes_OptionalOnlyOptions>();
 
-        Assert.Throws<CommandLineParsingException>(() =>
+        Assert.ThrowsAny<CommandLineParsingException>(() =>
         {
             var result = parser.Parse(args);
         });

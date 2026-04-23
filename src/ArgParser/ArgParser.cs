@@ -101,6 +101,12 @@ public sealed class ArgParser<TArgs>
             Type targetType = occurence.Property.Info.PropertyType;
             Type parseType = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
+            if (parseType == typeof(string))
+            {
+                foundValues[occurence.Property] = strValue;
+                continue;
+            }
+
             MethodInfo? parseMethod = parseType.GetMethod(
                 "Parse",
                 BindingFlags.Public | BindingFlags.Static,
