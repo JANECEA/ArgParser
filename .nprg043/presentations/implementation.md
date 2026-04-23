@@ -177,6 +177,6 @@ myprogram --help -o
 
 # Integrace testů
 
-**Status**: 251 / 355 :)
+**Status**: 262 / 355 :)
 
 bye bye

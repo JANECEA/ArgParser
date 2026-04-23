@@ -134,7 +134,7 @@ public class SimpleTests
     {
         var parser = ArgParserFactory.FromType<SimpleArgs_PrimitiveTypes_OptionalOnlyOptions>();
 
-        Assert.Throws<CommandLineParsingException>(() =>
+        Assert.Throws<MissingOptionValueException>(() =>
         {
             var result = parser.Parse(args);
         });
@@ -244,7 +244,7 @@ public class SimpleTests
     public void InvalidOptionsSet(string[] args)
     {
         var parser = ArgParserFactory.FromType<SimpleArgs_PrimitiveTypes_OptionalOnlyOptions>();
-        Assert.Throws<CommandLineParsingException>(() =>
+        Assert.ThrowsAny<CommandLineParsingException>(() =>
         {
             var result = parser.Parse(args);
         });

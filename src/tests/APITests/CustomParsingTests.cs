@@ -11,6 +11,7 @@ public static class CustomParsingTests
 
     private class PersonUnparsableArgs : BaseArgs
     {
+        [LongNames("person")]
         public Person? Person { get; set; }
 
         public override string[] PlainArguments { get; set; } = [];
