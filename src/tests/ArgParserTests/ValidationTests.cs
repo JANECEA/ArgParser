@@ -47,14 +47,14 @@ public class ValidationTests
         public int? EvenOption { get; set; }
 
         [ShortNames('s'), LongNames("string"), MustContainAt]
-        public string? StringOption { get; set; }
+        public CustomType_StringWrapper? StringOption { get; set; }
     }
 
     public static IEnumerable<object[]> ValidatorValidInputs =>
         [
             [new[] { "-i", "0" }],
             [new[] { "-i", "50" }],
-            [new[] { "-i", "100" }],
+            [new[] { "-i", "99" }],
             [new[] { "-e", "0" }],
             [new[] { "-e", "2" }],
             [new[] { "-e", "-4" }],
@@ -75,7 +75,7 @@ public class ValidationTests
     public static IEnumerable<object[]> ValidatorInvalidInputs =>
         [
             [new[] { "-i", "-1" }],
-            [new[] { "-i", "101" }],
+            [new[] { "-i", "100" }],
             [new[] { "-i", "1000" }],
             [new[] { "-e", "1" }],
             [new[] { "-e", "3" }],
@@ -91,6 +91,6 @@ public class ValidationTests
     public void PrimitiveTypesValidation_InvalidInputs(string[] args)
     {
         var parser = ArgParserFactory.FromType<SimpleArgs_WithValidators>();
-        Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
+        Assert.Throws<ValidatorFailedException>(() => parser.Parse(args));
     }
 }

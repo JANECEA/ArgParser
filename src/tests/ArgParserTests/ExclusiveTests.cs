@@ -38,7 +38,7 @@ public class ExclusiveTests
     {
         public override bool Validate(ExclusiveOptions args, out string? errorMessage)
         {
-            if (args.OptionA is not null && args.OptionB is not null)
+            if (args.OptionD is not null && args.OptionB is not null)
             {
                 errorMessage = "OptionB and OptionD must not be set at the same time.";
                 return false;
@@ -52,7 +52,7 @@ public class ExclusiveTests
     {
         public override bool Validate(ExclusiveOptions args, out string? errorMessage)
         {
-            if (args.OptionA is not null && args.OptionB is not null)
+            if (args.OptionC is not null && args.OptionD is not null)
             {
                 errorMessage = "OptionC and OptionD must not be set at the same time.";
                 return false;
@@ -122,6 +122,6 @@ public class ExclusiveTests
     public void MutualyExclusive_InvalidInput(string[] args)
     {
         var parser = ArgParserFactory.FromType<ExclusiveOptions>();
-        Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
+        Assert.Throws<ValidatorFailedException>(() => parser.Parse(args));
     }
 }

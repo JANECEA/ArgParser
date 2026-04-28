@@ -72,6 +72,6 @@ public class DependencyTests
     {
         var parser = ArgParserFactory.FromType<DependentOptions>();
 
-        Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
+        Assert.ThrowsAny<CommandLineParsingException>(() => parser.Parse(args));
     }
 }

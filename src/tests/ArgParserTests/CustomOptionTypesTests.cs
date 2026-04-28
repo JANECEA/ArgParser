@@ -225,6 +225,6 @@ public class CustomOptionTypesValidationTests
     {
         var parser = ArgParserFactory.FromType<CustomOptionsValidators>();
 
-        Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
+        Assert.Throws<ValidatorFailedException>(() => parser.Parse(args));
     }
 }

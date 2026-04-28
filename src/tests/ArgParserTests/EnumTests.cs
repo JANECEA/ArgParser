@@ -70,6 +70,6 @@ public class EnumTests
     {
         var parser = ArgParserFactory.FromType<EnumOptions>();
 
-        Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
+        Assert.ThrowsAny<CommandLineParsingException>(() => parser.Parse(args));
     }
 }

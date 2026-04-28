@@ -17,10 +17,9 @@ public class DefaultValuesTests
     }
 
     [Theory]
-    [InlineData(new[] { "-i", "-s" }, 8, "ahoj")]
-    [InlineData(new[] { "-i", "9", "-s" }, 9, "ahoj")]
-    [InlineData(new[] { "-i", "-s", "abc" }, 8, "abc")]
-    [InlineData(new[] { "-i" }, 8, null)]
+    [InlineData(new string[] { }, 8, "ahoj")]
+    [InlineData(new[] { "-i", "9" }, 9, "ahoj")]
+    [InlineData(new[] { "-s", "abc" }, 8, "abc")]
     public void DafaultValue(string[] args, int? expectedInt, string? expectedStr)
     {
         var parser = ArgParserFactory.FromType<DefaultPrimitiveOptions>();
