@@ -1,14 +1,9 @@
-﻿using ArgParser.Attributes;
+﻿using System.Diagnostics;
+using System.Reflection;
+using ArgParser.Attributes;
 using ArgParser.Exceptions;
 using ArgParser.Internal.Metadata;
 using ArgParser.Internal.Parsing;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArgParser.Internal.CommandLine;
 
@@ -127,6 +122,7 @@ internal static class ValueParser
         }
         return foundValues;
     }
+
     internal static Dictionary<PropertyMetadata, object> GetFoundValues(CoupledArgs coupled)
     {
         Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);

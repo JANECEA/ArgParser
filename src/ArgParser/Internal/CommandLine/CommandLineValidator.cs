@@ -1,17 +1,11 @@
 ﻿using ArgParser.Exceptions;
 using ArgParser.Internal.Metadata;
 using ArgParser.Internal.Parsing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArgParser.Internal.CommandLine;
 
 internal static class CommandLineValidator
 {
-
     internal static void CheckUnknownArguments(IReadOnlyList<string> beforeDelimiter)
     {
         foreach (string plainArg in beforeDelimiter)
@@ -58,8 +52,10 @@ internal static class CommandLineValidator
         }
     }
 
-
-    internal static void CheckRequired(Dictionary<PropertyMetadata, object> foundValues, ProcessedClassMetadata metadata)
+    internal static void CheckRequired(
+        Dictionary<PropertyMetadata, object> foundValues,
+        ProcessedClassMetadata metadata
+    )
     {
         foreach (PropertyMetadata property in metadata.AllOptions)
         {
@@ -72,6 +68,7 @@ internal static class CommandLineValidator
                 );
         }
     }
+
     internal static void CheckRequires(Dictionary<PropertyMetadata, object> foundValues)
     {
         HashSet<string> foundNames = foundValues.Keys.Select(p => p.Info.Name).ToHashSet();
@@ -94,16 +91,19 @@ internal static class CommandLineValidator
     internal static void ApplyOptionValidators(Dictionary<PropertyMetadata, object> foundValues)
     {
         foreach ((PropertyMetadata property, object value) in foundValues)
-            foreach (IOptionValidator v in property.Validators)
-                if (!v.ValidateInternal(value, out string? errorMessage))
-                    throw new ValidatorFailedException(errorMessage);
+        foreach (IOptionValidator v in property.Validators)
+            if (!v.ValidateInternal(value, out string? errorMessage))
+                throw new ValidatorFailedException(errorMessage);
     }
 
-    internal static void ApplyClassValidators<TArgs>(TArgs argObject, ProcessedClassMetadata metadata) where TArgs : BaseArgs
+    internal static void ApplyClassValidators<TArgs>(
+        TArgs argObject,
+        ProcessedClassMetadata metadata
+    )
+        where TArgs : BaseArgs
     {
         foreach (IClassValidator v in metadata.ClassValidators)
             if (!v.ValidateInternal(argObject, out string? errorMessage))
                 throw new ValidatorFailedException(errorMessage);
     }
-
 }
