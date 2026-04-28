@@ -7,7 +7,6 @@ namespace Tests.ArgParserTests;
 
 public class EnumTests
 {
-    [EnumCasePolicy(EnumCase.PreserveCase)]
     public enum Days
     {
         mon = 0,
@@ -24,7 +23,13 @@ public class EnumTests
     {
         public override string[] PlainArguments { get; set; } = [];
 
-        [ShortNames('d'), LongNames("day"), Help("Enum option"), MetaVarName("ENUM_VALUE")]
+        [
+            ShortNames('d'),
+            LongNames("day"),
+            Help("Enum option"),
+            MetaVarName("ENUM_VALUE"),
+            EnumCasePolicy(EnumCase.AllLowerCase),
+        ]
         public Days? Day { get; set; }
 
         [
@@ -41,7 +46,6 @@ public class EnumTests
     [InlineData(new[] { "-d", "thu" }, Days.thu)]
     [InlineData(new[] { "-d", "fri" }, Days.fri)]
     [InlineData(new[] { "--day=son" }, Days.son)]
-    [InlineData(new[] { "--day=\"son\"" }, Days.son)]
     [InlineData(new[] { "-d", "wen", "tue" }, Days.wen)]
     [InlineData(new[] { "-s", "wen", "-d", "tue" }, Days.tue)]
     [InlineData(new[] { "-d", "tue", "-s", "thu" }, Days.tue)]

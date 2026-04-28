@@ -60,6 +60,9 @@ internal static class MetadataValidator
         Type propertyType = property.Info.PropertyType;
         propertyType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
+        if (propertyType.IsEnum)
+            return;
+
         foreach (Type ifc in propertyType.GetInterfaces().Where(i => i.IsGenericType))
         {
             if (

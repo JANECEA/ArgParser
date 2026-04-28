@@ -200,7 +200,7 @@ public enum EnumCase
 /// Specifies how the case of command line option values will be
 /// interpreted in relation to the enum constants definition.
 /// </summary>
-[AttributeUsage(AttributeTargets.Enum)]
+[AttributeUsage(AttributeTargets.Property)]
 public sealed class EnumCasePolicyAttribute : Attribute
 {
     internal EnumCase Case { get; }
