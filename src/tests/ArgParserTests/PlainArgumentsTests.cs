@@ -47,9 +47,8 @@ public class PlainArgumentsTests
 
     public static IEnumerable<object[]> PlainArgumentsInvalidInputs =>
         [
-            [new[] { "plain1" }],
-            [new[] { "-i", "8", "plain1" }],
-            [new[] { "-b", "plain1" }],
+            [new[] { "-x", "plain1", "--" }],
+            [new[] { "-x", "--" }],
             [new[] { "--nonexistent", "--", "plain1" }],
         ];
 
@@ -59,6 +58,6 @@ public class PlainArgumentsTests
     {
         var parser = ArgParserFactory.FromType<PlainArgumentsCatcher>();
 
-        Assert.Throws<CommandLineParsingException>(() => parser.Parse(args));
+        Assert.Throws<UnknownOptionException>(() => parser.Parse(args));
     }
 }
