@@ -41,6 +41,8 @@ internal static class MetadataValidator
     private static void CheckOptionValidatorsMatch(PropertyMetadata property)
     {
         Type propertyType = property.Info.PropertyType;
+        if (Nullable.GetUnderlyingType(propertyType) is Type type)
+            propertyType = type;
 
         foreach (IOptionValidator validator in property.Validators)
         {
