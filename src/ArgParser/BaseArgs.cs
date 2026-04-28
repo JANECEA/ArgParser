@@ -11,7 +11,12 @@ public abstract class BaseArgs
     /// <summary>
     /// The default implementation of the help flag.
     /// </summary>
-    [ShortNames('h'), LongNames("help"), TerminatingFlag<HelpCalledException>]
+    [
+        ShortNames('h'),
+        LongNames("help"),
+        Help("Prints help message and exits."),
+        TerminatingFlag<HelpCalledException>,
+    ]
     public virtual bool HelpCalled { get; set; }
 
     /// <summary>

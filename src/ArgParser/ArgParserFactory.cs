@@ -1,4 +1,5 @@
 using ArgParser.Exceptions;
+using ArgParser.Internal;
 using ArgParser.Internal.Metadata;
 
 namespace ArgParser;
@@ -22,6 +23,9 @@ public static class ArgParserFactory
         MetadataValidator.Validate(classMetadata);
 
         ProcessedClassMetadata processed = ProcessedClassMetadata.FromMetadata(classMetadata);
-        return new ArgParser<TArgs>(processed, new Lazy<string>(string.Empty));
+        return new ArgParser<TArgs>(
+            processed,
+            new Lazy<string>(() => HelpMessageGenerator.Generate(classMetadata))
+        );
     }
 }
