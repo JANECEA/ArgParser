@@ -41,6 +41,16 @@ public sealed class ReferencedOptionNotFoundException : ParserConfigurationExcep
 }
 
 /// <summary>
+/// The exception that is thrown when the positional arguments sequence
+/// was defined incorrectly in <see cref="PositionalArgsAttribute"/>.
+/// </summary>
+public sealed class PositionalArgsConfigException : ParserConfigurationException
+{
+    internal PositionalArgsConfigException(string? message)
+        : base(message) { }
+}
+
+/// <summary>
 /// The exception that is thrown when the <see cref="ClassValidatorAttribute{TArgs}"/> or the <see cref="OptionValidatorAttribute{TType}"/>
 /// have different type than the property.
 /// </summary>
