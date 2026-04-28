@@ -32,8 +32,8 @@ public class TerminatingFlagTests
     [InlineData(new[] { "-b" }, typeof(TerminatingFlagExceptionB))]
     [InlineData(new[] { "--f" }, typeof(TerminatingFlagExceptionB))]
     [InlineData(new[] { "--longFlag" }, typeof(TerminatingFlagExceptionB))]
-    [InlineData(new[] { "-f", "-b" }, typeof(TerminatingFlagExceptionA))]
-    [InlineData(new[] { "-b", "-f" }, typeof(TerminatingFlagExceptionB))]
+    [InlineData(new[] { "-f", "-b" }, typeof(TerminatingFlagExceptionB))]
+    [InlineData(new[] { "-b", "-f" }, typeof(TerminatingFlagExceptionA))]
     [InlineData(new[] { "-o", "-f" }, typeof(TerminatingFlagExceptionA))]
     [InlineData(new[] { "--integer=9", "-f" }, typeof(TerminatingFlagExceptionA))]
     public void TerminatingFlags_ValidInput(string[] args, Type exceptionType)
