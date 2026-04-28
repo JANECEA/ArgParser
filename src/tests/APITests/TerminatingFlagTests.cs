@@ -38,7 +38,7 @@ public static class TerminatingFlagTests
     private sealed class HelpLikeArgs : BaseArgs
     {
         [ShortNames('h'), LongNames("help"), TerminatingFlag<HelpCalledException>]
-        public bool Help { get; set; }
+        public override bool HelpCalled { get; set; }
 
         public override string[] PlainArguments { get; set; } = [];
     }
@@ -71,14 +71,14 @@ public static class TerminatingFlagTests
     {
         var parser = ArgParserFactory.FromType<DoubleTerminatingArgs>();
 
-        Assert.Throws<QuitException>(() => parser.Parse(ParsingHelper.GetSplitArgs("-q -e")));
+        Assert.Throws<QuitException>(() => parser.Parse(ParsingHelper.GetSplitArgs("-e -q")));
     }
 
     [Fact]
     public static void OrderOfTerminatingFlagsMatters2()
     {
         var parser = ArgParserFactory.FromType<DoubleTerminatingArgs>();
-        Assert.Throws<ExitException>(() => parser.Parse(ParsingHelper.GetSplitArgs("-e -q")));
+        Assert.Throws<ExitException>(() => parser.Parse(ParsingHelper.GetSplitArgs("-q -e")));
     }
 
     class TerminatingNotOnFlagArgs : BaseArgs

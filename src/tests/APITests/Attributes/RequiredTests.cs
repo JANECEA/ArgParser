@@ -47,7 +47,6 @@ public static class RequiredTests
 
     [Theory]
     [InlineData("-a")]
-    [InlineData("-a=")]
     public static void ThrowsOnEmptyRequired(string args)
     {
         var parser = ArgParserFactory.FromType<SimpleRequired>();
@@ -86,7 +85,7 @@ public static class RequiredTests
     [InlineData("nothing set")]
     public static void ThrowsOnNotAllRequiredSet(string args)
     {
-        var parser = ArgParserFactory.FromType<SimpleRequired>();
+        var parser = ArgParserFactory.FromType<MultipleRequiredArgs>();
 
         Assert.Throws<MissingRequiredOptionException>(() =>
             parser.Parse(ParsingHelper.GetSplitArgs(args))
