@@ -3,6 +3,7 @@ using System.Reflection;
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 using ArgParser.Internal;
+using ArgParser.Internal.CommandLine;
 using ArgParser.Internal.Metadata;
 using ArgParser.Internal.Parsing;
 
@@ -30,52 +31,6 @@ public sealed class ArgParser<TArgs>
         {
             if (flags[i].Property.Behavior.TerminatingFlag is ITerminatingFlag t)
                 t.ThrowException();
-        }
-    }
-
-    private static void CheckUnknownArguments(IReadOnlyList<string> beforeDelimiter)
-    {
-        foreach (string plainArg in beforeDelimiter)
-        {
-            if (plainArg.StartsWith('-'))
-                throw new UnknownOptionException($"Unknown option '{plainArg}'");
-        }
-    }
-
-    private static void CheckMissingOptionValues(IReadOnlyList<(ArgOccurrence, string?)> coupled)
-    {
-        foreach ((ArgOccurrence occurence, string? value) in coupled)
-        {
-            if (value is null)
-                throw new MissingOptionValueException(
-                    $"Missing option value for '{occurence.Name}'"
-                );
-        }
-    }
-
-    private static void CheckDuplicateOccurrences(
-        IReadOnlyList<(ArgOccurrence, string?)> couples,
-        IReadOnlyList<ArgOccurrence> flags
-    )
-    {
-        Dictionary<PropertyMetadata, string> occurrences = new();
-
-        foreach (ArgOccurrence flag in flags)
-        {
-            if (occurrences.TryGetValue(flag.Property, out string? firstOccurence))
-                throw new DuplicateOccurrenceException(
-                    $"Flag '{flag.Name}' was specified before as '{firstOccurence}'."
-                );
-            occurrences[flag.Property] = flag.Name;
-        }
-
-        foreach ((ArgOccurrence occurence, _) in couples)
-        {
-            if (occurrences.TryGetValue(occurence.Property, out string? firstOccurence))
-                throw new DuplicateOccurrenceException(
-                    $"Option '{occurence.Name}' was specified before as '{firstOccurence}'."
-                );
-            occurrences[occurence.Property] = occurence.Name;
         }
     }
 
@@ -199,20 +154,6 @@ public sealed class ArgParser<TArgs>
         return foundValues;
     }
 
-    private void CheckRequired(Dictionary<PropertyMetadata, object> foundValues)
-    {
-        foreach (PropertyMetadata property in _metadata.AllOptions)
-        {
-            if (!property.Behavior.IsRequired)
-                continue;
-
-            if (!foundValues.ContainsKey(property))
-                throw new MissingRequiredOptionException(
-                    $"Option '{property.Info.Name}' is marked as required, but was not given"
-                );
-        }
-    }
-
     private static void SetAllValues(
         TArgs argsObject,
         Dictionary<PropertyMetadata, object> foundValues
@@ -222,25 +163,6 @@ public sealed class ArgParser<TArgs>
             property.Info.SetValue(argsObject, value);
     }
 
-    private static void CheckRequires(Dictionary<PropertyMetadata, object> foundValues)
-    {
-        HashSet<string> foundNames = foundValues.Keys.Select(p => p.Info.Name).ToHashSet();
-
-        foreach (PropertyMetadata property in foundValues.Keys)
-        {
-            if (property.Behavior.Requires.Count == 0)
-                continue;
-
-            foreach (string requiredName in property.Behavior.Requires)
-            {
-                if (!foundNames.Contains(requiredName))
-                    throw new MissingRequiredOptionException(
-                        $"Option '{property.Info.Name}' requires '{requiredName}' to be specified, but it was not."
-                    );
-            }
-        }
-    }
-
     private static Dictionary<PropertyMetadata, object> GetFoundValues(CoupledArgs coupled)
     {
         Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);
@@ -248,14 +170,6 @@ public sealed class ArgParser<TArgs>
             foundValues[flag.Property] = true;
 
         return foundValues;
-    }
-
-    private static void ApplyOptionValidators(Dictionary<PropertyMetadata, object> foundValues)
-    {
-        foreach ((PropertyMetadata property, object value) in foundValues)
-        foreach (IOptionValidator v in property.Validators)
-            if (!v.ValidateInternal(value, out string? errorMessage))
-                throw new ValidatorFailedException(errorMessage);
     }
 
     private TArgs GetArgObject(
@@ -275,13 +189,6 @@ public sealed class ArgParser<TArgs>
         return argObject;
     }
 
-    private void ApplyClassValidators(TArgs argObject)
-    {
-        foreach (IClassValidator v in _metadata.ClassValidators)
-            if (!v.ValidateInternal(argObject, out string? errorMessage))
-                throw new ValidatorFailedException(errorMessage);
-    }
-
     /// <summary>
     /// Tries parsing the command line arguments according to the structure of
     /// TArgs and attributes defined in it.
@@ -294,20 +201,20 @@ public sealed class ArgParser<TArgs>
         CoupledArgs coupled = CoupledArgs.FromArgs(args, _metadata);
         CheckTerminatingFlags(coupled.Flags);
 
-        CheckUnknownArguments(coupled.PlainBeforeDelimiter);
-        CheckMissingOptionValues(coupled.Couples);
-        CheckDuplicateOccurrences(coupled.Couples, coupled.Flags);
+        CommandLineValidator.CheckUnknownArguments(coupled.PlainBeforeDelimiter);
+        CommandLineValidator.CheckMissingOptionValues(coupled.Couples);
+        CommandLineValidator.CheckDuplicateOccurrences(coupled.Couples, coupled.Flags);
 
         Dictionary<PropertyMetadata, object> foundValues = GetFoundValues(coupled);
 
-        CheckRequired(foundValues);
-        CheckRequires(foundValues);
+        CommandLineValidator.CheckRequired(foundValues, _metadata);
+        CommandLineValidator.CheckRequires(foundValues);
 
-        ApplyOptionValidators(foundValues);
+        CommandLineValidator.ApplyOptionValidators(foundValues);
 
         TArgs argObject = GetArgObject(coupled, foundValues);
 
-        ApplyClassValidators(argObject);
+        CommandLineValidator.ApplyClassValidators(argObject, _metadata);
         return argObject;
     }
 
