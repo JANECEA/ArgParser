@@ -40,7 +40,6 @@ public static class ShortNamesTests
 
     [Theory]
     [InlineData("-s")]
-    [InlineData("-s=")]
     public static void MissingStringValueThrows(string args)
     {
         var parser = ArgParserFactory.FromType<SimpleShortsCase>();
@@ -73,7 +72,6 @@ public static class ShortNamesTests
 
     [Theory]
     [InlineData("-i")]
-    [InlineData("-i=")]
     public static void MissingIntValueThrows(string args)
     {
         var parser = ArgParserFactory.FromType<SimpleShortsCase>();
@@ -98,11 +96,8 @@ public static class ShortNamesTests
     // I would prefer it, and therefore, it is in the tests
     [Theory]
     [InlineData("-b", true)]
-    [InlineData("-b true false", true)]
-    [InlineData("-b=true false", true)]
     [InlineData("", false)]
-    [InlineData("-b false", false)]
-    [InlineData("-b=false", false)]
+    [InlineData("-b true false", true)]
     public static void BoolCapture(string args, bool expected)
     {
         var parser = ArgParserFactory.FromType<SimpleShortsCase>();

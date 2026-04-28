@@ -9,6 +9,7 @@ public static class RequiredTests
     private class RequiredFlagArg : BaseArgs
     {
         [Required]
+        [ShortNames('f')]
         public bool Flag { get; set; }
 
         public override string[] PlainArguments { get; set; } = [];
