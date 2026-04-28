@@ -38,7 +38,7 @@ internal static class HelpMessageGenerator
         {
             sb.AppendLineWithIndent(IndentWidth, GetNameList(flag));
             if (!string.IsNullOrWhiteSpace(flag.HelpData.Help))
-                sb.AppendLineWithIndent(IndentWidth * 2, flag.HelpData.Help);
+                sb.AppendLineWithIndent(IndentWidth * 3, flag.HelpData.Help);
             sb.AppendLine();
         }
 
@@ -47,7 +47,7 @@ internal static class HelpMessageGenerator
             sb.AppendWithIndent(IndentWidth, GetNameList(option));
             sb.AppendLine($" {GetMetaVar(option)}");
             if (!string.IsNullOrWhiteSpace(option.HelpData.Help))
-                sb.AppendLineWithIndent(IndentWidth * 2, option.HelpData.Help);
+                sb.AppendLineWithIndent(IndentWidth * 3, option.HelpData.Help);
             sb.AppendLine();
         }
 
