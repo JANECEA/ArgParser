@@ -61,6 +61,9 @@ public sealed class AttributeUsageAnalyzer : DiagnosticAnalyzer
                 break;
 
             default:
+                if (iface.TypeArguments.IsEmpty)
+                    break;
+
                 ITypeSymbol type = iface.TypeArguments[0];
                 switch (iface.OriginalDefinition.Name)
                 {

@@ -1,6 +1,5 @@
 ﻿using ArgParser.Exceptions;
 using ArgParser.Internal.Metadata;
-using ArgParser.Internal.Parsing;
 
 namespace ArgParser.Internal.CommandLine;
 

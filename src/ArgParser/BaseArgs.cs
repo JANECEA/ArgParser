@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
@@ -6,6 +7,7 @@ namespace ArgParser;
 /// <summary>
 /// Base class your declared arguments class should inherit from.
 /// </summary>
+[SuppressMessage("ReSharper", "UnusedMemberHierarchy.Global", Justification = "Terminating flag")]
 public abstract class BaseArgs
 {
     /// <summary>

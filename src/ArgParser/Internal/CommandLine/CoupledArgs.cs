@@ -1,6 +1,6 @@
 using ArgParser.Internal.Metadata;
 
-namespace ArgParser.Internal.Parsing;
+namespace ArgParser.Internal.CommandLine;
 
 internal record ArgOccurrence(string Name, PropertyMetadata Property);
 

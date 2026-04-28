@@ -75,7 +75,7 @@ public class BasicCustomOptionTypesTests
         public string? AnotherOption { get; set; }
     }
 
-    public static IEnumerable<object[]> CustomTypesValidInputs =>
+    public static IEnumerable<object?[]> CustomTypesValidInputs =>
         [
             [new[] { "-i", "5" }, new CustomType_IntWrapper(5), null],
             [new[] { "--consumeInt=5" }, new CustomType_IntWrapper(5), null],
