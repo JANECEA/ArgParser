@@ -146,51 +146,51 @@ public sealed class TerminatingFlagAttribute<TException> : Attribute, ITerminati
 /// </summary>
 public enum EnumCase
 {
-	/// <summary>
-	/// Default value.
-	/// This command line option will be expected to preserve case.
-	/// </summary>
-	/// <example>
-	/// Only '-e First' will be interpreted as `First` for enum:
-	/// <code>
-	/// enum MyEnum { First, Second }
-	/// 
-	/// [ShortNames('e')]
-	/// [EnumCasePolicy(EnumCase.PreserveCase)]
-	/// public MyEnum enumOption { get; set; }
-	/// </code>
-	/// </example>
-	PreserveCase,
+    /// <summary>
+    /// Default value.
+    /// This command line option will be expected to preserve case.
+    /// </summary>
+    /// <example>
+    /// Only '-e First' will be interpreted as `First` for enum:
+    /// <code>
+    /// enum MyEnum { First, Second }
+    ///
+    /// [ShortNames('e')]
+    /// [EnumCasePolicy(EnumCase.PreserveCase)]
+    /// public MyEnum enumOption { get; set; }
+    /// </code>
+    /// </example>
+    PreserveCase,
 
-	/// <summary>
-	/// This command line option will be expected to be lowercase.
-	/// </summary>
-	/// <example>
-	/// Only '-e first' will be interpreted as `First` for enum:
-	/// <code>
-	/// enum MyEnum { First, Second }
-	/// 
-	/// [ShortNames('e')]
-	/// [EnumCasePolicy(EnumCase.AllLowerCase)]
-	/// public MyEnum enumOption { get; set; }
-	/// </code>
-	/// </example>
-	AllLowerCase,
+    /// <summary>
+    /// This command line option will be expected to be lowercase.
+    /// </summary>
+    /// <example>
+    /// Only '-e first' will be interpreted as `First` for enum:
+    /// <code>
+    /// enum MyEnum { First, Second }
+    ///
+    /// [ShortNames('e')]
+    /// [EnumCasePolicy(EnumCase.AllLowerCase)]
+    /// public MyEnum enumOption { get; set; }
+    /// </code>
+    /// </example>
+    AllLowerCase,
 
-	/// <summary>
-	/// This command line option will be expected to be uppercase.
-	/// </summary>
-	/// <example>
-	/// Only '-e FIRST' will be interpreted as `First` for enum:
-	/// <code>
-	/// enum MyEnum { First, Second }
-	/// 
-	/// [ShortNames('e')]
-	/// [EnumCasePolicy(EnumCase.AllUpperCase)]
-	/// public MyEnum enumOption { get; set; }
-	/// </code>
-	/// </example>
-	AllUpperCase,
+    /// <summary>
+    /// This command line option will be expected to be uppercase.
+    /// </summary>
+    /// <example>
+    /// Only '-e FIRST' will be interpreted as `First` for enum:
+    /// <code>
+    /// enum MyEnum { First, Second }
+    ///
+    /// [ShortNames('e')]
+    /// [EnumCasePolicy(EnumCase.AllUpperCase)]
+    /// public MyEnum enumOption { get; set; }
+    /// </code>
+    /// </example>
+    AllUpperCase,
 }
 
 /// <summary>
@@ -206,4 +206,21 @@ public sealed class EnumCasePolicyAttribute : Attribute
     /// Creates a new instance of the <see cref="EnumCasePolicyAttribute"/>.
     /// </summary>
     public EnumCasePolicyAttribute(EnumCase enumCase) => Case = enumCase;
+}
+
+/// <summary>
+/// Defines the order positional typed plain arguments.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class PositionalArgsAttribute : Attribute
+{
+    internal List<string> PropertyNames { get; }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="PositionalArgsAttribute"/>.
+    /// </summary>
+    public PositionalArgsAttribute(string firstPropertyName, params string[] otherPropertyNames)
+    {
+        PropertyNames = otherPropertyNames.Prepend(firstPropertyName).ToList();
+    }
 }
