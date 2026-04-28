@@ -50,7 +50,7 @@ using ArgParser;
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
-[ExampleUsage("myProgram [options]")]
+[ExampleUsage("Usage: myProgram [options]")]
 internal sealed class SimpleArgs : BaseArgs
 {
     [
@@ -145,14 +145,17 @@ Based on the class `SimpleArgs`, the following help message would be generated:
 Usage: myProgram [options]
 
 Options:
-    -i INT_VALUE, --int=INT_VALUE
-            Example of int option.
-
-    -s STR_VALUE, --string=STR_VALUE
-            Example of string option.
+    -h, --help
+            Prints help message and exits.
 
     -f, --flag
             Example of flag.
+
+    -i, --int INT_VALUE
+            Example of int option.
+
+    -s, --string STR_VALUE
+            Example of string option.
 ```
 
 
@@ -164,10 +167,9 @@ First we will show how the user can define his own classes and attributes that w
 
 ### Custom option types
 
-Any type that implements the IParsable\<T\> interface is supported for the option values (for example Enum or custom type can be defined).
+Any type that implements the IParsable\<T\> interface is supported for the option values (string and enum options are supported as well).
 
 ```cs
-[EnumCasePolicy(EnumCase.PreserveCase)]
 internal enum MyEnum
 {
     First,
@@ -318,7 +320,8 @@ internal sealed class AdvancedArgs : BaseArgs
     public string? Email { get; set; }
 
     [
-        ShortNames('e')
+        ShortNames('e'),
+        EnumCasePolicy(EnumCase.AllUpperCase)
     ]
     public MyEnum Enum { get; set; } = MyEnum.Second;
 
@@ -380,5 +383,5 @@ internal class AdvancedExample
 
 #### Example of calling the program:
 ```sh
-myapp.exe -c=10 plainArgument1 --email=example@abc.de -l myclass -- PlainArgument2 -PlainArgument3
+myapp.exe -c=10 plainArgument1 -l myclass -e FIRST -- PlainArgument2 -PlainArgument3
 ```
