@@ -210,6 +210,24 @@ public sealed class EnumCasePolicyAttribute : Attribute
 
 /// <summary>
 /// Defines the order positional typed plain arguments.
+/// <br/>
+/// Cannot be mixed with <see cref="ShortNamesAttribute"/>,
+/// <see cref="LongNamesAttribute"/>, or
+/// <see cref="TerminatingFlagAttribute{TException}"/>
+/// on the referenced properties.
+/// <br/>
+/// Can be validated using <see cref="OptionValidatorAttribute{TType}"/> and marked
+/// with <see cref="RequiredAttribute"/> and <see cref="RequiresAttribute"/>.
+/// <example>
+/// <code>
+/// [PositionalArgs(nameof(IntArg), nameof(StrArg))]
+/// class Args : BaseArgs
+/// {
+///     public int IntArg { get; set; }
+///     public string StrArg { get; set; }
+/// }
+/// </code>
+/// </example>
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class PositionalArgsAttribute : Attribute
