@@ -7,12 +7,12 @@ internal static class MetadataValidator
 {
     internal static void Validate(ArgsClassMetadata metadata)
     {
-        foreach (PropertyMetadata m in metadata.Properties)
+        foreach (PropertyMetadata m in metadata.Options)
             ValidateIndividually(m);
 
-        CheckForDuplicateShortNames(metadata.Properties);
-        CheckForDuplicateLongNames(metadata.Properties);
-        ValidateRequiresUsage(metadata.Properties);
+        CheckForDuplicateShortNames(metadata.Options);
+        CheckForDuplicateLongNames(metadata.Options);
+        ValidateRequiresUsage(metadata.Options);
         CheckClassValidatorsMatch(metadata);
         ValidatePositional(metadata);
     }
@@ -21,7 +21,7 @@ internal static class MetadataValidator
     {
         CheckUnique(metadata);
 
-        Dictionary<string, PropertyMetadata> properties = metadata.Properties.ToDictionary(
+        Dictionary<string, PropertyMetadata> properties = metadata.Arguments.ToDictionary(
             p => p.Info.Name,
             p => p
         );

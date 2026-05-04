@@ -6,7 +6,7 @@ namespace ArgParser.Internal.Metadata;
 internal class ArgsClassMetadata
 {
     internal required Type ClassType { get; init; }
-    internal required IReadOnlyList<PropertyMetadata> Properties { get; init; }
+    internal required IReadOnlyList<PropertyMetadata> Options { get; init; }
     internal required IReadOnlyList<PropertyMetadata> Arguments { get; init; }
     internal required string ExampleUsage { get; init; }
     internal required IReadOnlyList<IClassValidator> Validators { get; init; }
@@ -49,7 +49,7 @@ internal class ArgsClassMetadata
             ExampleUsage =
                 type.GetCustomAttribute<ExampleUsageAttribute>(false)?.Usage ?? string.Empty,
             Validators = GetValidators(type),
-            Properties = options,
+            Options = options,
             Arguments = arguments,
             PositionalArgs = positionalArgs,
         };

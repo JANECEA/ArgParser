@@ -15,7 +15,7 @@ internal class ProcessedClassMetadata
     {
         Dictionary<string, PropertyMetadata> namesToMetadata = new();
 
-        foreach (PropertyMetadata p in metadata.Properties.Where(p => predicate(p)))
+        foreach (PropertyMetadata p in metadata.Options.Where(p => predicate(p)))
         {
             foreach (string longName in p.Behavior.LongNames)
                 namesToMetadata.Add($"--{longName}", p);
@@ -30,9 +30,9 @@ internal class ProcessedClassMetadata
     internal static ProcessedClassMetadata FromMetadata(ArgsClassMetadata metadata) =>
         new()
         {
-            AllFlags = metadata.Properties.Where(m => m.IsFlag()).ToList(),
+            AllFlags = metadata.Options.Where(m => m.IsFlag()).ToList(),
             NamesToFlag = GetNamesToMetadata(metadata, p => p.IsFlag()),
-            AllOptions = metadata.Properties.Where(m => !m.IsFlag()).ToList(),
+            AllOptions = metadata.Options.Where(m => !m.IsFlag()).ToList(),
             NamesToOption = GetNamesToMetadata(metadata, p => !p.IsFlag()),
             ClassValidators = metadata.Validators,
         };

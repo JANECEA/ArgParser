@@ -34,7 +34,7 @@ internal static class HelpMessageGenerator
         }
 
         sb.AppendLine("Options:");
-        foreach (PropertyMetadata flag in classMetadata.Properties.Where(p => p.IsFlag()))
+        foreach (PropertyMetadata flag in classMetadata.Options.Where(p => p.IsFlag()))
         {
             sb.AppendLineWithIndent(IndentWidth, GetNameList(flag));
             if (!string.IsNullOrWhiteSpace(flag.HelpData.Help))
@@ -42,7 +42,7 @@ internal static class HelpMessageGenerator
             sb.AppendLine();
         }
 
-        foreach (PropertyMetadata option in classMetadata.Properties.Where(p => !p.IsFlag()))
+        foreach (PropertyMetadata option in classMetadata.Options.Where(p => !p.IsFlag()))
         {
             sb.AppendWithIndent(IndentWidth, GetNameList(option));
             sb.AppendLine($" {GetMetaVar(option)}");
