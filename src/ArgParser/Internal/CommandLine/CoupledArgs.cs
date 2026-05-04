@@ -38,17 +38,18 @@ internal class CoupledArgs
         return true;
     }
 
-    private static List<(PropertyMetadata, string?)> ExtractPositionalArguments(
-        ProcessedClassMetadata metadata, List<string> beforeDelimeter, List<string> afterDelimeter)
+    private static List<(PropertyMetadata, string?)> ExtractPositional(
+        ProcessedClassMetadata metadata,
+        List<string> beforeDelimiter,
+        List<string> afterDelimiter
+    )
     {
-        List<string?> allPlainArgs = beforeDelimeter.Concat(afterDelimeter).ToList()!;
-        int padding = metadata.AllArguments.Count - allPlainArgs.Count;
-        for (int i = 0; i <= padding; i++)
-        {
-            allPlainArgs.Add(null);
-        }
-        List<(PropertyMetadata, string?)> arguments = 
-            allPlainArgs.Zip(metadata.AllArguments, (value, meta) => (meta, value)).ToList();
+        List<(PropertyMetadata, string?)> arguments = metadata
+            .AllArguments.SafeZip(beforeDelimiter.Concat(afterDelimiter))
+            .ToList();
+
+        int removed = beforeDelimiter.RemoveFront(arguments.Count);
+        _ = afterDelimiter.RemoveFront(arguments.Count - removed);
 
         return arguments;
     }
@@ -58,8 +59,8 @@ internal class CoupledArgs
         List<(ArgOccurrence, string?)> couples = new();
         List<ArgOccurrence> flags = new();
         List<string> beforeDelimiter = new();
-        Queue<string> queuedArgs = new(args);
 
+        Queue<string> queuedArgs = new(args);
         while (queuedArgs.Count > 0)
         {
             string arg = queuedArgs.Dequeue();
@@ -84,8 +85,9 @@ internal class CoupledArgs
                 break;
             beforeDelimiter.Add(arg);
         }
+
         List<string> afterDelimiter = queuedArgs.ToList();
-        List<(PropertyMetadata, string?)> arguments = ExtractPositionalArguments(metadata, beforeDelimiter, afterDelimiter);
+        var arguments = ExtractPositional(metadata, beforeDelimiter, afterDelimiter);
 
         return new CoupledArgs
         {
