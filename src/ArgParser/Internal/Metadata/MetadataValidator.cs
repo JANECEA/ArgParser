@@ -14,6 +14,44 @@ internal static class MetadataValidator
         CheckForDuplicateLongNames(metadata.Properties);
         ValidateRequiresUsage(metadata.Properties);
         CheckClassValidatorsMatch(metadata);
+        ValidatePositional(metadata);
+    }
+
+    private static void ValidatePositional(ArgsClassMetadata metadata)
+    {
+        CheckUnique(metadata);
+
+        Dictionary<string, PropertyMetadata> properties = metadata.Properties.ToDictionary(
+            p => p.Info.Name,
+            p => p
+        );
+        foreach (string positionalArg in metadata.PositionalArgs)
+        {
+            if (!properties.TryGetValue(positionalArg, out PropertyMetadata? property))
+                throw new PositionalArgsConfigException("");
+
+            CheckAttributes(property);
+        }
+    }
+
+    private static void CheckUnique(ArgsClassMetadata metadata)
+    {
+        HashSet<string> unique = new(metadata.PositionalArgs.Count);
+        foreach (string positionalArg in metadata.PositionalArgs)
+            if (!unique.Add(positionalArg))
+                throw new PositionalArgsConfigException("");
+    }
+
+    private static void CheckAttributes(PropertyMetadata property)
+    {
+        if (property.Behavior.LongNames.Count > 0)
+            throw new PositionalArgsConfigException("");
+
+        if (property.Behavior.ShortNames.Count > 0)
+            throw new PositionalArgsConfigException("");
+
+        if (property.Behavior.TerminatingFlag is not null)
+            throw new PositionalArgsConfigException("");
     }
 
     private static void ValidateIndividually(PropertyMetadata property)
