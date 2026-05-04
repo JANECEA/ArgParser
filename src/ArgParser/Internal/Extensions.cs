@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace ArgParser.Internal;
 
 internal static class CollectionExtensions
@@ -27,5 +29,21 @@ internal static class CollectionExtensions
             yield return enumerator.MoveNext() ? (item, enumerator.Current) : (item, default);
 
         enumerator.Dispose();
+    }
+}
+
+internal static class StringBuilderExtensions
+{
+    internal static void AppendWithIndent(this StringBuilder sb, int indent, string line)
+    {
+        for (int i = 0; i < indent; ++i)
+            sb.Append(' ');
+        sb.Append(line);
+    }
+
+    internal static void AppendLineWithIndent(this StringBuilder sb, int indent, string line)
+    {
+        sb.AppendWithIndent(indent, line);
+        sb.AppendLine();
     }
 }

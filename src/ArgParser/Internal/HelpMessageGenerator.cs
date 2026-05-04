@@ -3,22 +3,6 @@ using ArgParser.Internal.Metadata;
 
 namespace ArgParser.Internal;
 
-internal static class StringBuilderExtensions
-{
-    internal static void AppendWithIndent(this StringBuilder sb, int indent, string line)
-    {
-        for (int i = 0; i < indent; ++i)
-            sb.Append(' ');
-        sb.Append(line);
-    }
-
-    internal static void AppendLineWithIndent(this StringBuilder sb, int indent, string line)
-    {
-        sb.AppendWithIndent(indent, line);
-        sb.AppendLine();
-    }
-}
-
 internal static class HelpMessageGenerator
 {
     private const int IndentWidth = 4;
