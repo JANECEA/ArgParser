@@ -8,6 +8,7 @@ internal class ArgsClassMetadata
     internal required Type ClassType { get; init; }
     internal required IReadOnlyList<PropertyMetadata> Options { get; init; }
     internal required IReadOnlyList<PropertyMetadata> Arguments { get; init; }
+    internal IEnumerable<PropertyMetadata> Properties => Options.Concat(Arguments);
     internal required string ExampleUsage { get; init; }
     internal required IReadOnlyList<IClassValidator> Validators { get; init; }
     internal required IReadOnlyList<string> PositionalArgs { get; init; }

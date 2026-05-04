@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using ArgParser.Attributes;
 using ArgParser.Exceptions;
 
@@ -7,14 +8,15 @@ internal static class MetadataValidator
 {
     internal static void Validate(ArgsClassMetadata metadata)
     {
-        foreach (PropertyMetadata m in metadata.Options)
+        ValidatePositional(metadata);
+
+        foreach (PropertyMetadata m in metadata.Properties)
             ValidateIndividually(m);
 
         CheckForDuplicateShortNames(metadata.Options);
         CheckForDuplicateLongNames(metadata.Options);
-        ValidateRequiresUsage(metadata.Options);
+        ValidateRequiresUsage(metadata.Properties);
         CheckClassValidatorsMatch(metadata);
-        ValidatePositional(metadata);
     }
 
     private static void ValidatePositional(ArgsClassMetadata metadata)
@@ -58,6 +60,7 @@ internal static class MetadataValidator
     {
         Type type = property.Info.PropertyType;
         bool isFlag = type == typeof(bool) || type == typeof(bool?);
+        isFlag = isFlag && property.HasLongOrShortNames();
 
         if (property.Behavior.IsRequired && isFlag)
             throw new RequiredOnFlagException(
@@ -131,7 +134,8 @@ internal static class MetadataValidator
         }
     }
 
-    private static void ValidateRequiresUsage(IReadOnlyList<PropertyMetadata> metadata)
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+    private static void ValidateRequiresUsage(IEnumerable<PropertyMetadata> metadata)
     {
         HashSet<string> propertyNames = metadata.Select(m => m.Info.Name).ToHashSet();
 
