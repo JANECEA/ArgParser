@@ -8,6 +8,7 @@ internal class CoupledArgs
 {
     internal required IReadOnlyList<(ArgOccurrence, string?)> Couples { get; init; }
     internal required IReadOnlyList<ArgOccurrence> Flags { get; init; }
+    internal required IReadOnlyList<(PropertyMetadata, string?)> Arguments { get; init; }
     internal required IReadOnlyList<string> PlainBeforeDelimiter { get; init; }
     internal required IReadOnlyList<string> PlainAfterDelimiter { get; init; }
 
@@ -37,12 +38,26 @@ internal class CoupledArgs
         return true;
     }
 
+    private static List<(PropertyMetadata, string?)> ExtractPositionalArguments(
+        ProcessedClassMetadata metadata, List<string> beforeDelimeter, List<string> afterDelimeter)
+    {
+        List<string?> allPlainArgs = beforeDelimeter.Concat(afterDelimeter).ToList()!;
+        int padding = metadata.AllArguments.Count - allPlainArgs.Count;
+        for (int i = 0; i <= padding; i++)
+        {
+            allPlainArgs.Add(null);
+        }
+        List<(PropertyMetadata, string?)> arguments = 
+            allPlainArgs.Zip(metadata.AllArguments, (value, meta) => (meta, value)).ToList();
+
+        return arguments;
+    }
+
     internal static CoupledArgs FromArgs(string[] args, ProcessedClassMetadata metadata)
     {
         List<(ArgOccurrence, string?)> couples = new();
         List<ArgOccurrence> flags = new();
         List<string> beforeDelimiter = new();
-
         Queue<string> queuedArgs = new(args);
 
         while (queuedArgs.Count > 0)
@@ -69,13 +84,16 @@ internal class CoupledArgs
                 break;
             beforeDelimiter.Add(arg);
         }
+        List<string> afterDelimiter = queuedArgs.ToList();
+        List<(PropertyMetadata, string?)> arguments = ExtractPositionalArguments(metadata, beforeDelimiter, afterDelimiter);
 
         return new CoupledArgs
         {
             Couples = couples,
             Flags = flags,
+            Arguments = arguments,
             PlainBeforeDelimiter = beforeDelimiter,
-            PlainAfterDelimiter = queuedArgs.ToList(),
+            PlainAfterDelimiter = afterDelimiter,
         };
     }
 }

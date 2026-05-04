@@ -6,6 +6,7 @@ internal class ProcessedClassMetadata
     internal required IReadOnlyDictionary<string, PropertyMetadata> NamesToFlag { get; init; }
     internal required IReadOnlyList<PropertyMetadata> AllOptions { get; init; }
     internal required IReadOnlyDictionary<string, PropertyMetadata> NamesToOption { get; init; }
+    internal required IReadOnlyList<PropertyMetadata> AllArguments { get; init; }
     internal required IReadOnlyList<IClassValidator> ClassValidators { get; init; }
 
     private static Dictionary<string, PropertyMetadata> GetNamesToMetadata(
@@ -34,6 +35,7 @@ internal class ProcessedClassMetadata
             NamesToFlag = GetNamesToMetadata(metadata, p => p.IsFlag()),
             AllOptions = metadata.Options.Where(m => !m.IsFlag()).ToList(),
             NamesToOption = GetNamesToMetadata(metadata, p => !p.IsFlag()),
+            AllArguments = metadata.Arguments,
             ClassValidators = metadata.Validators,
         };
 }
