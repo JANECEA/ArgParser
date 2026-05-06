@@ -72,6 +72,8 @@ internal static class MetadataValidator
 
     private static void ValidateIndividually(PropertyMetadata property)
     {
+        ValidateNames(property);
+
         Type type = property.Info.PropertyType;
         bool isFlag = type == typeof(bool) || type == typeof(bool?);
         isFlag = isFlag && property.HasLongOrShortNames();
@@ -91,6 +93,17 @@ internal static class MetadataValidator
 
         CheckIsParsable(property);
         CheckOptionValidatorsMatch(property);
+    }
+
+    private static void ValidateNames(PropertyMetadata property)
+    {
+        foreach (char shortName in property.Behavior.ShortNames)
+            if (!CliStandards.IsValidShortName(shortName))
+                throw new IncorrectNameFormatException($"Incorrect short name format: {shortName}");
+
+        foreach (string longName in property.Behavior.LongNames)
+            if (!CliStandards.IsValidLongName(longName))
+                throw new IncorrectNameFormatException($"Incorrect long name format: {longName}");
     }
 
     private static void CheckOptionValidatorsMatch(PropertyMetadata property)
@@ -173,7 +186,7 @@ internal static class MetadataValidator
         {
             if (longNames.TryGetValue(name, out string? firstProperty))
                 throw new DuplicateOptionNameException(
-                    $"Duplicate long option name '--{name}' found on properties "
+                    $"Duplicate long option name '{CliStandards.GetLongName(name)}' found on properties "
                         + $"'{firstProperty}' and '{property.Info.Name}'."
                 );
 
@@ -190,7 +203,7 @@ internal static class MetadataValidator
         {
             if (shortNames.TryGetValue(name, out string? firstProperty))
                 throw new DuplicateOptionNameException(
-                    $"Duplicate short option name '-{name}' found on properties "
+                    $"Duplicate short option name '{CliStandards.GetShortName(name)}' found on properties "
                         + $"'{firstProperty}' and '{property.Info.Name}'."
                 );
 

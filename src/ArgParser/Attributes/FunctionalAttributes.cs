@@ -1,5 +1,4 @@
 using ArgParser.Analyzers.Abstractions;
-using ArgParser.Exceptions;
 using ArgParser.Internal;
 
 namespace ArgParser.Attributes;
@@ -34,15 +33,7 @@ public sealed class ShortNamesAttribute : Attribute, IOnParsable
     /// </summary>
     public ShortNamesAttribute(char mainOptionName, params char[] otherOptions)
     {
-        List<char> list = otherOptions.Prepend(mainOptionName).ToList();
-
-        foreach (char c in list)
-        {
-            if (!CliStandards.IsValidShortName(c))
-                throw new IncorrectNameFormatException($"Incorrect short name: {c}");
-        }
-
-        Names = list;
+        Names = otherOptions.Prepend(mainOptionName).ToList();
     }
 }
 
@@ -70,15 +61,7 @@ public sealed class LongNamesAttribute : Attribute, IOnParsable
     /// </summary>
     public LongNamesAttribute(string mainOptionName, params string[] otherOptions)
     {
-        List<string> list = otherOptions.Prepend(mainOptionName).ToList();
-
-        foreach (string longName in list)
-        {
-            if (!CliStandards.IsValidLongName(longName))
-                throw new IncorrectNameFormatException($"Incorrect long name: {longName}");
-        }
-
-        Names = list;
+        Names = otherOptions.Prepend(mainOptionName).ToList();
     }
 }
 
