@@ -38,6 +38,20 @@ To include Roslyn validation add this to .csproj
 </ItemGroup>
 ```
 
+## Additional instructions
+
+Build examples, run tests, or compile documentation
+```bash
+# Build the examples
+dotnet build ./src/examples/<example>/<example>.csproj
+
+# Test the project
+dotnet test ./src/ArgParser.sln
+
+# Compile documentation
+doxygen ./docs/Doxyfile
+```
+
 
 ## Concepts
 
@@ -318,7 +332,6 @@ internal class FlagCalledException : Exception {}
         TerminatingFlag<FlagCalledException>
     ]
     public bool Flag {get; set;}
-
 ```
 If this flag is present in the command-line arguments the specified exception is thrown in order to skip parsing and validation.
 
@@ -332,7 +345,6 @@ If this flag is present in the command-line arguments the specified exception is
     {
         // Handle terminating flag
     }
-
 ```
 
 ### AdvancedArgs declaration
@@ -475,5 +487,4 @@ Options:
     -e Enum
 
     -l, --class CLASS
-
 ```
