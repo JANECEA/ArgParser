@@ -28,6 +28,21 @@ internal class ProcessedClassMetadata
         return namesToMetadata;
     }
 
+    private static List<PropertyMetadata> OrderArguments(ArgsClassMetadata metadata)
+    {
+        List<PropertyMetadata> orderedArgs = new();
+        Dictionary<string, PropertyMetadata> args = metadata.Arguments.ToDictionary(
+            a => a.Info.Name,
+            a => a
+        );
+
+        foreach (string propertyName in metadata.PositionalArgs)
+            if (args.TryGetValue(propertyName, out PropertyMetadata? meta))
+                orderedArgs.Add(meta);
+
+        return orderedArgs;
+    }
+
     internal static ProcessedClassMetadata FromMetadata(ArgsClassMetadata metadata) =>
         new()
         {
@@ -35,7 +50,7 @@ internal class ProcessedClassMetadata
             NamesToFlag = GetNamesToMetadata(metadata, p => p.IsFlag()),
             AllOptions = metadata.Options.Where(m => !m.IsFlag()).ToList(),
             NamesToOption = GetNamesToMetadata(metadata, p => !p.IsFlag()),
-            AllArguments = metadata.Arguments,
+            AllArguments = OrderArguments(metadata),
             ClassValidators = metadata.Validators,
         };
 }
