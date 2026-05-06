@@ -85,24 +85,24 @@ internal static class ValueParser
     }
 
     private static Dictionary<PropertyMetadata, object> ParseOptionValues(
-        IReadOnlyList<(ArgOccurrence, string?)> foundOptions
+        IEnumerable<(PropertyMetadata, string?)> foundOptions
     )
     {
         Dictionary<PropertyMetadata, object> foundValues = new();
 
-        foreach ((ArgOccurrence occurence, string? strValue) in foundOptions)
+        foreach ((PropertyMetadata property, string? strValue) in foundOptions)
         {
             if (strValue is null)
                 throw new UnreachableException(
                     "Missing option values should have been caught by CheckMissingOptionValues."
                 );
 
-            Type targetType = occurence.Property.Info.PropertyType;
+            Type targetType = property.Info.PropertyType;
             Type parseType = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
-            if (CheckSpecialTypes(parseType, occurence.Property, strValue) is object value)
+            if (CheckSpecialTypes(parseType, property, strValue) is object value)
             {
-                foundValues[occurence.Property] = value;
+                foundValues[property] = value;
                 continue;
             }
 
@@ -110,7 +110,7 @@ internal static class ValueParser
             try
             {
                 object parsedValue = parseMethod.Invoke(null, [strValue, null])!;
-                foundValues[occurence.Property] = parsedValue;
+                foundValues[property] = parsedValue;
             }
             catch
             {
@@ -124,7 +124,11 @@ internal static class ValueParser
 
     internal static Dictionary<PropertyMetadata, object> GetFoundValues(CoupledArgs coupled)
     {
-        Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(coupled.Couples);
+        IEnumerable<(PropertyMetadata Property, string?)> allCouples = coupled
+            .Couples.Select(t => (t.Item1.Property, t.Item2))
+            .Concat(coupled.Arguments);
+
+        Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(allCouples);
         foreach (ArgOccurrence flag in coupled.Flags)
             foundValues[flag.Property] = true;
 
