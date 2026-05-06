@@ -13,6 +13,7 @@ ArgParser is a declarative CLI argument parsing library for .NET.
 - Compile time validation of attribute usage using Roslyn 
 - Typed positional arguments
 
+
 ## Build instructions
 ```bash
 # Clone repository
@@ -36,6 +37,58 @@ To include Roslyn validation add this to .csproj
 />
 </ItemGroup>
 ```
+
+
+## Concepts
+
+To define your CLI structure, create a class that inherits from `BaseArgs`. The parser inspects all public properties and maps them to command-line inputs based on their type and attributes.
+
+To avoid confusion, we will define the basic terms:
+
+**Option** is a named parameter that requires an associated value.
+- Identification: Must have at least one short name or long name defined.
+- Supported types: `string`, `Enum` or any type implementing `IParsable<T>` (excluding `bool`)
+- Usage: `--option=value`, `--option value`, `-o=value` or `-o value`
+- Declaration:
+```cs
+[
+    ShortNames('s'),
+]
+public string Option { get; set; }
+```
+
+**Flag** is a named parameter. It does not accept a value, its presence alone evaluates to `true`.
+- Identification: Must have at least one short name or long name defined.
+- Supported types: `bool`
+- Usage: `--verbose` or `-v`
+- Declaration:
+```cs
+[
+    LongNames("flag"),
+]
+public bool Flag { get; set; }
+```
+
+**Positional Arguments** are values mapped by their order in the command line rather than a name.
+- Identification: Properties that do not have any name attributes and are explicitly listed in the `[PositionalArgs]` class attribute.
+- Supported types: `string`, `Enum`, or any type implementing `IParsable<T>`
+- Order: The sequence defined in the `[PositionalArgs]` attribute determines the mapping, regardless of the declaration order.
+- Declaration: 
+```cs
+[PositionalArgs(nameof(First), nameof(Second))]
+internal sealed class SimpleArgs : BaseArgs
+{
+    public bool Second { get; set; }
+    public int First { get; set; }
+}
+```
+
+**Plain Arguments** are the "leftovers" of the parsing process. These include:
+- Any tokens that do not match a defined Option, Flag, or Positional Argument.
+- Any values provided after the `--` (double-dash) delimiter.
+
+### Note:
+Any property that does not meet the criteria for an Option, Flag or Positional Argument is ignored by the parser.
 
 ## Simple usage
 
@@ -75,6 +128,7 @@ internal sealed class SimpleArgs : BaseArgs
     public override string[] PlainArguments { get; set; } = [];
 }
 ```
+
 During the creation of `ArgParser<SimpleArgs>`, `SimpleArgs` class is validated, including the usage of attributes.
 
 Now SimpleArgs class can be used in the program. 
@@ -281,7 +335,6 @@ If this flag is present in the command-line arguments the specified exception is
 
 ```
 
-
 ### AdvancedArgs declaration
 
 In this class advanced usage is shown using advanced attributes and the showcased examples.
@@ -296,16 +349,23 @@ using ArgParser.Exceptions;
     ExampleUsage("myProgram -c <COUNT> [options]"),
     MutuallyExclusiveEnumEmail,
     AllowPlainArguments(true),
-    PositionalArgs(nameof(Command)),
+    PositionalArgs(nameof(Command), nameof(Number)),
 ]
 internal sealed class AdvancedArgs : BaseArgs
 {
     [
         Required,
+        Requires(nameof(Number)),
         MetaVarName("COMMAND"),
         Help("Command to execute"),
     ]
     public string? Command { get; set; }
+
+    [
+        MetaVarName("NUMBER"),
+        Help("Number of runs"),
+    ]
+    public string? Number { get; set; }
 
     [
         ShortNames('c', 'x'),
@@ -387,5 +447,5 @@ internal class AdvancedExample
 
 #### Example of calling the program:
 ```sh
-myapp.exe -c=10 positionalCommand --class myclass PlainArgument1 -e FIRST -- PlainArgument2 -PlainArgument3
+myapp.exe -c=10 positionalCommand --class myclass -e FIRST -- 13 PlainArgument2 -PlainArgument3
 ```
