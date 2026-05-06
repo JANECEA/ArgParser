@@ -17,7 +17,23 @@ internal static class HelpMessageGenerator
             sb.AppendLine();
         }
 
-        sb.AppendLine("Options:");
+        if(classMetadata.Arguments.Count != 0)
+        {
+            sb.AppendLine("Arguments:");
+        }
+        foreach (PropertyMetadata argument in classMetadata.Arguments)
+        {
+            sb.AppendWithIndent(IndentWidth, "");
+            sb.AppendLine($"{GetMetaVar(argument)}");
+            if (!string.IsNullOrWhiteSpace(argument.HelpData.Help))
+                sb.AppendLineWithIndent(IndentWidth * 3, argument.HelpData.Help);
+            sb.AppendLine();
+        }
+
+        if (classMetadata.Options.Count != 0)
+        {
+            sb.AppendLine("Options:");
+        }
         foreach (PropertyMetadata flag in classMetadata.Options.Where(p => p.IsFlag()))
         {
             sb.AppendLineWithIndent(IndentWidth, GetNameList(flag));

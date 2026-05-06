@@ -397,7 +397,7 @@ internal sealed class AdvancedArgs : BaseArgs
     public bool Flag { set; get; }
 
     [
-        ShortNames('l')
+        ShortNames('l'),
         LongNames("class"),
         Requires(nameof(Email)),
         MetaVarName("CLASS"),
@@ -448,4 +448,32 @@ internal class AdvancedExample
 #### Example of calling the program:
 ```sh
 myapp.exe -c=10 positionalCommand --class myclass -e FIRST -- 13 PlainArgument2 -PlainArgument3
+```
+Based on the class `AdvancedArgs`, the following help message would be generated:
+```sh
+> myapp.exe --help
+myProgram command number -c <COUNT> [options]
+
+Arguments:
+    <command>
+            Command to execute
+
+    <number>
+            Number of runs
+
+Options:
+    -f, --flag
+
+    -h, --help
+            Prints help message and exits.
+
+    -c, -x, --count, --ct COUNT
+            Help for count option.
+
+    --email Email
+
+    -e Enum
+
+    -l, --class CLASS
+
 ```
