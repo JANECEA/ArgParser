@@ -30,7 +30,10 @@ internal static class MetadataValidator
         foreach (string positionalArg in metadata.PositionalArgs)
         {
             if (!properties.TryGetValue(positionalArg, out PropertyMetadata? property))
-                throw new PositionalArgsConfigException("");
+                throw new PositionalArgsConfigException(
+                    $"Property '{positionalArg}' listed in {typeof(PositionalArgsAttribute)} "
+                        + $"was not found on args class '{metadata.ClassType.Name}'."
+                );
 
             CheckAttributes(property);
         }
@@ -41,19 +44,30 @@ internal static class MetadataValidator
         HashSet<string> unique = new(metadata.PositionalArgs.Count);
         foreach (string positionalArg in metadata.PositionalArgs)
             if (!unique.Add(positionalArg))
-                throw new PositionalArgsConfigException("");
+                throw new PositionalArgsConfigException(
+                    $"Duplicate property '{positionalArg}' found in {typeof(PositionalArgsAttribute)}."
+                );
     }
 
     private static void CheckAttributes(PropertyMetadata property)
     {
         if (property.Behavior.LongNames.Count > 0)
-            throw new PositionalArgsConfigException("");
+            throw new PositionalArgsConfigException(
+                $"Property '{property.Info.Name}' is listed in {typeof(PositionalArgsAttribute)} "
+                    + $"and cannot also use {typeof(LongNamesAttribute)}."
+            );
 
         if (property.Behavior.ShortNames.Count > 0)
-            throw new PositionalArgsConfigException("");
+            throw new PositionalArgsConfigException(
+                $"Property '{property.Info.Name}' is listed in {typeof(PositionalArgsAttribute)} "
+                    + $"and cannot also use {typeof(ShortNamesAttribute)}."
+            );
 
         if (property.Behavior.TerminatingFlag is not null)
-            throw new PositionalArgsConfigException("");
+            throw new PositionalArgsConfigException(
+                $"Property '{property.Info.Name}' is listed in {typeof(PositionalArgsAttribute)} "
+                    + $"and cannot also use {typeof(TerminatingFlagAttribute<>)}."
+            );
     }
 
     private static void ValidateIndividually(PropertyMetadata property)
