@@ -18,11 +18,11 @@ internal class ProcessedClassMetadata
 
         foreach (PropertyMetadata p in metadata.Options.Where(p => predicate(p)))
         {
-            foreach (string longName in p.Behavior.LongNames)
-                namesToMetadata.Add($"--{longName}", p);
-
             foreach (char shortName in p.Behavior.ShortNames)
-                namesToMetadata.Add($"-{shortName}", p);
+                namesToMetadata.Add(CliStandards.GetShortName(shortName), p);
+
+            foreach (string longName in p.Behavior.LongNames)
+                namesToMetadata.Add(CliStandards.GetLongName(longName), p);
         }
 
         return namesToMetadata;

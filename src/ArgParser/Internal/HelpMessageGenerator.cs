@@ -47,10 +47,10 @@ internal static class HelpMessageGenerator
     {
         List<string> allNames = new();
         foreach (char shortName in property.Behavior.ShortNames)
-            allNames.Add($"-{shortName}");
+            allNames.Add(CliStandards.GetShortName(shortName));
 
         foreach (string longName in property.Behavior.LongNames)
-            allNames.Add($"--{longName}");
+            allNames.Add(CliStandards.GetLongName(longName));
 
         return string.Join(", ", allNames);
     }

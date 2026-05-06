@@ -21,7 +21,7 @@ internal class CoupledArgs
         occurence = null;
 
         string optionName = option;
-        int index = option.IndexOf('=');
+        int index = option.IndexOf(CliStandards.ValueSeparator);
         if (index != -1)
             optionName = option[..index];
 
@@ -81,7 +81,7 @@ internal class CoupledArgs
                 continue;
             }
 
-            if (arg == "--")
+            if (arg == CliStandards.Delimiter)
                 break;
             beforeDelimiter.Add(arg);
         }

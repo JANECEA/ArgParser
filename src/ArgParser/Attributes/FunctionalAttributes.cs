@@ -38,7 +38,7 @@ public sealed class ShortNamesAttribute : Attribute, IOnParsable
 
         foreach (char c in list)
         {
-            if (!char.IsAsciiLetter(c))
+            if (!CliStandards.IsValidShortName(c))
                 throw new IncorrectNameFormatException($"Incorrect short name: {c}");
         }
 
@@ -63,8 +63,6 @@ public sealed class ShortNamesAttribute : Attribute, IOnParsable
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class LongNamesAttribute : Attribute, IOnParsable
 {
-    private static readonly char[] AllowedChars = ['-', '.', ':', '_'];
-
     internal List<string> Names { get; }
 
     /// <summary>
@@ -74,28 +72,13 @@ public sealed class LongNamesAttribute : Attribute, IOnParsable
     {
         List<string> list = otherOptions.Prepend(mainOptionName).ToList();
 
-        foreach (string opt in list)
+        foreach (string longName in list)
         {
-            if (!ValidateOptionFormat(opt))
-                throw new IncorrectNameFormatException($"Incorrect long name: {opt}");
+            if (!CliStandards.IsValidLongName(longName))
+                throw new IncorrectNameFormatException($"Incorrect long name: {longName}");
         }
 
         Names = list;
-    }
-
-    private static bool ValidateOptionFormat(string opt)
-    {
-        if (string.IsNullOrWhiteSpace(opt))
-            return false;
-
-        if (char.IsAsciiDigit(opt[0]) || AllowedChars.Contains(opt[0]))
-            return false;
-
-        foreach (char c in opt)
-            if (!char.IsAsciiLetterOrDigit(c) && !AllowedChars.Contains(c))
-                return false;
-
-        return true;
     }
 }
 
