@@ -17,31 +17,24 @@ internal static class HelpMessageGenerator
             sb.AppendLine();
         }
 
-        if(classMetadata.Arguments.Count != 0)
+        if (classMetadata.Arguments.Count > 0)
         {
             sb.AppendLine("Arguments:");
-        }
-        foreach (PropertyMetadata argument in classMetadata.Arguments)
-        {
-            sb.AppendWithIndent(IndentWidth, "");
-            sb.AppendLine($"{GetMetaVar(argument)}");
-            if (!string.IsNullOrWhiteSpace(argument.HelpData.Help))
-                sb.AppendLineWithIndent(IndentWidth * 3, argument.HelpData.Help);
-            sb.AppendLine();
+            AppendArguments(classMetadata, sb);
         }
 
-        if (classMetadata.Options.Count != 0)
+        if (classMetadata.Options.Count > 0)
         {
             sb.AppendLine("Options:");
-        }
-        foreach (PropertyMetadata flag in classMetadata.Options.Where(p => p.IsFlag()))
-        {
-            sb.AppendLineWithIndent(IndentWidth, GetNameList(flag));
-            if (!string.IsNullOrWhiteSpace(flag.HelpData.Help))
-                sb.AppendLineWithIndent(IndentWidth * 3, flag.HelpData.Help);
-            sb.AppendLine();
+            AppendFlags(classMetadata, sb);
+            AppendOptions(classMetadata, sb);
         }
 
+        return sb.ToString();
+    }
+
+    private static void AppendOptions(ArgsClassMetadata classMetadata, StringBuilder sb)
+    {
         foreach (PropertyMetadata option in classMetadata.Options.Where(p => !p.IsFlag()))
         {
             sb.AppendWithIndent(IndentWidth, GetNameList(option));
@@ -50,8 +43,28 @@ internal static class HelpMessageGenerator
                 sb.AppendLineWithIndent(IndentWidth * 3, option.HelpData.Help);
             sb.AppendLine();
         }
+    }
 
-        return sb.ToString();
+    private static void AppendFlags(ArgsClassMetadata classMetadata, StringBuilder sb)
+    {
+        foreach (PropertyMetadata flag in classMetadata.Options.Where(p => p.IsFlag()))
+        {
+            sb.AppendLineWithIndent(IndentWidth, GetNameList(flag));
+            if (!string.IsNullOrWhiteSpace(flag.HelpData.Help))
+                sb.AppendLineWithIndent(IndentWidth * 3, flag.HelpData.Help);
+            sb.AppendLine();
+        }
+    }
+
+    private static void AppendArguments(ArgsClassMetadata classMetadata, StringBuilder sb)
+    {
+        foreach (PropertyMetadata argument in classMetadata.Arguments)
+        {
+            sb.AppendLineWithIndent(IndentWidth, GetMetaVar(argument));
+            if (!string.IsNullOrWhiteSpace(argument.HelpData.Help))
+                sb.AppendLineWithIndent(IndentWidth * 3, argument.HelpData.Help);
+            sb.AppendLine();
+        }
     }
 
     private static string GetMetaVar(PropertyMetadata property) =>
