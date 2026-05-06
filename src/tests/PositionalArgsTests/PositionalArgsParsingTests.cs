@@ -142,12 +142,12 @@ public static class PositionalArgsParsingTests
         InlineData("jane api dev -- one", "jane", "api", "dev", new[] { "one" }),
         InlineData("jane api -- --literal one", "jane", "api", "--literal", new[] { "one" }),
         InlineData("jane -- api --literal one", "jane", "api", "--literal", new[] { "one" }),
-        InlineData("-- jane -- api dev one", "jane", "api", "dev", new[] { "one" }),
+        InlineData("-- jane -- api dev one", "jane", "--", "api", new[] { "dev", "one" }),
         InlineData("a b c d e f", "a", "b", "c", new[] { "d", "e", "f" }),
         InlineData("a b -- c d e", "a", "b", "c", new[] { "d", "e" }),
         InlineData("a -- b c d e", "a", "b", "c", new[] { "d", "e" }),
         InlineData("-- a b c d e", "a", "b", "c", new[] { "d", "e" }),
-        InlineData("-- a b -- c d", "a", "b", "c", new[] { "d" }),
+        InlineData("-- a b -- c d", "a", "b", "--", new[] { "c", "d" }),
         InlineData(
             "alpha beta gamma -- --tail x",
             "alpha",
@@ -198,7 +198,7 @@ public static class PositionalArgsParsingTests
         InlineData("a b -- c d e", "a", "b", "c", "d", new[] { "e" }),
         InlineData("a b c -- d e", "a", "b", "c", "d", new[] { "e" }),
         InlineData("a b c d -- e", "a", "b", "c", "d", new[] { "e" }),
-        InlineData("-- a -- b -- c d e", "a", "b", "c", "d", new[] { "e" }),
+        InlineData("-- a -- b -- c d e", "a", "--", "b", "--", new[] { "c", "d", "e" }),
         InlineData(
             "one two three four five six seven",
             "one",

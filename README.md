@@ -11,11 +11,7 @@ ArgParser is a declarative CLI argument parsing library for .NET.
 - Mark flags as terminating
 - Automatically generate the help message using additional informational attributes
 - Compile time validation of attribute usage using Roslyn 
-
-## Not supported
-
-- Positional arguments
-- Typed plain arguments 
+- Typed positional arguments
 
 ## Build instructions
 ```bash
@@ -300,9 +296,17 @@ using ArgParser.Exceptions;
     ExampleUsage("myProgram -c <COUNT> [options]"),
     MutuallyExclusiveEnumEmail,
     AllowPlainArguments(true),
+    PositionalArgs(nameof(Command)),
 ]
 internal sealed class AdvancedArgs : BaseArgs
 {
+    [
+        Required,
+        MetaVarName("COMMAND"),
+        Help("Command to execute"),
+    ]
+    public string? Command { get; set; }
+
     [
         ShortNames('c', 'x'),
         LongNames("count", "ct"),
@@ -383,5 +387,5 @@ internal class AdvancedExample
 
 #### Example of calling the program:
 ```sh
-myapp.exe -c=10 plainArgument1 -l myclass -e FIRST -- PlainArgument2 -PlainArgument3
+myapp.exe -c=10 positionalCommand --class myclass PlainArgument1 -e FIRST -- PlainArgument2 -PlainArgument3
 ```
