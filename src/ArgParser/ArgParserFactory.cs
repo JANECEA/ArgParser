@@ -17,9 +17,9 @@ public static class ArgParserFactory
     public static ArgParser<TArgs> FromType<TArgs>()
         where TArgs : BaseArgs, new()
     {
-        Type ArgType = typeof(TArgs);
+        Type argType = typeof(TArgs);
 
-        ArgsClassMetadata classMetadata = ArgsClassMetadata.FromType(ArgType);
+        ArgsClassMetadata classMetadata = ArgsClassMetadata.FromType(argType);
         MetadataValidator.Validate(classMetadata);
 
         ProcessedClassMetadata processed = ProcessedClassMetadata.FromMetadata(classMetadata);

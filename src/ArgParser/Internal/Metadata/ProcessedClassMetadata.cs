@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace ArgParser.Internal.Metadata;
 
 internal class ProcessedClassMetadata
@@ -39,6 +41,10 @@ internal class ProcessedClassMetadata
         foreach (string propertyName in metadata.PositionalArgs)
             if (args.TryGetValue(propertyName, out PropertyMetadata? meta))
                 orderedArgs.Add(meta);
+            else
+                throw new UnreachableException(
+                    $"Presence of property {propertyName} should have been validated."
+                );
 
         return orderedArgs;
     }
