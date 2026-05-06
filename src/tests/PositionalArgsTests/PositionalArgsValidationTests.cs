@@ -147,12 +147,7 @@ public static class PositionalArgsValidationTests
         public override string[] PlainArguments { get; set; } = [];
     }
 
-    [
-        Theory,
-        InlineData("alice"),
-        InlineData("-- alice"),
-        InlineData("alice --"),
-    ]
+    [Theory, InlineData("alice"), InlineData("-- alice"), InlineData("alice --")]
     public static void ThrowsWhenPositionalRequiresDependencyIsMissing(string args)
     {
         var parser = ArgParserFactory.FromType<PositionalRequiresArgs>();

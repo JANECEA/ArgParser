@@ -125,8 +125,8 @@ internal static class ValueParser
     internal static Dictionary<PropertyMetadata, object> GetFoundValues(CoupledArgs coupled)
     {
         IEnumerable<(PropertyMetadata Property, string?)> allCouples = coupled
-            .Couples.Select(t => (t.Item1.Property, t.Item2))
-            .Concat(coupled.Arguments);
+            .Couples.Select(t => (t.Item1.Property, t.Item2!))
+            .Concat(coupled.Arguments)!;
 
         Dictionary<PropertyMetadata, object> foundValues = ParseOptionValues(allCouples);
         foreach (ArgOccurrence flag in coupled.Flags)

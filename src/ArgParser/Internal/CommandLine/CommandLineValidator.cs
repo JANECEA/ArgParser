@@ -9,7 +9,7 @@ internal static class CommandLineValidator
     {
         foreach (string plainArg in beforeDelimiter)
         {
-            if (plainArg.StartsWith('-'))
+            if (CliStandards.IsOptionLike(plainArg))
                 throw new UnknownOptionException($"Unknown option '{plainArg}'");
         }
     }

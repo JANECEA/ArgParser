@@ -8,7 +8,7 @@ internal class CoupledArgs
 {
     internal required IReadOnlyList<(ArgOccurrence, string?)> Couples { get; init; }
     internal required IReadOnlyList<ArgOccurrence> Flags { get; init; }
-    internal required IReadOnlyList<(PropertyMetadata, string?)> Arguments { get; init; }
+    internal required IReadOnlyList<(PropertyMetadata, string)> Arguments { get; init; }
     internal required IReadOnlyList<string> PlainBeforeDelimiter { get; init; }
     internal required IReadOnlyList<string> PlainAfterDelimiter { get; init; }
 
@@ -21,7 +21,7 @@ internal class CoupledArgs
         occurence = null;
 
         string optionName = option;
-        int index = option.IndexOf('=');
+        int index = option.IndexOf(CliStandards.ValueSeparator);
         if (index != -1)
             optionName = option[..index];
 
@@ -38,13 +38,13 @@ internal class CoupledArgs
         return true;
     }
 
-    private static List<(PropertyMetadata, string?)> ExtractPositional(
+    private static List<(PropertyMetadata, string)> ExtractPositional(
         ProcessedClassMetadata metadata,
         List<string> beforeDelimiter,
         List<string> afterDelimiter
     )
     {
-        List<(PropertyMetadata, string?)> arguments = metadata
+        List<(PropertyMetadata, string)> arguments = metadata
             .AllArguments.SafeZip(beforeDelimiter.Concat(afterDelimiter))
             .ToList();
 
@@ -81,7 +81,7 @@ internal class CoupledArgs
                 continue;
             }
 
-            if (arg == "--")
+            if (arg == CliStandards.Delimiter)
                 break;
             beforeDelimiter.Add(arg);
         }

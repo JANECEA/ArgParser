@@ -9,7 +9,7 @@ internal class BehaviorMetadata
     internal required IReadOnlyList<string> LongNames { get; init; }
     internal required bool IsRequired { get; init; }
     internal required IReadOnlyList<string> Requires { get; init; }
-    internal EnumCase? EnumCasePolicy { get; init; }
+    internal required EnumCase? EnumCasePolicy { get; init; }
     internal required ITerminatingFlag? TerminatingFlag { get; init; }
 
     private static ITerminatingFlag? GetTerminatingFlag(PropertyInfo propertyInfo) =>
