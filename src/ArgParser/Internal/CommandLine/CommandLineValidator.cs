@@ -56,7 +56,7 @@ internal static class CommandLineValidator
         ProcessedClassMetadata metadata
     )
     {
-        foreach (PropertyMetadata property in metadata.AllOptions)
+        foreach (PropertyMetadata property in metadata.AllOptions.Concat(metadata.AllArguments))
         {
             if (!property.Behavior.IsRequired)
                 continue;

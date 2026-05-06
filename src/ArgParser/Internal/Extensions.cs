@@ -18,17 +18,20 @@ internal static class CollectionExtensions
         return toRemove;
     }
 
-    internal static IEnumerable<(TSelf, TOther?)> SafeZip<TSelf, TOther>(
+    internal static IEnumerable<(TSelf, TOther)> SafeZip<TSelf, TOther>(
         this IEnumerable<TSelf> self,
         IEnumerable<TOther> other
     )
     {
-        IEnumerator<TOther> enumerator = other.GetEnumerator();
+        using IEnumerator<TOther> enumerator = other.GetEnumerator();
 
         foreach (TSelf item in self)
-            yield return enumerator.MoveNext() ? (item, enumerator.Current) : (item, default);
-
-        enumerator.Dispose();
+        {
+            if (enumerator.MoveNext())
+                yield return (item, enumerator.Current);
+            else
+                yield break;
+        }
     }
 }
 
