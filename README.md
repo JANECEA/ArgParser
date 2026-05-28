@@ -49,7 +49,8 @@ dotnet build ./src/examples/<example>/<example>.csproj
 dotnet test ./src/ArgParser.sln
 
 # Compile documentation
-doxygen ./docs/Doxyfile
+cd docs
+doxygen Doxyfile
 ```
 
 
