@@ -57,13 +57,13 @@ public sealed class RangeAttribute<T> : OptionValidatorAttribute<T>
     {
         if (arg.CompareTo(_min) < 0)
         {
-            errorMessage = $"The argument {arg} must be less than {_min}";
+            errorMessage = $"The argument {arg} must be greater than or equal to {_min}";
             return false;
         }
 
         if (arg.CompareTo(_max) >= 0)
         {
-            errorMessage = $"The argument {arg} must be more than {_max}";
+            errorMessage = $"The argument {arg} must be less than {_max}";
             return false;
         }
 
