@@ -3,6 +3,16 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>ArgParser</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>JANECEA;Hoskovaterka</Authors>
+    <Description>Declarative CLI argument parsing library for .NET.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/JANECEA/ArgParser</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>cli;arguments;argparser;roslyn;analyzer</PackageTags>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToPackage</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,4 +26,19 @@
   <ItemGroup>
     <ProjectReference Include="..\analyzers\ArgParser.Analyzers.Abstractions\ArgParser.Analyzers.Abstractions.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <Target Name="_AddAnalyzersToPackage">
+    <ItemGroup>
+      <_ArgParserAnalyzerFiles Include="$(MSBuildProjectDirectory)\..\analyzers\ArgParser.Analyzers\bin\$(Configuration)\netstandard2.0\ArgParser.Analyzers.dll" />
+      <_ArgParserAnalyzerFiles Include="$(MSBuildProjectDirectory)\..\analyzers\ArgParser.Analyzers.Abstractions\bin\$(Configuration)\netstandard2.0\ArgParser.Analyzers.Abstractions.dll" />
+      <TfmSpecificPackageFile
+        Include="@(_ArgParserAnalyzerFiles)"
+        PackagePath="analyzers/dotnet/cs"
+      />
+    </ItemGroup>
+  </Target>
 </Project>

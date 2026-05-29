@@ -25,9 +25,16 @@ dotnet add reference <path to t21-api-design>/src/ArgParser/ArgParser.csproj
 dotnet build
 ```
 
+## NuGet
+
+```bash
+dotnet add package ArgParser
+```
+
 ## Roslyn analyzer
 
-To include Roslyn validation add this to .csproj
+When installing from NuGet, the analyzer is included automatically.
+For a local project reference, add this to .csproj:
 ```xml
 <ItemGroup>
 <ProjectReference
