@@ -13,6 +13,11 @@ ArgParser is a declarative CLI argument parsing library for .NET.
 - Compile time validation of attribute usage using Roslyn 
 - Typed positional arguments
 
+## NuGet
+
+```bash
+dotnet add package JANECEA.ArgParser
+```
 
 ## Build instructions
 ```bash
@@ -23,12 +28,6 @@ git clone https://gitlab.mff.cuni.cz/teaching/nprg043/2026-summer/task-1/t21-api
 cd YourProject/
 dotnet add reference <path to t21-api-design>/src/ArgParser/ArgParser.csproj
 dotnet build
-```
-
-## NuGet
-
-```bash
-dotnet add package ArgParser
 ```
 
 ## Roslyn analyzer
