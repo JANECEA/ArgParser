@@ -4,11 +4,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>ArgParser</PackageId>
+    <PackageId>JANECEA.ArgParser</PackageId>
     <Version>0.1.0</Version>
     <Authors>JANECEA;Hoskovaterka</Authors>
     <Description>Declarative CLI argument parsing library for .NET.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/JANECEA/ArgParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>cli;arguments;argparser;roslyn;analyzer</PackageTags>
@@ -29,6 +30,7 @@
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <Target Name="_AddAnalyzersToPackage">
